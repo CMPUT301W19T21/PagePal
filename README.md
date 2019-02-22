@@ -1,1 +1,3 @@
-# TempName
+# PagePal
+
+[View the Wiki](wiki)
