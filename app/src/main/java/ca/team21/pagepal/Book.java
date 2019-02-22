@@ -23,31 +23,31 @@ public class Book {
 
 
     public String getTitle() {
-        ;
+        return title;
     }
 
     public void setTitle(String title) {
-        ;
+
     }
 
     public String getAuthor() {
-        ;
+        return author;
     }
 
     public void setAuthor(String author) {
-        ;
+
     }
 
     public String getISBN() {
-        ;
+        return ISBN;
     }
 
     public void setISBN(String ISBN) {
-        ;
+
     }
 
     public String getDescription() {
-        ;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -59,7 +59,7 @@ public class Book {
     }
 
     public void setStatus(Book_Status status) {
-        this.status = status;
+
     }
 
     public Cover_Photo getPhoto() {
@@ -67,6 +67,6 @@ public class Book {
     }
 
     public void setPhoto(Cover_Photo photo) {
-        this.photo = photo;
+
     }
 }

@@ -13,18 +13,18 @@ public class Book_List {
     }
 
     public void addBook(Book book) {
-        ;
+
     }
 
     public void removeBook(Book book) {
-        ;
+
     }
 
     public Profile getOwner() {
-        ;
+        return owner;
     }
 
     public ArrayList<Book> getBookList() {
-        ;
+        return bookList;
     }
 }
