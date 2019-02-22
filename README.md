@@ -1,3 +1,3 @@
 # PagePal
 
-[View the Wiki](wiki)
+[View the Wiki](../wiki)
