@@ -13,6 +13,8 @@ public class Book {
     private Book_Status status;
     private Cover_Photo photo;
 
+    public Book() {}
+
     public Book(String title, String author, String ISBN, File photo) {
         this.title = title;
         this.author = author;
