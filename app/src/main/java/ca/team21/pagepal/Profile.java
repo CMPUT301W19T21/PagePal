@@ -14,6 +14,8 @@ public class Profile {
     private Request_List requestList;
     private Book_List bookList;
 
+    public Profile() {}
+
     public Profile(String username, String name, Date DOB, String email) {
         this.username = username;
         this.name= name;
@@ -43,7 +45,7 @@ public class Profile {
         return location;
     }
 
-    public void setLocation() {
+    public void setLocation(Location location) {
 
     }
 
@@ -67,7 +69,15 @@ public class Profile {
         return requestList;
     }
 
+    public void addRequest(Request request) {
+        requestList.addRequest(request);
+    }
+
     public Book_List getBookList() {
         return bookList;
+    }
+
+    public void addBook(Book book) {
+        bookList.addBook(book);
     }
 }
