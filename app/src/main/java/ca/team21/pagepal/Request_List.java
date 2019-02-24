@@ -14,11 +14,11 @@ public class Request_List {
         requestList = new ArrayList<>();
     }
 
-    public void addRequest(Profile owner, Profile requester, Book book, Location location) {
+    public void addRequest(Request request) {
         ;
     }
 
-    public void removeRequest(Book book) {
+    public void removeRequest(Request request) {
         ;
     }
 
