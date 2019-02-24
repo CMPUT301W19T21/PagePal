@@ -9,9 +9,7 @@ public class Request {
     private Book book;
     private Location location;
 
-    public Request(Profile owner, Profile requester, Book book, Location location) {
-        ;
-    }
+    public Request(Profile owner, Profile requester, Book book, Location location) {}
 
     public Profile getOwner() {
         return owner;
