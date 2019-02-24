@@ -2,6 +2,8 @@ package ca.team21.pagepal;
 
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.junit.Assert.assertEquals;
 
 public class BookTest {
@@ -41,7 +43,7 @@ public class BookTest {
 
     @Test
     public void setPhotoTest() {
-        Cover_Photo img = new Cover_Photo("default.png");
+        Cover_Photo img = new Cover_Photo(new File("default.png"));
 
         book.setPhoto(img);
         assertEquals(img, book.getPhoto());
