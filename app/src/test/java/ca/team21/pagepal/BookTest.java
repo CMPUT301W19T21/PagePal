@@ -51,7 +51,7 @@ public class BookTest {
 
     @Test
     public void setPhotoTest() {
-        Cover_Photo img = new Cover_Photo(new File("default.png"));
+        CoverPhoto img = new CoverPhoto(new File("default.png"));
 
         book.setPhoto(img);
         assertEquals(img, book.getPhoto());
