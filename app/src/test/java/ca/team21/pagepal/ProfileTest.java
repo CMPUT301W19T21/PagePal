@@ -60,12 +60,14 @@ public class ProfileTest {
         book1.setTitle("Great Gatsby");
         Location loc = new Location(LocationManager.NETWORK_PROVIDER);
         
-        Request one = new Request(owner, borrower, book1, loc);
+        Request one = new Request(owner, borrower, book1);
+        one.setLocation(loc);
         
         Book book2 = new Book();
         book2.setTitle("Huckleberry Finn");
 
-        Request two = new Request(owner, borrower, book2, loc);
+        Request two = new Request(owner, borrower, book2);
+        two.setLocation(loc);
         Request_List testList = new Request_List(borrower);
         testList.addRequest(one);
         testList.addRequest(two);
