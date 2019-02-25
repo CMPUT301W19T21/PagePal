@@ -2,15 +2,17 @@ package ca.team21.pagepal;
 
 import java.io.File;
 
-import ca.team21.pagepal.status.Available;
-import ca.team21.pagepal.status.Book_Status;
 
 public class Book {
+    public static final String AVAILABLE = "available";
+    public static final String REQUESTED = "requested";
+    public static final String ACCEPTED = "accepted";
+    public static final String BORROWED = "borrowed";
     private String title;
     private String author;
     private String ISBN;
     private String description;
-    private Book_Status status;
+    private String status;
     private Cover_Photo photo;
 
     public Book() {}
@@ -19,7 +21,7 @@ public class Book {
         this.title = title;
         this.author = author;
         this.ISBN = ISBN;
-        this.status = new Available(); // defaults to available
+        this.status = AVAILABLE; // defaults to available
         this.photo = new Cover_Photo(photo);
     }
 
@@ -56,12 +58,11 @@ public class Book {
         this.description = description;
     }
 
-    public Book_Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Book_Status status) {
-
+    public void setStatus(String status) {
     }
 
     public Cover_Photo getPhoto() {

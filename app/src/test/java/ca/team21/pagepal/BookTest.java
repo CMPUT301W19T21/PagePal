@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.File;
 
+import static ca.team21.pagepal.Book.REQUESTED;
 import static org.junit.Assert.assertEquals;
 
 public class BookTest {
@@ -39,6 +40,13 @@ public class BookTest {
 
         book.setDescription(desc);
         assertEquals(desc, book.getDescription());
+    }
+
+    @Test
+    public void setStatusTest() {
+        book.setStatus(REQUESTED);
+
+        assertEquals(REQUESTED, book.getStatus());
     }
 
     @Test
