@@ -8,14 +8,18 @@ import java.util.Date;
 public class User {
 
     private String username;
+    private String name;
     private Location location;
-    private ArrayList<Request> requestList;
-    private ArrayList<Book> ownedList;
-    private ArrayList<Book> borrowedList;
+    private String email;
+    private RequestList requestList;
+    private BookList ownedList;
+    private BookList borrowedList;
+    private NotificationList notificationList;
+    private BookHistoryList bookHistoryList;
 
     public User() {}
 
-    public User(String username, Date DOB, String email) {}
+    public User(String username, String name, String email) {}
 
 
     public String getUsername() {
@@ -32,27 +36,41 @@ public class User {
     public void setLocation(Location location) {}
 
 
-    public ArrayList<Request> getRequestList() {
+    public RequestList getRequestList() {
         return requestList;
     }
 
-    public void addRequest(Request request) {
-        requestList.add(request);
-    }
+    public void addRequest(Request request) {}
 
     public void removeRequest(Request request) {}
 
 
-    public ArrayList<Book> getOwnedList() {return ownedList;}
+    public BookList getOwnedList() {return ownedList;}
 
     public void addOwnedBook(Book book) {}
 
     public void removeOwnedBook(Book book) {}
 
 
-    public ArrayList<Book> getBorrowedList() {return borrowedList;}
+    public BookList getBorrowedList() {return borrowedList;}
 
     public void addBorrowedBook(Book book) {}
 
     public void removeBorrowedBook(Book book) {}
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public NotificationList getNotificationList() {
+        return notificationList;
+    }
+
+    public BookHistoryList getBookHistoryList() {
+        return bookHistoryList;
+    }
 }
