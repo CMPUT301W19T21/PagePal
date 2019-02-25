@@ -11,7 +11,7 @@ public class Request {
 
     public Request() {};
 
-    public Request(Profile owner, Profile requester, Book book, Location location) {}
+    public Request(Profile owner, Profile requester, Book book) {}
 
     public Profile getOwner() {
         return owner;
@@ -24,6 +24,8 @@ public class Request {
     public Book getBook() {
         return book;
     }
+
+    public void setLocation(Location location) {}
 
     public Location getLocation() {
         return location;
