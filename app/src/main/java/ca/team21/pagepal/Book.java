@@ -2,7 +2,6 @@ package ca.team21.pagepal;
 
 import java.io.File;
 
-
 public class Book {
     public static final String AVAILABLE = "available";
     public static final String REQUESTED = "requested";

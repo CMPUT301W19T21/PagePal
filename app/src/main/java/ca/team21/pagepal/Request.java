@@ -4,20 +4,20 @@ import android.location.Location;
 
 public class Request {
 
-    private Profile owner;
-    private Profile requester;
+    private User owner;
+    private User requester;
     private Book book;
     private Location location;
 
     public Request() {};
 
-    public Request(Profile owner, Profile requester, Book book) {}
+    public Request(User owner, User requester, Book book, Location location) {}
 
-    public Profile getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public Profile getRequester() {
+    public User getRequester() {
         return requester;
     }
 
