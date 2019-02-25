@@ -25,6 +25,8 @@ public class Request {
         return book;
     }
 
+    public void setLocation(Location location) {}
+
     public Location getLocation() {
         return location;
     }
