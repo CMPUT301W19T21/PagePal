@@ -12,7 +12,7 @@ public class Book {
     private String ISBN;
     private String description;
     private String status;
-    private Cover_Photo photo;
+    private CoverPhoto photo;
 
     public Book() {}
 
@@ -21,7 +21,7 @@ public class Book {
         this.author = author;
         this.ISBN = ISBN;
         this.status = AVAILABLE; // defaults to available
-        this.photo = new Cover_Photo(photo);
+        this.photo = new CoverPhoto(photo);
     }
 
 
@@ -64,11 +64,11 @@ public class Book {
     public void setStatus(String status) {
     }
 
-    public Cover_Photo getPhoto() {
+    public CoverPhoto getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Cover_Photo photo) {
+    public void setPhoto(CoverPhoto photo) {
 
     }
 }
