@@ -3,12 +3,10 @@ package ca.team21.pagepal;
 import java.io.File;
 
 public class Book {
-
-    public final String AVAILABLE = "Available";
-    public final String REQUESTED = "Requested";
-    public final String ACCEPTED  = "Accepted";
-    public final String BORROWED = "Borrowed";
-
+    public static final String AVAILABLE = "available";
+    public static final String REQUESTED = "requested";
+    public static final String ACCEPTED = "accepted";
+    public static final String BORROWED = "borrowed";
     private String title;
     private String author;
     private String ISBN;
@@ -64,7 +62,6 @@ public class Book {
     }
 
     public void setStatus(String status) {
-
     }
 
     public Cover_Photo getPhoto() {
