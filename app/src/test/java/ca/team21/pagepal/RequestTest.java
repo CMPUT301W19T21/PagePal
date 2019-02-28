@@ -9,8 +9,8 @@ import static org.junit.Assert.assertEquals;
 
 public class RequestTest {
 
-    private Profile owner = new Profile();
-    private Profile requester = new Profile();
+    private User owner = new User();
+    private User requester = new User();
     private Book book = new Book();
     private Request request = new Request(owner, requester, book);
 

@@ -45,3 +45,6 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
+
+Files with sensitive info
+google-services.json

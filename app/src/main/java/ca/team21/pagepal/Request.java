@@ -11,6 +11,8 @@ public class Request {
 
     public Request() {};
 
+    public Request(User owner, User requester, Book book) {}
+
     public Request(User owner, User requester, Book book, Location location) {}
 
     public User getOwner() {
