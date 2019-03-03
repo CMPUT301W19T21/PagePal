@@ -22,7 +22,7 @@ public class User {
     /**
      * Constructor used when creating new Users.
      * @param username  The username to set.
-     * @param email     The email to set.
+     * @param email The email to set.
      */
     public User(String username, String email) {
         this.username = username;
