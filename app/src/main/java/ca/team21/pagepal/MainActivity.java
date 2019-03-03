@@ -6,27 +6,31 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
-import com.firebase.client.Firebase;
-import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int RC_SIGN_IN = 123;
+    private static final String TAG = "MainActivity";
+
+    private DatabaseReference usersRef;
+    private FirebaseUser authUser;
     private TextView mTextMessage;
-    private FirebaseAuth mAuth;
-    private FirebaseUser user;
+    private TextView helloMessage;
+    private User user;
 
     /**
      * Sets up the Bottom navigation bar
@@ -56,8 +60,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        // Wait for user to authenticate or timeout
+        long waitTime = new Date().getTime() + 1 * 1000;
+        while ( authUser == null && new Date().getTime() < waitTime ) {
+            authUser = FirebaseAuth.getInstance().getCurrentUser();
+        }
+        // Quit if authentication fails. Might want to add something more elegant later...
+        if (authUser == null) {
+            Toast.makeText(MainActivity.this, "Couldn't Authenticate",
+                    Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        // Connect to database
+        usersRef = FirebaseDatabase.getInstance().getReference();
+
+        // Get the user who is logged in
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        user = dataSnapshot.child("users").child(authUser.getUid()).getValue(User.class);
+                        helloMessage.setText("Hello " + user.getUsername());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
+                    }
+                });
 
         // Set up top toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -65,27 +95,14 @@ public class MainActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
         }
 
-
         // Set up bottom nav bar
         mTextMessage = (TextView) findViewById(R.id.message);
+        helloMessage = findViewById(R.id.username_test);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        // Connect to FirebaseDB
-        Firebase.setAndroidContext(this);
-        final Firebase ref = new Firebase("https://pagepal-5b78c.firebaseio.com/");
-
-        // Listen for data changes
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Check if there is a user signed in and update UI accordingly
-        user = mAuth.getCurrentUser();
-        updateUI(user);
-    }
 
     /**
      * Creates the buttons in the toolbar.
@@ -110,60 +127,12 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.sign_out:
                 FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                user = FirebaseAuth.getInstance().getCurrentUser();
-                System.out.println("Login Successful");
-            } else {
-                if (response == null) {
-                    return;
-                } else {
-                    System.out.println("Login failed: " + response.getError().getErrorCode());
-                }
-
-            }
-        }
-    }
-
-    private void updateUI(FirebaseUser currentUser) {
-        if (currentUser == null) {
-            // Start log in activity
-            // Get action code for email links
-            ActionCodeSettings actionCodeSettings = ActionCodeSettings.newBuilder()
-                    .setAndroidPackageName("ca.team21.pagepal", /* installIfNotAvailable= */ true,
-                            /* minimumVersion= */ null)
-                    .setHandleCodeInApp(true) // This must be set to true
-                    .setUrl("https://pagepal.page.link") // This URL needs to be whitelisted
-                    .build();
-            // Set up providers
-            List<AuthUI.IdpConfig> providers = Arrays.asList(
-                    new AuthUI.IdpConfig.EmailBuilder().enableEmailLinkSignIn()
-                            .setActionCodeSettings(actionCodeSettings).build(),
-                    new AuthUI.IdpConfig.GoogleBuilder().build(),
-                    new AuthUI.IdpConfig.AnonymousBuilder().build()
-            );
-            // Start Sign-in Activity
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .build(),
-                    RC_SIGN_IN
-            );
         }
     }
 }
