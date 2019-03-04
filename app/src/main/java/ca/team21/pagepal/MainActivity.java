@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,14 +25,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements ProfileFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
+    private static final int EDIT_USER = 9;
+    public static final String USER_EXTRA = "ca.team21.pagepal.user";
 
+    private FragmentManager fragmentManager = getSupportFragmentManager();
     private DatabaseReference usersRef;
     private FirebaseUser authUser;
     private TextView mTextMessage;
-    private TextView helloMessage;
     private User user;
 
     /**
@@ -50,10 +56,25 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_notifications:
                     mTextMessage.setText(R.string.title_notifications);
                     return true;
+                case R.id.navigation_profile:
+                    loadFragment(ProfileFragment.newInstance(user));
+                    return true;
             }
             return false;
         }
     };
+
+    /**
+     * Load the given fragment in to view.
+     *
+     * @param fragment  The Fragment to load.
+     */
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Wait for user to authenticate or timeout
-        long waitTime = new Date().getTime() + 1 * 1000;
+        long waitTime = new Date().getTime() + 2 * 1000;
         while ( authUser == null && new Date().getTime() < waitTime ) {
             authUser = FirebaseAuth.getInstance().getCurrentUser();
         }
@@ -76,11 +97,10 @@ public class MainActivity extends AppCompatActivity {
         usersRef = FirebaseDatabase.getInstance().getReference();
 
         // Get the user who is logged in
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         user = dataSnapshot.child("users").child(authUser.getUid()).getValue(User.class);
-                        helloMessage.setText("Hello " + user.getUsername());
                     }
 
                     @Override
@@ -97,13 +117,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up bottom nav bar
         mTextMessage = (TextView) findViewById(R.id.message);
-        helloMessage = findViewById(R.id.username_test);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
     }
 
 
+    // TODO Remove the toolbar and place the sign out option in the user profile page.
     /**
      * Creates the buttons in the toolbar.
      *
@@ -134,5 +154,12 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(User user) {
+        Intent intent = new Intent(this, EditUserActivity.class);
+        intent.putExtra(USER_EXTRA, user);
+        startActivityForResult(intent, EDIT_USER);
     }
 }

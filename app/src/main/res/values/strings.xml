@@ -28,7 +28,10 @@
     <string name="title_activity_sign_up">Sign Up</string>
     <string name="page_pal">PagePal</string>
     <string name="title_profile">Profile</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="location_label">Location:</string>
+    <string name="location">Location</string>
+    <string name="save_label">Save</string>
+    <string name="cancel_label">Cancel</string>
 </resources>

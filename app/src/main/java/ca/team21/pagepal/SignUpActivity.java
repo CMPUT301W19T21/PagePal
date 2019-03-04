@@ -123,7 +123,7 @@ public class SignUpActivity extends AppCompatActivity
         Query usernamesQuery = dbRef.child("users")
                 .orderByChild("username")
                 .equalTo(text);
-        usernamesQuery.addValueEventListener(new ValueEventListener() {
+        usernamesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getChildrenCount() > 0) {

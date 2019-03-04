@@ -17,7 +17,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 
 /**
@@ -66,7 +65,6 @@ public class LoginActivity extends AppCompatActivity
         switch (v.getId()) {
             case R.id.email_sign_in_button:
                 attemptLogin();
-                onAuthSuccess();
                 return;
             case R.id.create_account_button:
                 Intent intent = new Intent(this, SignUpActivity.class);
@@ -129,10 +127,7 @@ public class LoginActivity extends AppCompatActivity
                             if (task.isSuccessful()) {
                                 // Sign in success
                                 Log.d(TAG, "signInWithEmail:success");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                Intent intent = new Intent();
-                                intent.putExtra(Intent.EXTRA_USER, user);
-                                finish();
+                                onAuthSuccess();
                             } else {
                                 // If sign in fails, display a message.
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());

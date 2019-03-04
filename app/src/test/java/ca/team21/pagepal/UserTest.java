@@ -6,7 +6,6 @@ import android.location.LocationManager;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +13,7 @@ public class UserTest {
     private User user = new User();
 
     @Test
-    public void setUsernameTest() {
+    public void testSetUsername() {
         String uName = "TheGreatOne99";
 
         user.setUsername(uName);
@@ -22,15 +21,33 @@ public class UserTest {
     }
 
     @Test
-    public void setLocationTest() {
+    public void testSetEmail() {
+        String email = "thegr81@oil.yeg";
+
+        user.setEmail(email);
+        assertEquals(email, user.getEmail());
+    }
+
+    @Test
+    public void testSetName() {
+        String name = "Wayne Gretzky";
+
+        user.setName(name);
+        assertEquals(name, user.getName());
+    }
+
+    /*
+    @Test
+    public void testSetLocation() {
         Location loc = new Location(LocationManager.NETWORK_PROVIDER);
 
         user.setLocation(loc);
         assertEquals(loc, user.getLocation());
     }
+    */
 
     @Test
-    public void addRequests() {
+    public void testAddRequests() {
         User owner = new User();
         User borrower = new User();
         Book book1 = new Book();
@@ -43,9 +60,9 @@ public class UserTest {
         book2.setTitle("Huckleberry Finn");
 
         Request two = new Request(owner, borrower, book2, loc);
-        ArrayList<Request> testList = new ArrayList<Request>();
-        testList.add(one);
-        testList.add(two);
+        RequestList testList = new RequestList();
+        testList.addRequest(one);
+        testList.addRequest(two);
 
         user.addRequest(one);
         user.addRequest(two);
@@ -54,14 +71,14 @@ public class UserTest {
     }
 
     @Test
-    public void addBooks() {
+    public void testAddBooks() {
         Book book1 = new Book();
         book1.setTitle("Great Gatsby");
 
         Book book2 = new Book();
         book2.setTitle("Huckleberry Finn");
 
-        ArrayList<Book> testList = new ArrayList<>();
+        BookList testList = new BookList();
         testList.add(book1);
         testList.add(book2);
 
