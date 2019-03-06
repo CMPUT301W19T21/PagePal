@@ -50,6 +50,13 @@ public class BookTest {
     }
 
     @Test
+    public void setGenreTest(){
+        String genre = "Science Fiction";
+        book.setGenre(genre);
+        assertEquals(genre, book.getGenre());
+    }
+
+    @Test
     public void setPhotoTest() {
         CoverPhoto img = new CoverPhoto(new File("default.png"));
 

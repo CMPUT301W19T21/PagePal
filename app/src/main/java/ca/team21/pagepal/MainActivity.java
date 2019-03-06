@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements ProfileFragment.OnFragmentInteractionListener {
@@ -162,4 +163,5 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(USER_EXTRA, user);
         startActivityForResult(intent, EDIT_USER);
     }
+
 }

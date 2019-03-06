@@ -1,6 +1,7 @@
 package ca.team21.pagepal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BookHistoryList {
 
@@ -8,9 +9,18 @@ public class BookHistoryList {
 
     public BookHistoryList() {}
 
-    public void addBook(Book book) {}
+    public void addBook(Book book) {
+        //GenreDictionary z = new GenreDictionary();
+        //HashMap<String, Integer> genreScore = z.getGenreDictionary();
 
-    public void removeBook(Book book) {}
+
+    }
+
+    public void removeBook(Book book) {
+        //GenreDictionary z = new GenreDictionary();
+        //HashMap<String, Integer> genreScore = z.getGenreDictionary();
+
+    }
 
     public ArrayList<Book> getHistoryList() {
         return historyList;

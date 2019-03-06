@@ -1,6 +1,8 @@
 package ca.team21.pagepal;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Book {
     public static final String AVAILABLE = "available";
@@ -12,15 +14,17 @@ public class Book {
     private String ISBN;
     private String description;
     private String status;
+    private String genre;
     private CoverPhoto photo;
 
     public Book() {}
 
-    public Book(String title, String author, String ISBN, File photo) {
+    public Book(String title, String author, String ISBN,String genre ,File photo) {
         this.title = title;
         this.author = author;
         this.ISBN = ISBN;
         this.status = AVAILABLE; // defaults to available
+        this.genre = genre;
         this.photo = new CoverPhoto(photo);
     }
 
@@ -64,11 +68,26 @@ public class Book {
     public void setStatus(String status) {
     }
 
+    public String getGenre() {return genre;}
+
+    public void setGenre(String genre){
+
+    }
+
+    // My plan is that when you return a book we take the genre of that book add one value to the
+    //counter for that key and add it to the dictionary
+    // Map<String, Integer> numberMapping = new HashMap<>();
+    //example of adding a key = action, and the value = 0
+
+
+
+
+
     public CoverPhoto getPhoto() {
         return photo;
     }
 
     public void setPhoto(CoverPhoto photo) {
-
     }
+
 }
