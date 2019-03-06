@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -69,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity
         }
 
         mAuth = FirebaseAuth.getInstance();
-        dbRef = FirebaseDatabase.getInstance().getReference();
+        dbRef = FirebaseDatabase.getInstance().getReference().child("users");
 
         usernameView = findViewById(R.id.username_input);
         emailView = findViewById(R.id.email_input);
@@ -120,7 +122,7 @@ public class SignUpActivity extends AppCompatActivity
      * @param text The username to look for.
      */
     public void queryUsernames(String text) {
-        Query usernamesQuery = dbRef.child("users")
+        Query usernamesQuery = dbRef
                 .orderByChild("username")
                 .equalTo(text);
         usernamesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -215,9 +217,9 @@ public class SignUpActivity extends AppCompatActivity
                             }
                         }
                     });
-            // Wait for user to be authenticated or timeout
-            long waitTime = new Date().getTime() + 2 * 1000;
-            while( authUser == null && (new Date().getTime() < waitTime) ) {
+            // Wait for user to be authenticated
+            // TODO create a loading screen so it doesn't look like the app is frozen.
+            while( authUser == null) {
                 authUser = mAuth.getCurrentUser();
             }
             user = new User(name, authUser.getEmail());
@@ -246,7 +248,7 @@ public class SignUpActivity extends AppCompatActivity
      * @return  true if valid. false otherwise.
      */
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 6;
     }
 
     /**
@@ -265,7 +267,16 @@ public class SignUpActivity extends AppCompatActivity
      * @param uid   The FirebaseUser uid to serve as a key.
      * @param user  The User object to store.
      */
-    private void writeNewUser(String uid, User user) {
-        dbRef.child("users").child(uid).setValue(user);
+    private void writeNewUser(final String uid, User user) {
+        dbRef.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "User created at " + uid);
+                } else {
+                    Log.w(TAG, task.getException());
+                }
+            }
+        });
     }
 }
