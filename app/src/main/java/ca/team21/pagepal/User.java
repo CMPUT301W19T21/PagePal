@@ -11,14 +11,16 @@ import java.util.Date;
 public class User implements Parcelable {
 
     private String username;
-    private String name;
     private String email;
-    //private Location location = new Location(LocationManager.NETWORK_PROVIDER);
+    /*
+    private String name;
+    private Location location = new Location(LocationManager.NETWORK_PROVIDER);
     private RequestList requestList = new RequestList();
     private BookList ownedList = new BookList();
     private BookList borrowedList = new BookList();
     private NotificationList notificationList = new NotificationList();
     private BookHistoryList bookHistoryList = new BookHistoryList();
+    */
 
     public User() {/* Empty constructor required for Firebase */}
 
@@ -34,8 +36,8 @@ public class User implements Parcelable {
 
     protected User(Parcel in) {
         username = in.readString();
-        name = in.readString();
         email = in.readString();
+        //name = in.readString();
         //location = in.readParcelable(Location.class.getClassLoader());
     }
 
@@ -62,11 +64,10 @@ public class User implements Parcelable {
     public String getEmail() {
         return this.email;
     }
-
+    /*
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getName() {
         return name;
     }
@@ -75,7 +76,6 @@ public class User implements Parcelable {
         this.name = name;
     }
 
-    /*
     public Location getLocation() {
         return location;
     }
@@ -83,9 +83,9 @@ public class User implements Parcelable {
     public void setLocation(Location location) {
         this.location = location;
     }
-    */
 
 
+    /*
     public RequestList getRequestList() {
         return requestList;
     }
@@ -128,6 +128,7 @@ public class User implements Parcelable {
     public BookHistoryList getBookHistoryList() {
         return bookHistoryList;
     }
+    */
 
     @Override
     public int describeContents() {
@@ -138,7 +139,7 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(username);
         dest.writeString(email);
-        dest.writeString(name);
+        //dest.writeString(name);
         //location.writeToParcel(dest, flags);
     }
 }
