@@ -1,8 +1,11 @@
-package ca.team21.pagepal;
+package ca.team21.pagepal.Book;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
+
+import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookHistoryList;
 
 import static org.junit.Assert.assertEquals;
 

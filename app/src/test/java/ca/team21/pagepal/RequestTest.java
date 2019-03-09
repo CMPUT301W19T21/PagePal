@@ -5,6 +5,8 @@ import android.location.LocationManager;
 
 import org.junit.Test;
 
+import ca.team21.pagepal.Book.Book;
+
 import static org.junit.Assert.assertEquals;
 
 public class RequestTest {

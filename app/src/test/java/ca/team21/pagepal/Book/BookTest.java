@@ -1,10 +1,10 @@
-package ca.team21.pagepal;
+package ca.team21.pagepal.Book;
 
 import org.junit.Test;
 
-import java.io.File;
+import ca.team21.pagepal.Book.Book;
 
-import static ca.team21.pagepal.Book.REQUESTED;
+import static ca.team21.pagepal.Book.Book.REQUESTED;
 import static org.junit.Assert.assertEquals;
 
 public class BookTest {
@@ -27,14 +27,6 @@ public class BookTest {
     }
 
     @Test
-    public void setIsbnTest() {
-        String isbn = " 0062696122";
-
-        book.setISBN(isbn);
-        assertEquals(isbn, book.getISBN());
-    }
-
-    @Test
     public void setDescTest() {
         String desc = "Futuristic novel";
 
@@ -47,13 +39,5 @@ public class BookTest {
         book.setStatus(REQUESTED);
 
         assertEquals(REQUESTED, book.getStatus());
-    }
-
-    @Test
-    public void setPhotoTest() {
-        CoverPhoto img = new CoverPhoto(new File("default.png"));
-
-        book.setPhoto(img);
-        assertEquals(img, book.getPhoto());
     }
 }

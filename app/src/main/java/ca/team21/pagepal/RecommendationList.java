@@ -4,6 +4,9 @@ import android.location.Location;
 
 import java.util.ArrayList;
 
+import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookHistoryList;
+
 public class RecommendationList {
     private BookHistoryList history;
     private Location location;
