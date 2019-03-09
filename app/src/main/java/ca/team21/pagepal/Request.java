@@ -2,6 +2,8 @@ package ca.team21.pagepal;
 
 import android.location.Location;
 
+import ca.team21.pagepal.Book.Book;
+
 public class Request {
 
     private User owner;

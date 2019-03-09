@@ -4,14 +4,20 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.design.internal.ParcelableSparseArray;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+
+import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookList;
 
 public class User implements Parcelable {
 
     private String username;
     private String email;
+    private ArrayList<Book> ownedBookList;
     /*
     private String name;
     private Location location = new Location(LocationManager.NETWORK_PROVIDER);
@@ -32,11 +38,16 @@ public class User implements Parcelable {
     public User(String username, String email) {
         this.username = username;
         this.email = email;
+        this.ownedBookList = new ArrayList<>();
     }
 
     protected User(Parcel in) {
         username = in.readString();
         email = in.readString();
+        in.readTypedList(ownedBookList, Book.CREATOR);
+        if (ownedBookList == null) {
+            ownedBookList = new ArrayList<>();
+        }
         //name = in.readString();
         //location = in.readParcelable(Location.class.getClassLoader());
     }
@@ -64,6 +75,21 @@ public class User implements Parcelable {
     public String getEmail() {
         return this.email;
     }
+
+    public ArrayList<Book> getOwnedBookList() {return ownedBookList;}
+
+    public void addOwnedBook(Book book) {
+        if (ownedBookList == null) {
+            ownedBookList = new ArrayList<>();
+        }
+
+        // if book is not already in list
+        if (!ownedBookList.contains(book)) {
+            ownedBookList.add(book);
+        }
+    }
+
+
     /*
     public void setEmail(String email) {
         this.email = email;
@@ -99,7 +125,7 @@ public class User implements Parcelable {
     }
 
 
-    public BookList getOwnedList() {return ownedList;}
+
 
     public void addOwnedBook(Book book) {
         this.ownedList.add(book);
@@ -139,6 +165,7 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(username);
         dest.writeString(email);
+        dest.writeTypedList(ownedBookList);
         //dest.writeString(name);
         //location.writeToParcel(dest, flags);
     }

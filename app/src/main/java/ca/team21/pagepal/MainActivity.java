@@ -24,10 +24,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
-import java.util.HashMap;
+
+import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements ProfileFragment.OnFragmentInteractionListener {
+        implements ProfileFragment.OnFragmentInteractionListener, BookFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
@@ -52,7 +54,9 @@ public class MainActivity extends AppCompatActivity
                     mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                    user.addOwnedBook(new Book("Test Book Title 1", "Test Author 1", "12345678"));
+                    user.addOwnedBook(new Book("Test Book Title 2", "Test Author 2", "24681012"));
+                    loadFragment(BookFragment.newInstance(1, user.getOwnedBookList())); // 1 = number of columns in book list
                     return true;
                 case R.id.navigation_notifications:
                     mTextMessage.setText(R.string.title_notifications);
@@ -121,6 +125,8 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+
+
     }
 
 
@@ -164,4 +170,7 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, EDIT_USER);
     }
 
+    @Override
+    public void onListFragmentInteraction(Book book) {
+    }
 }

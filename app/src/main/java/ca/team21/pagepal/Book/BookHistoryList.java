@@ -1,4 +1,4 @@
-package ca.team21.pagepal;
+package ca.team21.pagepal.Book;
 
 import java.util.ArrayList;
 import java.util.HashMap;

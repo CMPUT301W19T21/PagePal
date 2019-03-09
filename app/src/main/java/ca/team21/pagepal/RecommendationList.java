@@ -11,6 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookHistoryList;
+
 public class RecommendationList {
     private BookHistoryList history;
     private Location location;
