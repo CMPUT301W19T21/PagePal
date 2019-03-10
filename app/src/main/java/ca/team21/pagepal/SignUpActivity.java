@@ -184,9 +184,13 @@ public class SignUpActivity extends AppCompatActivity
             cancel = true;
         }
 
-        // Check name was entered
+        // Check username was entered
         if (TextUtils.isEmpty(name)) {
             usernameView.setError("This field is required");
+            focusView = usernameView;
+            cancel = true;
+        // If Username is taken
+        } else if (usernameView.getError() == "Username taken") {
             focusView = usernameView;
             cancel = true;
         }
