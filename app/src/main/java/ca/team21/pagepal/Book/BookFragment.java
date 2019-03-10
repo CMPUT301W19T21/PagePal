@@ -11,11 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ca.team21.pagepal.R;
-import ca.team21.pagepal.Book.dummy.DummyContent;
-import ca.team21.pagepal.Book.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
