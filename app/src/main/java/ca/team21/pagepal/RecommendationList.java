@@ -52,6 +52,9 @@ public class RecommendationList {
 
         //This for loop with go through sorted genre and then we find books???
         for (Map.Entry<String, Integer> SortedGenre : temporary.entrySet()){
+
+
+
             // first item of for loop we check out that genre with all the books with similar genre in this area
             //the next check is the one with the biggest user reccomendations score
 
