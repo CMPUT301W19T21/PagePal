@@ -17,7 +17,7 @@ public class User implements Parcelable {
 
     private String username;
     private String email;
-    private ArrayList<Book> ownedBookList;
+    private ArrayList<Book> ownedBookList = new ArrayList<>();
     /*
     private String name;
     private Location location = new Location(LocationManager.NETWORK_PROVIDER);
