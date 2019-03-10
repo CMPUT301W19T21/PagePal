@@ -1,7 +1,6 @@
 package ca.team21.pagepal;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ProfileFragment.OnFragmentInteractionListener} interface
+ * {@link OnProfileInteractionListener} interface
  * to handle interaction events.
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -26,7 +25,7 @@ public class ProfileFragment extends Fragment {
     // Parameters
     private User mUser;
 
-    private OnFragmentInteractionListener mListener;
+    private OnProfileInteractionListener mListener;
 
     private TextView usernameView;
     private TextView emailView;
@@ -54,8 +53,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnProfileInteractionListener) {
+            mListener = (OnProfileInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnHomeInteractionListener");
@@ -95,7 +94,7 @@ public class ProfileFragment extends Fragment {
 
     public void onButtonPressed(User user) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(user);
+            mListener.onProfileInteraction(user);
         }
     }
 
@@ -122,7 +121,7 @@ public class ProfileFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(User user);
+    public interface OnProfileInteractionListener {
+        void onProfileInteraction(User user);
     }
 }
