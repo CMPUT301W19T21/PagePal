@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,9 +28,11 @@ import ca.team21.pagepal.Book.Book;
 import ca.team21.pagepal.Book.BookFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements ProfileFragment.OnFragmentInteractionListener,
+        implements HomeFragment.OnHomeInteractionListener,
+        BorrowingFragment.OnBorrowingInteractionListener,
         BookFragment.OnListFragmentInteractionListener,
-        HomeFragment.OnHomeInteractionListener {
+        NotificationsFragment.OnNotificationsInteractionListener,
+        ProfileFragment.OnProfileInteractionListener {
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
@@ -40,7 +41,6 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private DatabaseReference usersRef;
     private FirebaseUser authUser;
-    private TextView mTextMessage;
     private User user;
 
     /**
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
                     loadFragment(HomeFragment.newInstance());
                     return true;
                 case R.id.borrowed_books:
-                    mTextMessage.setText(R.string.borrowing);
+                    loadFragment(BorrowingFragment.newInstance());
                     return true;
                 case R.id.owned_books:
                     user.addOwnedBook(new Book("Test Book Title 1", "Test Author 1", "12345678"));
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
                     loadFragment(BookFragment.newInstance(1, user.getOwnedBookList())); // 1 = number of columns in book list
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                    loadFragment(NotificationsFragment.newInstance());
                     return true;
                 case R.id.navigation_profile:
                     loadFragment(ProfileFragment.newInstance(user));
@@ -173,17 +173,24 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onHomeInteraction() {
-
     }
 
     @Override
-    public void onFragmentInteraction(User user) {
-        Intent intent = new Intent(this, EditUserActivity.class);
-        intent.putExtra(USER_EXTRA, user);
-        startActivityForResult(intent, EDIT_USER);
+    public void onBorrowingInteraction() {
     }
 
     @Override
     public void onListFragmentInteraction(Book book) {
+    }
+
+    @Override
+    public void onNotificationsInteraction() {
+    }
+
+    @Override
+    public void onProfileInteraction(User user) {
+        Intent intent = new Intent(this, EditUserActivity.class);
+        intent.putExtra(USER_EXTRA, user);
+        startActivityForResult(intent, EDIT_USER);
     }
 }
