@@ -7,9 +7,13 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard" />
+        android:id="@+id/borrowed_books"
+        android:icon="@drawable/ic_book_24px"
+        android:title="@string/borrowing" />
+    <item
+        android:id="@+id/owned_books"
+        android:icon="@drawable/ic_bookshelf_24px"
+        android:title="@string/owned_books" />
 
     <item
         android:id="@+id/navigation_notifications"

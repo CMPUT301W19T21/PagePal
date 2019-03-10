@@ -29,7 +29,9 @@ import ca.team21.pagepal.Book.Book;
 import ca.team21.pagepal.Book.BookFragment;
 
 public class MainActivity extends AppCompatActivity
-        implements ProfileFragment.OnFragmentInteractionListener, BookFragment.OnListFragmentInteractionListener {
+        implements ProfileFragment.OnFragmentInteractionListener,
+        BookFragment.OnListFragmentInteractionListener,
+        HomeFragment.OnHomeInteractionListener {
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
@@ -51,9 +53,12 @@ public class MainActivity extends AppCompatActivity
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                    loadFragment(HomeFragment.newInstance());
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.borrowed_books:
+                    mTextMessage.setText(R.string.borrowing);
+                    return true;
+                case R.id.owned_books:
                     user.addOwnedBook(new Book("Test Book Title 1", "Test Author 1", "12345678"));
                     user.addOwnedBook(new Book("Test Book Title 2", "Test Author 2", "24681012"));
                     loadFragment(BookFragment.newInstance(1, user.getOwnedBookList())); // 1 = number of columns in book list
@@ -64,6 +69,8 @@ public class MainActivity extends AppCompatActivity
                 case R.id.navigation_profile:
                     loadFragment(ProfileFragment.newInstance(user));
                     return true;
+                default:
+                    loadFragment(HomeFragment.newInstance());
             }
             return false;
         }
@@ -121,9 +128,10 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Set up bottom nav bar
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        loadFragment(HomeFragment.newInstance());
 
 
 
@@ -161,6 +169,11 @@ public class MainActivity extends AppCompatActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onHomeInteraction() {
+
     }
 
     @Override
