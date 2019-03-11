@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import ca.team21.pagepal.R;
 
@@ -62,11 +63,20 @@ public class BookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
+        View listView = view.findViewById(R.id.list);
+
+        Button addButton = view.findViewById(R.id.add_book);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onButtonPressed(new Book());
+            }
+        });
 
         // Set the adapter
-        if (view instanceof RecyclerView) {
+        if (listView instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) listView;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -95,6 +105,11 @@ public class BookFragment extends Fragment {
         mListener = null;
     }
 
+    private void onButtonPressed(Book book) {
+        if (mListener != null) {
+            mListener.onListFragmentInteraction(book);
+        }
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

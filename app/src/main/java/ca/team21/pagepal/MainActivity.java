@@ -26,6 +26,7 @@ import java.util.Date;
 
 import ca.team21.pagepal.Book.Book;
 import ca.team21.pagepal.Book.BookFragment;
+import ca.team21.pagepal.Book.EditBookActivity;
 
 public class MainActivity extends AppCompatActivity
         implements HomeFragment.OnHomeInteractionListener,
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
+    private static final int ADD_BOOK = 5;
     public static final String USER_EXTRA = "ca.team21.pagepal.user";
     public static final String BOOK_EXTRA = "ca.team21.pagepal.Book.Book";
 
@@ -180,6 +182,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Book book) {
+        Intent intent = new Intent(this, EditBookActivity.class);
+        startActivityForResult(intent, ADD_BOOK);
     }
 
     @Override

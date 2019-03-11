@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="filter_options">
+        <item name="available">Available</item>
+        <item name="requested">Requested</item>
+        <item name="accepted">Accepted</item>
+        <item name="borrowed">Borrowed</item>
+    </string-array>
+</resources>
