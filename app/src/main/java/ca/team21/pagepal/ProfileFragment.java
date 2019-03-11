@@ -9,6 +9,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
+import static android.view.View.VISIBLE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,13 +81,20 @@ public class ProfileFragment extends Fragment {
         container.removeAllViews();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        Button editButton = view.findViewById(R.id.edit_button);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onButtonPressed(mUser);
-            }
-        });
+        String uid = FirebaseDatabase.getInstance().getReference().child("users")
+                .orderByChild("username").equalTo(mUser.getUsername())
+                .getRef().getKey();
+
+        if (FirebaseAuth.getInstance().getUid().equals(uid)) {
+            Button editButton = view.findViewById(R.id.edit_button);
+            editButton.setVisibility(VISIBLE);
+            editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onButtonPressed(mUser);
+                }
+            });
+        }
 
         usernameView = view.findViewById(R.id.username);
         emailView = view.findViewById(R.id.email);
