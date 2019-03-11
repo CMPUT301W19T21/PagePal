@@ -50,4 +50,5 @@
     <string name="done_label">Done</string>
     <string name="filter_label">Filter by:</string>
     <string name="my_books_title">My Books</string>
+    <string name="isbn_hint">ISBN</string>
 </resources>

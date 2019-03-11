@@ -11,30 +11,33 @@ import android.os.Parcelable;
  * TODO: Implement cover photo (will need to store in database somehow, can't just be a local file)
  */
 public class Book implements Parcelable {
+
     public static final String AVAILABLE = "available";
     public static final String REQUESTED = "requested";
     public static final String ACCEPTED = "accepted";
     public static final String BORROWED = "borrowed";
+
     private String title;
     private String author;
-    private String ISBN;
+    private String isbn;
     private String description;
     private String status;
     private String genre;
+    private String owner;
     //private File photo;
 
     public Book() {}
 
     /**
-     * Constructor for book. Requires title, author, and ISBN
+     * Constructor for book. Requires title, author, and isbn
      * @param title Title of the book
      * @param author Author of the book
-     * @param ISBN ISBN of the book
+     * @param ISBN isbn of the book
      */
     public Book(String title, String author, String ISBN) {
         this.title = title;
         this.author = author;
-        this.ISBN = ISBN;
+        this.isbn = ISBN;
         this.description = ""; // defaults to empty string
         this.status = AVAILABLE; // defaults to available
         //this.photo = new File("");
@@ -48,8 +51,9 @@ public class Book implements Parcelable {
         this.title = parcel.readString();
         this.author = parcel.readString();
         this.description = parcel.readString();
-        this.ISBN = parcel.readString();
+        this.isbn = parcel.readString();
         this.status = parcel.readString();
+        this.owner = parcel.readString();
         //this.photo = (File) parcel.readValue(null);
     }
 
@@ -70,8 +74,9 @@ public class Book implements Parcelable {
         dest.writeString(title);
         dest.writeString(author);
         dest.writeString(description);
-        dest.writeString(ISBN);
+        dest.writeString(isbn);
         dest.writeString(status);
+        dest.writeString(owner);
         //dest.writeValue(photo);
     }
 
@@ -92,8 +97,8 @@ public class Book implements Parcelable {
         this.description = description;
     }
 
-    public void setISBN(String ISBN) {
-        this.ISBN = ISBN;
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     public void setStatus(String s) {
@@ -106,6 +111,10 @@ public class Book implements Parcelable {
         } else {
             this.status = s;
         }
+    }
+
+    public void setOwner(String uid) {
+        this.owner = uid;
     }
 
     /*
@@ -122,8 +131,8 @@ public class Book implements Parcelable {
         return author;
     }
 
-    public String getISBN() {
-        return ISBN;
+    public String getIsbn() {
+        return isbn;
     }
 
     public String getDescription() {
@@ -132,6 +141,10 @@ public class Book implements Parcelable {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public String getGenre() {
