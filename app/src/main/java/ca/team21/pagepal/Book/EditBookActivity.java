@@ -87,6 +87,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         book.setAuthor(author);
         book.setDescription(description);
 
+        returnIntent = new Intent();
         returnIntent.putExtra(BOOK_EXTRA, book);
     }
 }
