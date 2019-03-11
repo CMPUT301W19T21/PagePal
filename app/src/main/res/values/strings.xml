@@ -47,4 +47,5 @@
     <string name="scan_ISBN">Scan ISBN</string>
     <string name="confirm">Confirm</string>
     <string name="add_book_label">Add Book</string>
+    <string name="done_label">Done</string>
 </resources>

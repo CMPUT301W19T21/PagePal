@@ -20,6 +20,7 @@ public class Book implements Parcelable {
     private String ISBN;
     private String description;
     private String status;
+    private String genre;
     //private File photo;
 
     public Book() {}
@@ -87,8 +88,12 @@ public class Book implements Parcelable {
         this.author = author;
     }
 
-    public String getDescription() {
-        return description;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
     }
 
     public void setStatus(String s) {
@@ -121,7 +126,15 @@ public class Book implements Parcelable {
         return ISBN;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public String getStatus() {
         return status;
+    }
+
+    public String getGenre() {
+        return genre;
     }
 }

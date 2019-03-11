@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".Book.BookEditorActivity"></activity>
+        <activity android:name=".Book.EditBookActivity"></activity>
         <activity android:name=".EditUserActivity" />
         <activity
             android:name=".LoginActivity"
