@@ -1,5 +1,7 @@
 package ca.team21.pagepal;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity
                     loadFragment(BorrowingFragment.newInstance());
                     return true;
                 case R.id.owned_books:
+
                     loadFragment(BookFragment.newInstance(/*1, user.getOwnedBookList()*/)); // 1 = number of columns in book list
                     return true;
                 case R.id.navigation_notifications:
@@ -153,6 +157,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+        //return true;
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -220,4 +232,6 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(USER_EXTRA, user);
         startActivityForResult(intent, EDIT_USER);
     }
+
+
 }
