@@ -29,6 +29,7 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_USER = "user";
     // Parameters
     private User mUser;
+    private String authUid;
 
     private OnProfileInteractionListener mListener;
 
@@ -64,6 +65,7 @@ public class ProfileFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnHomeInteractionListener");
         }
+        authUid = FirebaseAuth.getInstance().getUid();
     }
 
     @Override
@@ -85,7 +87,7 @@ public class ProfileFragment extends Fragment {
                 .orderByChild("username").equalTo(mUser.getUsername())
                 .getRef().getKey();
 
-        if (FirebaseAuth.getInstance().getUid().equals(uid)) {
+        if (authUid.equals(uid)) {
             Button editButton = view.findViewById(R.id.edit_button);
             editButton.setVisibility(VISIBLE);
             editButton.setOnClickListener(new View.OnClickListener() {
