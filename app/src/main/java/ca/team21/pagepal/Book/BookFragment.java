@@ -165,6 +165,7 @@ public class BookFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         void onBookListAddButtonClick();
-        void onListFragmentInteraction(Book book);
+        void viewMyBookInteraction(Book book);
+        void editBookInteraction(Book book);
     }
 }
