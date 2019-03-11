@@ -48,4 +48,6 @@
     <string name="confirm">Confirm</string>
     <string name="add_book_label">Add Book</string>
     <string name="done_label">Done</string>
+    <string name="filter_label">Filter by:</string>
+    <string name="my_books_title">My Books</string>
 </resources>
