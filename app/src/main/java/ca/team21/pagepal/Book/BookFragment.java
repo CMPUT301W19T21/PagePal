@@ -2,6 +2,8 @@ package ca.team21.pagepal.Book;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +11,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import ca.team21.pagepal.R;
 
@@ -31,6 +42,26 @@ public class BookFragment extends Fragment {
     private ArrayList<Book> mBookList;
     private OnListFragmentInteractionListener mListener;
 
+    private MyBookRecyclerViewAdapter adapter;
+
+    private Query ownedBooksQuery;
+    ValueEventListener bookListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            mBookList.clear();
+            for (DataSnapshot data: dataSnapshot.getChildren()) {
+                Book book = data.getValue(Book.class);
+                mBookList.add(book);
+                adapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -40,11 +71,13 @@ public class BookFragment extends Fragment {
 
     // Customize parameter initialization
     @SuppressWarnings("unused")
-    public static BookFragment newInstance(int columnCount, ArrayList<Book> bookList) {
+    public static BookFragment newInstance(/*int columnCount, ArrayList<Book> bookList*/) {
         BookFragment fragment = new BookFragment();
         Bundle args = new Bundle();
+        /*
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         args.putParcelableArrayList(ARG_BOOKLIST, bookList);
+        */
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,11 +85,18 @@ public class BookFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBookList = new ArrayList<Book>();
 
+        /*
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
             mBookList = getArguments().getParcelableArrayList(ARG_BOOKLIST);
         }
+        */
+
+        ownedBooksQuery = FirebaseDatabase.getInstance().getReference().child("books")
+                .orderByChild("owner").equalTo(FirebaseAuth.getInstance().getUid());
+        ownedBooksQuery.addValueEventListener(bookListener);
     }
 
     @Override
@@ -82,7 +122,8 @@ public class BookFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyBookRecyclerViewAdapter(mBookList, mListener));
+            adapter = new MyBookRecyclerViewAdapter(mBookList, mListener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }

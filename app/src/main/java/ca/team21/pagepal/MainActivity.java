@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
                     loadFragment(BorrowingFragment.newInstance());
                     return true;
                 case R.id.owned_books:
-                    loadFragment(BookFragment.newInstance(1, user.getOwnedBookList())); // 1 = number of columns in book list
+                    loadFragment(BookFragment.newInstance(/*1, user.getOwnedBookList()*/)); // 1 = number of columns in book list
                     return true;
                 case R.id.navigation_notifications:
                     loadFragment(NotificationsFragment.newInstance());
@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onListFragmentInteraction(Book book) {
         Intent intent = new Intent(this, EditBookActivity.class);
+        intent.putExtra(BOOK_EXTRA, book);
         startActivityForResult(intent, ADD_BOOK);
     }
 
