@@ -41,7 +41,7 @@ public class SearchedResultsFragment extends Fragment {
 
     /**
      * Empty constructor that creates a new instance of the SearchedResultsFragment
-     * @param param1 Parameter 1, an ArrayList of books to be displayed.
+     * @param param1  an ArrayList of books to be displayed.
      * @return A new instance of fragment SearchedResultsFragment.
      */
 
@@ -55,7 +55,7 @@ public class SearchedResultsFragment extends Fragment {
 
     /**
      *  Activity is initialized
-     * @param savedInstanceState
+     * @param savedInstanceState contains information about past activity instances
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,10 +67,10 @@ public class SearchedResultsFragment extends Fragment {
     }
 
     /**
-     *
-     * @param inflater
-     * @param container
-     * @param savedInstanceState
+     * SearchedResultsFragment instantiates its UI view
+     * @param inflater  instantiates xml into view objects
+     * @param container a ViewGroup, which is the base class for layouts
+     * @param savedInstanceState contains information about past activity instances
      * @return
      */
     @Override
@@ -96,8 +96,7 @@ public class SearchedResultsFragment extends Fragment {
     }
 
     /**
-     *
-     * @param context
+     * Called once the fragment is associated with SearchActivity
      */
     @Override
     public void onAttach(Context context) {
@@ -111,7 +110,7 @@ public class SearchedResultsFragment extends Fragment {
     }
 
     /**
-     *
+     * Called immediately before this fragment is no longer associated with SearchActivity
      */
     @Override
     public void onDetach() {
