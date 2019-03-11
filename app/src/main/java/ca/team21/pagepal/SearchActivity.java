@@ -5,11 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
-import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,8 +14,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-
-import java.awt.font.TextAttribute;
 
 import ca.team21.pagepal.Book.Book;
 import ca.team21.pagepal.Book.BookList;
@@ -35,7 +30,7 @@ public class SearchActivity extends AppCompatActivity  {
     private static final String TAG = "SearchActivity";
     private String query;
     private DatabaseReference reference;
-    private BookList bookList;
+    private BookList bookList = new BookList();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +46,8 @@ public class SearchActivity extends AppCompatActivity  {
              final String keyWord = intent.getStringExtra(SearchManager.QUERY);
             queryBooks(keyWord);
         }
+
+        
 
     }
 
@@ -73,7 +70,7 @@ public class SearchActivity extends AppCompatActivity  {
 
                                 Book book = data.getValue(Book.class);
                                 for (String keyWord : keyWords) {
-                                    Log.i("Keyword is", keyWord);
+
                                     if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
                                             (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
                                             (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
