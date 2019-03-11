@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import ca.team21.pagepal.R;
 
+import static ca.team21.pagepal.Book.Book.AVAILABLE;
 import static ca.team21.pagepal.MainActivity.BOOK_EXTRA;
 
 /**
@@ -124,6 +125,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
 
         if (book == null) {
             book = new Book();
+            book.setStatus(AVAILABLE);
         }
 
         book.setIsbn(isbn);

@@ -1,6 +1,7 @@
 package ca.team21.pagepal.Book;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import ca.team21.pagepal.MainActivity;
 import ca.team21.pagepal.R;
 
 import java.util.ArrayList;
@@ -148,7 +150,7 @@ public class BookFragment extends Fragment {
 
     private void onButtonPressed(Book book) {
         if (mListener != null) {
-            mListener.onListFragmentInteraction(book);
+            mListener.onBookListAddButtonClick();
         }
     }
     /**
@@ -162,6 +164,7 @@ public class BookFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
+        void onBookListAddButtonClick();
         void onListFragmentInteraction(Book book);
     }
 }
