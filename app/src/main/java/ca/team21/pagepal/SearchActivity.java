@@ -15,6 +15,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.util.ArrayList;
+
 import ca.team21.pagepal.Book.Book;
 import ca.team21.pagepal.Book.BookList;
 
@@ -30,7 +32,7 @@ public class SearchActivity extends AppCompatActivity  {
     private static final String TAG = "SearchActivity";
     private String query;
     private DatabaseReference reference;
-    private BookList bookList = new BookList();
+    private ArrayList<Book> bookList = new ArrayList<Book>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +47,7 @@ public class SearchActivity extends AppCompatActivity  {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
              final String keyWord = intent.getStringExtra(SearchManager.QUERY);
             queryBooks(keyWord);
+            //Probably put adaptor here
         }
 
         
