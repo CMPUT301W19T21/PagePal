@@ -181,6 +181,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBookListAddButtonClick() {
+        Intent intent = new Intent(this, EditBookActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void onListFragmentInteraction(Book book) {
         Intent intent = new Intent(this, EditBookActivity.class);
         intent.putExtra(BOOK_EXTRA, book);

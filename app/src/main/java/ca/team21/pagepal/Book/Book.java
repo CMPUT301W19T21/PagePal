@@ -3,6 +3,8 @@ package ca.team21.pagepal.Book;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.lang.reflect.AccessibleObject;
+
 //import java.io.File;
 
 
@@ -26,7 +28,8 @@ public class Book implements Parcelable {
     private String owner;
     //private File photo;
 
-    public Book() {}
+    public Book() {
+    }
 
     /**
      * Constructor for book. Requires title, author, and isbn
@@ -103,7 +106,7 @@ public class Book implements Parcelable {
 
     public void setStatus(String s) {
         // if the passed string is not one of the status types
-        if (!s.equals(ACCEPTED) &&
+        if (!s.equals(AVAILABLE) &&
             !s.equals(REQUESTED) &&
             !s.equals(ACCEPTED) &&
             !s.equals(BORROWED)){
