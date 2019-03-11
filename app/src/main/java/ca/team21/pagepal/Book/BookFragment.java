@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import ca.team21.pagepal.MainActivity;
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.User;
 
 import java.util.ArrayList;
 
@@ -191,5 +192,6 @@ public class BookFragment extends Fragment implements AdapterView.OnItemSelected
         void onBookListAddButtonClick();
         void viewMyBookInteraction(Book book);
         void editBookInteraction(Book book);
+        void viewUserInteraction(User user);
     }
 }

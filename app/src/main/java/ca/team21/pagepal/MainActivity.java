@@ -198,6 +198,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void viewUserInteraction(User user) {
+        loadFragment(ProfileFragment.newInstance(user));
+    }
+
+    @Override
     public void onNotificationsInteraction() {
     }
 

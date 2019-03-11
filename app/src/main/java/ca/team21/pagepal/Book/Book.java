@@ -26,9 +26,12 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
+    private String borrower;
     //private File photo;
 
     public Book() {
+        this.borrower = "";
+        this.status = AVAILABLE;
     }
 
     /**
@@ -57,6 +60,7 @@ public class Book implements Parcelable {
         this.isbn = parcel.readString();
         this.status = parcel.readString();
         this.owner = parcel.readString();
+        this.borrower = parcel.readString();
         //this.photo = (File) parcel.readValue(null);
     }
 
@@ -80,6 +84,7 @@ public class Book implements Parcelable {
         dest.writeString(isbn);
         dest.writeString(status);
         dest.writeString(owner);
+        dest.writeString(borrower);
         //dest.writeValue(photo);
     }
 
@@ -120,6 +125,9 @@ public class Book implements Parcelable {
         this.owner = uid;
     }
 
+    public void setBorrower(String uid) {
+        this.borrower = uid;
+    }
     /*
     public void setPhoto(File photo) {
         this.photo = photo;
@@ -148,6 +156,10 @@ public class Book implements Parcelable {
 
     public String getOwner() {
         return owner;
+    }
+
+    public String getBorrower() {
+        return borrower;
     }
 
     public String getGenre() {
