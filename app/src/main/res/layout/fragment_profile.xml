@@ -73,6 +73,7 @@
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:drawableStart="@drawable/ic_edit_24px"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/username"
         app:layout_constraintStart_toEndOf="@+id/username"
         app:layout_constraintTop_toTopOf="@+id/username" />
