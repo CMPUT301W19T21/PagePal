@@ -28,7 +28,7 @@ import ca.team21.pagepal.Book.BookFragment;
 import ca.team21.pagepal.Book.BookList;
 
 /**
-    SearchActivity retrieves a query from an Intent, searches firebase data and presents the result/
+    SearchActivity retrieves a query from an Intent, searches firebase data and presents the result
  **/
 
 public class SearchActivity extends AppCompatActivity implements SearchedResultsFragment.OnSearchFragmentInteractionListener {
@@ -122,7 +122,7 @@ public class SearchActivity extends AppCompatActivity implements SearchedResults
     }
 
     /**
-     *  Implements OnSearchFragmentInteractionListener
+     *  Used to implement OnSearchFragmentInteractionListener
      * @param book an instance of the Book class
      * @param user an instance of the User class
      */
@@ -132,7 +132,7 @@ public class SearchActivity extends AppCompatActivity implements SearchedResults
     }
 
     /**
-     * Implements OnSearchFragmentInteractionListener
+     * Used to implement OnSearchFragmentInteractionListener
      * @param user an instance of the User class
      */
     @Override

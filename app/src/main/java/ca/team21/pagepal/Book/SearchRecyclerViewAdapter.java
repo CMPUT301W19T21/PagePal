@@ -22,13 +22,18 @@ import ca.team21.pagepal.SearchedResultsFragment;
 import ca.team21.pagepal.User;
 
 /**
- * Class that implements a recycler view for
+ * Class that implements a recycler view for SearchActivity
  */
 public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecyclerViewAdapter.ViewHolder>{
 
     private final ArrayList<Book> mValues;
     private final SearchedResultsFragment.OnSearchFragmentInteractionListener mListener;
 
+    /**
+     *  Constructor for SearchRecyclerViewAdapter
+     * @param items an ArrayList of Books to be displayed
+     * @param listener gets listener
+     */
     public SearchRecyclerViewAdapter(ArrayList<Book> items, SearchedResultsFragment.OnSearchFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
@@ -81,7 +86,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
 
         /**
          * Constructor for the ViewHolder, initializes book representation
-         * @param view base view for book representation
+         * @param view  used for book information
          */
         public ViewHolder(View view) {
             super(view);
@@ -95,8 +100,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         }
 
         /**
-         *
-         * @return
+         * @return a string version of super concatenated with the title
          */
         @Override
         public String toString() {
@@ -119,10 +123,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
                 }
             }
 
-            /**
-             * 
-             * @param databaseError
-             */
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
