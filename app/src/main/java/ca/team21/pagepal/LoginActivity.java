@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity
         Button createAccountButton = findViewById(R.id.create_account_button);
         mEmailSignInButton.setOnClickListener(this);
         createAccountButton.setOnClickListener(this);
+
     }
 
     @Override
