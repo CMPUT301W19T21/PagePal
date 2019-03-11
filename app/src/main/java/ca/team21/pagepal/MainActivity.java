@@ -26,8 +26,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookDetailsActivity;
 import ca.team21.pagepal.Book.BookFragment;
 import ca.team21.pagepal.Book.EditBookActivity;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
     private static final int EDIT_BOOK = 5;
+    private static final int VIEW_MY_BOOK = 7;
     public static final String USER_EXTRA = "ca.team21.pagepal.user";
     public static final String BOOK_EXTRA = "ca.team21.pagepal.Book.Book";
 
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity
         usersRef = FirebaseDatabase.getInstance().getReference();
 
         // Get the user who is logged in
+
         usersRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -200,6 +204,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void viewMyBookInteraction(Book book) {
+        Intent intent = new Intent(this, BookDetailsActivity.class);
+        intent.putExtra(BOOK_EXTRA, book);
+        intent.putExtra(USER_EXTRA, user);
+        startActivityForResult(intent, VIEW_MY_BOOK);
     }
 
     @Override
