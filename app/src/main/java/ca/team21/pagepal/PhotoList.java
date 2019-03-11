@@ -3,11 +3,11 @@ package ca.team21.pagepal;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class photoList implements Serializable {
+public class PhotoList implements Serializable {
 
     protected ArrayList<CoverPhoto> photoList;
 
-    public photoList(){
+    public PhotoList(){
         ArrayList<CoverPhoto> photoList = new ArrayList<>();
     }
 
