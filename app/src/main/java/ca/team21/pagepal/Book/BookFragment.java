@@ -12,8 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,13 +30,15 @@ import ca.team21.pagepal.R;
 
 import java.util.ArrayList;
 
+import static ca.team21.pagepal.Book.Book.AVAILABLE;
+
 /**
  * A fragment representing a list of Items.
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class BookFragment extends Fragment {
+public class BookFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     // Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -46,6 +50,7 @@ public class BookFragment extends Fragment {
 
     private MyBookRecyclerViewAdapter adapter;
 
+    private String filter = "All";
     private Query ownedBooksQuery;
     ValueEventListener bookListener = new ValueEventListener() {
         @Override
@@ -53,9 +58,13 @@ public class BookFragment extends Fragment {
             mBookList.clear();
             for (DataSnapshot data: dataSnapshot.getChildren()) {
                 Book book = data.getValue(Book.class);
-                mBookList.add(book);
-                adapter.notifyDataSetChanged();
+                if (filter.equals("All")) {
+                    mBookList.add(book);
+                } else if (book.getStatus().equals(filter)) {
+                    mBookList.add(book);
+                }
             }
+            adapter.notifyDataSetChanged();
         }
 
         @Override
@@ -107,6 +116,9 @@ public class BookFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_book_list, container, false);
         View listView = view.findViewById(R.id.list);
 
+        Spinner spinner = view.findViewById(R.id.filter_selector);
+        spinner.setOnItemSelectedListener(this);
+
         Button addButton = view.findViewById(R.id.add_book);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +165,18 @@ public class BookFragment extends Fragment {
             mListener.onBookListAddButtonClick();
         }
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        filter = parent.getItemAtPosition(position).toString();
+        ownedBooksQuery.addListenerForSingleValueEvent(bookListener);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
