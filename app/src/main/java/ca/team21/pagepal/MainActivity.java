@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
     public static final String USER_EXTRA = "ca.team21.pagepal.user";
+    public static final String BOOK_EXTRA = "ca.team21.pagepal.Book.Book";
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private DatabaseReference usersRef;
@@ -59,8 +60,6 @@ public class MainActivity extends AppCompatActivity
                     loadFragment(BorrowingFragment.newInstance());
                     return true;
                 case R.id.owned_books:
-                    user.addOwnedBook(new Book("Test Book Title 1", "Test Author 1", "12345678"));
-                    user.addOwnedBook(new Book("Test Book Title 2", "Test Author 2", "24681012"));
                     loadFragment(BookFragment.newInstance(1, user.getOwnedBookList())); // 1 = number of columns in book list
                     return true;
                 case R.id.navigation_notifications:
