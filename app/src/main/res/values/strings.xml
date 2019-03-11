@@ -51,4 +51,5 @@
     <string name="filter_label">Filter by:</string>
     <string name="my_books_title">My Books</string>
     <string name="isbn_hint">ISBN</string>
+    <string name="borrower_label">Borrowed by:</string>
 </resources>

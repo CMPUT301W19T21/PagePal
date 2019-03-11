@@ -14,10 +14,10 @@ import java.lang.reflect.AccessibleObject;
  */
 public class Book implements Parcelable {
 
-    public static final String AVAILABLE = "available";
-    public static final String REQUESTED = "requested";
-    public static final String ACCEPTED = "accepted";
-    public static final String BORROWED = "borrowed";
+    public static final String AVAILABLE = "Available";
+    public static final String REQUESTED = "Requested";
+    public static final String ACCEPTED = "Accepted";
+    public static final String BORROWED = "Borrowed";
 
     private String title;
     private String author;
