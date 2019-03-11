@@ -79,7 +79,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         public final TextView mTitleView;
         public final TextView mAuthorView;
         public final TextView mStatusView;
-        public final TextView borrowerView;
+        //public final TextView borrowerView;
         public final Button editButton;
         public final Button deleteButton;
         public Book mItem;
@@ -94,7 +94,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             mTitleView = (TextView) view.findViewById(R.id.title);
             mAuthorView = (TextView) view.findViewById(R.id.author);
             mStatusView = (TextView) view.findViewById(R.id.status);
-            borrowerView = view.findViewById(R.id.borrower);
+            //borrowerView = view.findViewById(R.id.borrower);
             editButton = view.findViewById(R.id.edit_button);
             deleteButton = view.findViewById(R.id.delete_button);
         }
