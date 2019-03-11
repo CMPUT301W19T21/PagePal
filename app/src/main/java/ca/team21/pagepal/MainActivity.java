@@ -1,7 +1,5 @@
 package ca.team21.pagepal;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v7.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,8 +23,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookDetailsActivity;
 import ca.team21.pagepal.Book.BookFragment;
 import ca.team21.pagepal.Book.EditBookActivity;
 
@@ -40,7 +39,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
-    private static final int ADD_BOOK = 5;
+    private static final int EDIT_BOOK = 5;
+    private static final int VIEW_MY_BOOK = 7;
     public static final String USER_EXTRA = "ca.team21.pagepal.user";
     public static final String BOOK_EXTRA = "ca.team21.pagepal.Book.Book";
 
@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity
         usersRef = FirebaseDatabase.getInstance().getReference();
 
         // Get the user who is logged in
+
         usersRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -152,14 +153,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-
-        //return true;
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -198,10 +191,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(Book book) {
+    public void viewMyBookInteraction(Book book) {
+        Intent intent = new Intent(this, BookDetailsActivity.class);
+        intent.putExtra(BOOK_EXTRA, book);
+        intent.putExtra(USER_EXTRA, user);
+        startActivityForResult(intent, VIEW_MY_BOOK);
+    }
+
+    @Override
+    public void editBookInteraction(Book book) {
         Intent intent = new Intent(this, EditBookActivity.class);
         intent.putExtra(BOOK_EXTRA, book);
-        startActivityForResult(intent, ADD_BOOK);
+        startActivityForResult(intent, EDIT_BOOK);
     }
 
     @Override
