@@ -20,6 +20,9 @@ import ca.team21.pagepal.R;
 
 import java.util.ArrayList;
 
+import static android.view.View.VISIBLE;
+import static ca.team21.pagepal.Book.Book.BORROWED;
+
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Book} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
@@ -48,6 +51,11 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
         holder.mTitleView.setText(holder.mItem.getTitle());
         holder.mAuthorView.setText(mValues.get(position).getAuthor());
         holder.mStatusView.setText(holder.mItem.getStatus());
+
+        if (holder.mItem.getStatus().equals(BORROWED)) {
+            holder.borrowerView.setVisibility(VISIBLE);
+            holder.borrowerView.setText("Borrowed by: "/*TODO + get borrower */);
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +95,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
         public final TextView mTitleView;
         public final TextView mAuthorView;
         public final TextView mStatusView;
+        public final TextView borrowerView;
         public final Button editButton;
         public final Button deleteButton;
         public Book mItem;
@@ -97,6 +106,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
             mTitleView = (TextView) view.findViewById(R.id.title);
             mAuthorView = (TextView) view.findViewById(R.id.author);
             mStatusView = (TextView) view.findViewById(R.id.status);
+            borrowerView = view.findViewById(R.id.borrower);
             editButton = view.findViewById(R.id.edit_button);
             deleteButton = view.findViewById(R.id.delete_button);
         }
