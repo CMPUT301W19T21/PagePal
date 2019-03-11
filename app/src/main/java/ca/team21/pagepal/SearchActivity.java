@@ -57,7 +57,6 @@ public class SearchActivity extends AppCompatActivity  {
     public void queryBooks(final String query) {
 
         final String[] keyWords = query.split("\\s+");
-
         // Query Firebase
         Query bookQuery = reference.child("books");
 
@@ -66,26 +65,25 @@ public class SearchActivity extends AppCompatActivity  {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-
                     for (DataSnapshot data: dataSnapshot.getChildren()) {
                         String status = data.child("status").getValue(String.class);
-
                         // Filter by Status
+                        if (status != null) {
+                            if (status.equals("Available") || status.equals("Requested")) {
 
-                        if (status == "Available" || status == "Requested") {
-                            Book book = data.getValue(Book.class);
-                            for (String keyWord: keyWords) {
-                                if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                        (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                        (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
-                                    bookList.add(book);
+                                Book book = data.getValue(Book.class);
+                                for (String keyWord : keyWords) {
+                                    Log.i("Keyword is", keyWord);
+                                    if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                            (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
+                                        bookList.add(book);
 
+                                    }
                                 }
                             }
                         }
                     }
-
-
                     }
                 }
             @Override

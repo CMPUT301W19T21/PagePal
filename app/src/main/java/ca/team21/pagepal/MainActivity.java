@@ -29,6 +29,7 @@ import java.util.Date;
 
 import ca.team21.pagepal.Book.Book;
 import ca.team21.pagepal.Book.BookFragment;
+import ca.team21.pagepal.Book.EditBookActivity;
 
 public class MainActivity extends AppCompatActivity
         implements HomeFragment.OnHomeInteractionListener,
@@ -39,7 +40,9 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
+    private static final int ADD_BOOK = 5;
     public static final String USER_EXTRA = "ca.team21.pagepal.user";
+    public static final String BOOK_EXTRA = "ca.team21.pagepal.Book.Book";
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private DatabaseReference usersRef;
@@ -62,9 +65,7 @@ public class MainActivity extends AppCompatActivity
                     loadFragment(BorrowingFragment.newInstance());
                     return true;
                 case R.id.owned_books:
-                    user.addOwnedBook(new Book("Test Book Title 1", "Test Author 1", "12345678"));
-                    user.addOwnedBook(new Book("Test Book Title 2", "Test Author 2", "24681012"));
-                    loadFragment(BookFragment.newInstance(1, user.getOwnedBookList())); // 1 = number of columns in book list
+                    loadFragment(BookFragment.newInstance(/*1, user.getOwnedBookList()*/)); // 1 = number of columns in book list
                     return true;
                 case R.id.navigation_notifications:
                     loadFragment(NotificationsFragment.newInstance());
@@ -191,7 +192,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBookListAddButtonClick() {
+        Intent intent = new Intent(this, EditBookActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void onListFragmentInteraction(Book book) {
+        Intent intent = new Intent(this, EditBookActivity.class);
+        intent.putExtra(BOOK_EXTRA, book);
+        startActivityForResult(intent, ADD_BOOK);
     }
 
     @Override
