@@ -18,6 +18,7 @@
                 android:resource="@xml/searchable"/>
         </activity>
         <activity android:name=".Book.EditBookActivity"></activity>
+        <activity android:name=".Book.BookDetailsActivity"></activity>
         <activity android:name=".EditUserActivity" />
         <activity
             android:name=".LoginActivity"
