@@ -22,4 +22,5 @@ public class CoverPhoto implements Serializable {
     public String getPhotoString(){
         return this.photoString;
     }
+
 }

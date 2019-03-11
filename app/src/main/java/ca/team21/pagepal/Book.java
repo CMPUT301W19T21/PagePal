@@ -1,6 +1,7 @@
 package ca.team21.pagepal;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class Book {
     public static final String AVAILABLE = "available";
@@ -12,7 +13,7 @@ public class Book {
     private String ISBN;
     private String description;
     private String status;
-    private CoverPhoto photo;
+    private photoList photos;
 
     public Book() {}
 
@@ -21,7 +22,7 @@ public class Book {
         this.author = author;
         this.ISBN = ISBN;
         this.status = AVAILABLE; // defaults to available
-        this.photo = new CoverPhoto(photo);
+        this.photos = new photoList();
     }
 
 
@@ -64,11 +65,15 @@ public class Book {
     public void setStatus(String status) {
     }
 
-    public CoverPhoto getPhoto() {
-        return photo;
+    public void setPhotoList(ArrayList<CoverPhoto> photos) {
+        this.photos.setPhotos(photos);
     }
-
-    public void setPhoto(CoverPhoto photo) {
-
+    //
+//    /**
+//     * gets the photos of a record
+//     * @return A list of the records photos.
+//     */
+    public ArrayList<CoverPhoto> getPhotoList() {
+        return this.photos.getPhotos();
     }
 }
