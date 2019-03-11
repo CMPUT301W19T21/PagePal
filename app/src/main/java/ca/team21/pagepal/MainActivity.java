@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
                     loadFragment(BorrowingFragment.newInstance());
                     return true;
                 case R.id.owned_books:
+
                     loadFragment(BookFragment.newInstance(/*1, user.getOwnedBookList()*/)); // 1 = number of columns in book list
                     return true;
                 case R.id.navigation_notifications:
@@ -218,4 +219,6 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(USER_EXTRA, user);
         startActivityForResult(intent, EDIT_USER);
     }
+
+
 }

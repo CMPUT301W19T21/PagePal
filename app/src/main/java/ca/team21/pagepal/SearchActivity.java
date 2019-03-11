@@ -3,8 +3,14 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,21 +24,23 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.Book.BookFragment;
 import ca.team21.pagepal.Book.BookList;
 
-/*
-TODO: FIX this
-basic check query of
+/**
+    SearchActivity retrieves a query from an Intent, searches firebase data and presents the result/
+ **/
 
- */
-
-
-public class SearchActivity extends AppCompatActivity  {
+public class SearchActivity extends AppCompatActivity implements SearchedResultsFragment.OnSearchFragmentInteractionListener {
 
     private static final String TAG = "SearchActivity";
     private String query;
     private DatabaseReference reference;
     private ArrayList<Book> bookList = new ArrayList<Book>();
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +58,20 @@ public class SearchActivity extends AppCompatActivity  {
             //Probably put adaptor here
         }
 
-        
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
+
 
     }
 
+    /**
+     * Queries the firebase realtime database, filters the results, maps them to Books and adds the Books to a list.
+     *
+     * @param query a string representation of the user's search query
+     */
     public void queryBooks(final String query) {
 
         final String[] keyWords = query.split("\\s+");
@@ -68,7 +86,6 @@ public class SearchActivity extends AppCompatActivity  {
                     for (DataSnapshot data: dataSnapshot.getChildren()) {
                         String status = data.child("status").getValue(String.class);
                         // Filter by Status
-                        if (status != null) {
                             if (status.equals("Available") || status.equals("Requested")) {
 
                                 Book book = data.getValue(Book.class);
@@ -83,8 +100,10 @@ public class SearchActivity extends AppCompatActivity  {
                                 }
                             }
                         }
-                    }
-                    }
+                    loadFragment(SearchedResultsFragment.newInstance(bookList));
+
+                }
+
                 }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError){
@@ -95,6 +114,31 @@ public class SearchActivity extends AppCompatActivity  {
 
 
         }
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
+
+    /**
+     *  Implements OnSearchFragmentInteractionListener
+     * @param book an instance of the Book class
+     * @param user an instance of the User class
+     */
+    @Override
+    public void viewBookInteraction(Book book, User user) {
+
+    }
+
+    /**
+     * Implements OnSearchFragmentInteractionListener
+     * @param user an instance of the User class
+     */
+    @Override
+    public void viewUserInteraction(User user) {
+
+    }
+}
 
 
