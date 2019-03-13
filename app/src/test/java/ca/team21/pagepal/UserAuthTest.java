@@ -5,11 +5,17 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests user authentication
+ */
 public class UserAuthTest {
     private User user = new User();
     private String username = "Wayne Gretzky";
     private String password = "hunter2";
 
+    /**
+     * Tests logging in
+     */
     @Test
     public void loginTest() {
         user.setUsername(username);
@@ -18,6 +24,9 @@ public class UserAuthTest {
         assertTrue(authInfo.login(user.getUsername(), password));
     }
 
+    /**
+     * Tests logging out
+     */
     @Test
     public void logoutTest() {
         UserAuthenticationInfo authInfo = new UserAuthenticationInfo(user.getUsername(), password);

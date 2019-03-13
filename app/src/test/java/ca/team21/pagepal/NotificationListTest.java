@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests the notification list
+ */
 public class NotificationListTest {
 
     private NotificationList notificationList = new NotificationList();
@@ -13,6 +16,9 @@ public class NotificationListTest {
     private Notification notification2 = new Notification("Notification 2");
     private ArrayList<Notification> testList = new ArrayList<>();
 
+    /**
+     * Tests adding a notification
+     */
     @Test
     public void addNotificationTest() {
         assertEquals(testList, notificationList.getNotifications()); // should start as an empty list
@@ -26,6 +32,10 @@ public class NotificationListTest {
         assertEquals(testList, notificationList.getNotifications());
     }
 
+    /**
+     * Tests removing a notification
+     */
+    @Test
     public void delNotificationTest() {
         testList.add(notification1);
         notificationList.addNotification(notification1);

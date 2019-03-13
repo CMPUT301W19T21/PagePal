@@ -24,7 +24,7 @@ import static ca.team21.pagepal.Book.Book.AVAILABLE;
 import static ca.team21.pagepal.MainActivity.BOOK_EXTRA;
 
 /**
- * Used to edit and add books
+ * Activity to edit and add books
  */
 public class EditBookActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -117,6 +117,10 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * Gets input from textEdits and either edits an existing book or creates a new book if it
+     * doesn't exist yet.
+     */
     private void processInput() {
         String isbn = isbnEdit.getText().toString();
         String title = titleEdit.getText().toString();
@@ -139,6 +143,10 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         returnIntent.putExtra(BOOK_EXTRA, book);
     }
 
+    /**
+     * Writes the book to the database
+     * @param book Book to be written
+     */
     private void writeBook(Book book) {
         if (bookKey != null) {
             dbRef.child(bookKey).setValue(book);

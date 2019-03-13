@@ -9,6 +9,9 @@ import ca.team21.pagepal.Book.BookHistoryList;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests for the book history list
+ */
 public class BookHistoryListTest {
 
     private BookHistoryList bookHistoryList;
@@ -16,6 +19,9 @@ public class BookHistoryListTest {
     private Book book2;
     private ArrayList<Book> testList;
 
+    /**
+     * Tests adding a book
+     */
     @Test
     public void addBookTest() {
         bookHistoryList = new BookHistoryList();
@@ -35,6 +41,9 @@ public class BookHistoryListTest {
 
     }
 
+    /**
+     * Tests removing a book
+     */
     @Test void removeBookTest() {
         bookHistoryList = new BookHistoryList();
         book1 = new Book();

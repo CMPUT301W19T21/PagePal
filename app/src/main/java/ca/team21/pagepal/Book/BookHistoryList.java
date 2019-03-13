@@ -3,6 +3,7 @@ package ca.team21.pagepal.Book;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 public class BookHistoryList {
 
     private ArrayList<Book> historyList;

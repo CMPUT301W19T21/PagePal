@@ -14,9 +14,21 @@ import java.lang.reflect.AccessibleObject;
  */
 public class Book implements Parcelable {
 
+    /**
+     * The constant AVAILABLE.
+     */
     public static final String AVAILABLE = "Available";
+    /**
+     * The constant REQUESTED.
+     */
     public static final String REQUESTED = "Requested";
+    /**
+     * The constant ACCEPTED.
+     */
     public static final String ACCEPTED = "Accepted";
+    /**
+     * The constant BORROWED.
+     */
     public static final String BORROWED = "Borrowed";
 
     private String title;
@@ -29,6 +41,9 @@ public class Book implements Parcelable {
     private String borrower;
     //private File photo;
 
+    /**
+     * Empty constructor for Book, sets default values
+     */
     public Book() {
         this.borrower = "";
         this.status = AVAILABLE;
@@ -36,9 +51,10 @@ public class Book implements Parcelable {
 
     /**
      * Constructor for book. Requires title, author, and isbn
-     * @param title Title of the book
+     *
+     * @param title  Title of the book
      * @param author Author of the book
-     * @param ISBN isbn of the book
+     * @param ISBN   isbn of the book
      */
     public Book(String title, String author, String ISBN) {
         this.title = title;
@@ -51,6 +67,7 @@ public class Book implements Parcelable {
 
     /**
      * Constructor for parcelable
+     *
      * @param parcel Parcel to create the object with
      */
     public Book(Parcel parcel) {
@@ -64,6 +81,9 @@ public class Book implements Parcelable {
         //this.photo = (File) parcel.readValue(null);
     }
 
+    /**
+     * CREATOR for Parcelable interface
+     */
     public static final Parcelable.Creator<Book> CREATOR = new Parcelable.Creator<Book>() {
 
         @Override
@@ -77,6 +97,11 @@ public class Book implements Parcelable {
         }
     };
 
+    /**
+     * Writes Book object to a parcel
+     * @param dest parcel to write to
+     * @param flags flags used by parcelable
+     */
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(author);
@@ -92,39 +117,73 @@ public class Book implements Parcelable {
         return hashCode();
     }
 
-
+    /**
+     * Sets the title of the book
+     *
+     * @param title Title of the book
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Sets the author of the book
+     *
+     * @param author Author of the book
+     */
     public void setAuthor(String author) {
         this.author = author;
     }
 
+    /**
+     * Sets description.
+     *
+     * @param description the description
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Sets isbn.
+     *
+     * @param isbn the isbn
+     */
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 
-    public void setStatus(String s) {
+    /**
+     * Sets status.
+     *
+     * @param s the status
+     */
+    public void setStatus(String status) {
         // if the passed string is not one of the status types
-        if (!s.equals(AVAILABLE) &&
-            !s.equals(REQUESTED) &&
-            !s.equals(ACCEPTED) &&
-            !s.equals(BORROWED)){
+        if (!status.equals(AVAILABLE) &&
+            !status.equals(REQUESTED) &&
+            !status.equals(ACCEPTED) &&
+            !status.equals(BORROWED)){
             throw new IllegalArgumentException("Incorrect status type");
         } else {
-            this.status = s;
+            this.status = status;
         }
     }
 
+    /**
+     * Sets owner.
+     *
+     * @param uid the uid of the owner
+     */
     public void setOwner(String uid) {
         this.owner = uid;
     }
 
+    /**
+     * Sets borrower.
+     *
+     * @param uid the uid of the borrower
+     */
     public void setBorrower(String uid) {
         this.borrower = uid;
     }
@@ -134,34 +193,74 @@ public class Book implements Parcelable {
     } */
 
 
+    /**
+     * Gets title.
+     *
+     * @return the title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Gets author.
+     *
+     * @return the author
+     */
     public String getAuthor() {
         return author;
     }
 
+    /**
+     * Gets isbn.
+     *
+     * @return the isbn
+     */
     public String getIsbn() {
         return isbn;
     }
 
+    /**
+     * Gets description.
+     *
+     * @return the description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Gets status.
+     *
+     * @return the status
+     */
     public String getStatus() {
         return status;
     }
 
+    /**
+     * Gets owner.
+     *
+     * @return the owner
+     */
     public String getOwner() {
         return owner;
     }
 
+    /**
+     * Gets borrower.
+     *
+     * @return the borrower
+     */
     public String getBorrower() {
         return borrower;
     }
 
+    /**
+     * Gets genre.
+     *
+     * @return the genre
+     */
     public String getGenre() {
         return genre;
     }

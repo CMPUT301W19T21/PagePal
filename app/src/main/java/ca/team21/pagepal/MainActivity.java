@@ -30,6 +30,10 @@ import ca.team21.pagepal.Book.BookDetailsActivity;
 import ca.team21.pagepal.Book.BookFragment;
 import ca.team21.pagepal.Book.EditBookActivity;
 
+/**
+ * Home page activity, this is the first thing the user sees after logging in. From this page they
+ * can access all of the functionality of the app using a bottom navigation bar.
+ */
 public class MainActivity extends AppCompatActivity
         implements HomeFragment.OnHomeInteractionListener,
         BorrowingFragment.OnBorrowingInteractionListener,
@@ -185,12 +189,19 @@ public class MainActivity extends AppCompatActivity
     public void onBorrowingInteraction() {
     }
 
+    /**
+     * Responds to clicking the Add Book button
+     */
     @Override
     public void onBookListAddButtonClick() {
         Intent intent = new Intent(this, EditBookActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Responds to the user clicking on a book
+     * @param book The book the user clicked on
+     */
     @Override
     public void viewMyBookInteraction(Book book) {
         Intent intent = new Intent(this, BookDetailsActivity.class);
@@ -199,6 +210,10 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, VIEW_MY_BOOK);
     }
 
+    /**
+     * Responds to the user clicked the Edit Book button
+     * @param book The book the user wants to edit
+     */
     @Override
     public void editBookInteraction(Book book) {
         Intent intent = new Intent(this, EditBookActivity.class);
@@ -206,15 +221,26 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, EDIT_BOOK);
     }
 
+    /**
+     * Responds to the user clicking on a profile
+     * @param user The profile that the user clicked on
+     */
     @Override
     public void viewUserInteraction(User user) {
         loadFragment(ProfileFragment.newInstance(user));
     }
 
+    /**
+     * Responds to the Notifications button
+     */
     @Override
     public void onNotificationsInteraction() {
     }
 
+    /**
+     * Responds to the user clicking the profile button
+     * @param user The profile to view
+     */
     @Override
     public void onProfileInteraction(User user) {
         Intent intent = new Intent(this, EditUserActivity.class);
