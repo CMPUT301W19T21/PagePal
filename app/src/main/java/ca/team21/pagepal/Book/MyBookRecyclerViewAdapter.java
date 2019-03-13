@@ -149,6 +149,9 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
         return mValues.size();
     }
 
+    /**
+     * Class representing an item in the list
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mTitleView;
@@ -176,6 +179,10 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
         }
     }
 
+    /**
+     * Deletes a book from the database
+     * @param book Book to be deleted
+     */
     private void deleteBook(final Book book) {
         final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("books");
         Query bookQuery = dbRef.orderByChild("owner").equalTo(book.getOwner());

@@ -10,8 +10,14 @@ import ca.team21.pagepal.Book.BookHistoryList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+/**
+ * Tests the recommendation list
+ */
 public class RecommendationListTest {
 
+    /**
+     * Tests generating the recommendation list
+     */
     @Test
     public void generateListTest() {
         BookHistoryList history = new BookHistoryList();

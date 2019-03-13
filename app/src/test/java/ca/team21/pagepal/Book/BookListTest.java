@@ -9,6 +9,7 @@ import ca.team21.pagepal.Book.BookList;
 
 import static org.junit.Assert.assertEquals;
 
+
 public class BookListTest {
     private BookList bookList = new BookList();
     ArrayList<Book> testList = new ArrayList<Book>();

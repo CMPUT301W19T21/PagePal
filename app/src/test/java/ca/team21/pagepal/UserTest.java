@@ -9,8 +9,12 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-//TODO re-add getters and setters to User
 
+
+/**
+ * Tests the user class
+ * TODO re-add getters and setters to User
+ */
 public class UserTest {
     /*
     private User user = new User();
