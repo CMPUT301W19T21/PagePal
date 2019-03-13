@@ -36,6 +36,10 @@ import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.Date;
 
+/**
+ * Activity for creating an account. Ensures that the username is unique, that the email is in a
+ * valid format, and that the password length is at least 7 (Firebase requirement)
+ */
 public class SignUpActivity extends AppCompatActivity
         implements View.OnClickListener {
 

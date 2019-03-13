@@ -2,6 +2,7 @@ package ca.team21.pagepal.Book;
 
 import java.util.ArrayList;
 
+
 public class BookHistoryList {
 
     private ArrayList<Book> historyList;

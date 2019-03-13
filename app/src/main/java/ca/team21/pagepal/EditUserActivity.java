@@ -19,6 +19,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import static ca.team21.pagepal.MainActivity.USER_EXTRA;
 
+
+/**
+ * Activity to allow a user to edit their profile or view other profiles
+ */
 public class EditUserActivity extends AppCompatActivity implements View.OnClickListener {
 
     private String TAG = "EditUserActivity";

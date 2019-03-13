@@ -13,6 +13,9 @@ import java.util.Date;
 import ca.team21.pagepal.Book.Book;
 import ca.team21.pagepal.Book.BookList;
 
+/**
+ * Represents a user with a unique username.
+ */
 public class User implements Parcelable {
 
     private String username;
@@ -41,6 +44,10 @@ public class User implements Parcelable {
         this.ownedBookList = new ArrayList<>();
     }
 
+    /**
+     * Constructor for parcelable
+     * @param in parcel to instantiate with
+     */
     protected User(Parcel in) {
         username = in.readString();
         email = in.readString();
@@ -52,6 +59,9 @@ public class User implements Parcelable {
         //location = in.readParcelable(Location.class.getClassLoader());
     }
 
+    /**
+     * CREATOR for parcelable
+     */
     public static final Creator<User> CREATOR = new Creator<User>() {
         @Override
         public User createFromParcel(Parcel in) {
@@ -64,20 +74,41 @@ public class User implements Parcelable {
         }
     };
 
+    /**
+     * Get the username
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Set the username
+     * TODO: Check if username is unique (currently only checked on account creation)
+     * @param username the username
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /** Get the user's email
+     *
+     * @return The email
+     */
     public String getEmail() {
         return this.email;
     }
 
+    /**
+     * Get the user's owned books
+     * @return THe user's books
+     */
     public ArrayList<Book> getOwnedBookList() {return ownedBookList;}
 
+    /**
+     * Add a book to the user's owned books
+     * @param book The book to add
+     */
     public void addOwnedBook(Book book) {
         if (ownedBookList == null) {
             ownedBookList = new ArrayList<>();
@@ -161,6 +192,11 @@ public class User implements Parcelable {
         return 0;
     }
 
+    /**
+     * Writes the User object to a parcel
+     * @param dest The parcel to write to
+     * @param flags Flags for parcelable
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(username);

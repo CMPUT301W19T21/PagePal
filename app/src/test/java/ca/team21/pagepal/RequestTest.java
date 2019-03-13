@@ -9,6 +9,10 @@ import ca.team21.pagepal.Book.Book;
 
 import static org.junit.Assert.assertEquals;
 
+
+/**
+ * Tests the request class
+ */
 public class RequestTest {
 
     private User owner = new User();
@@ -16,6 +20,9 @@ public class RequestTest {
     private Book book = new Book();
     private Request request = new Request(owner, requester, book);
 
+    /**
+     * Tests setting the location
+     */
     @Test
     public void setLocationTest() {
         Location loc = new Location(LocationManager.NETWORK_PROVIDER);

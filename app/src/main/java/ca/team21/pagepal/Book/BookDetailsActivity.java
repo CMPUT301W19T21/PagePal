@@ -24,6 +24,9 @@ import ca.team21.pagepal.User;
 import static ca.team21.pagepal.MainActivity.BOOK_EXTRA;
 import static ca.team21.pagepal.MainActivity.USER_EXTRA;
 
+/**
+ * Activity for viewing book details. Is also used for accepting/declining/requesting
+ */
 public class BookDetailsActivity extends AppCompatActivity {
 
     Book book;
