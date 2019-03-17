@@ -45,7 +45,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".SearchActivity" />
+                android:value=".views.SearchActivity" />
         </activity>
     </application>
 
