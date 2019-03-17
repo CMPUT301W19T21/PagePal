@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import ca.team21.pagepal.models.Request;
+import ca.team21.pagepal.models.RequestList;
+
 import static org.junit.Assert.assertEquals;
 
 /**

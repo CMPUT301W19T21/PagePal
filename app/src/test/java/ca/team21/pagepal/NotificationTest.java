@@ -2,6 +2,8 @@ package ca.team21.pagepal;
 
 import org.junit.Test;
 
+import ca.team21.pagepal.models.Notification;
+
 import static org.junit.Assert.assertEquals;
 
 /**

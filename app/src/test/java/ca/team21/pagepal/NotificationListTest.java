@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import ca.team21.pagepal.models.Notification;
+import ca.team21.pagepal.models.NotificationList;
+
 import static org.junit.Assert.assertEquals;
 
 /**

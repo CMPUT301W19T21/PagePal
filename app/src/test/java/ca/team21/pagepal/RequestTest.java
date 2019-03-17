@@ -5,7 +5,9 @@ import android.location.LocationManager;
 
 import org.junit.Test;
 
-import ca.team21.pagepal.Book.Book;
+import ca.team21.pagepal.models.Book;
+import ca.team21.pagepal.models.Request;
+import ca.team21.pagepal.models.User;
 
 import static org.junit.Assert.assertEquals;
 
