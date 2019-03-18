@@ -58,7 +58,7 @@
         android:layout_marginTop="8dp"
         app:layoutManager="LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@+id/filter_label"
-        tools:context=".Book.BookFragment"
+        tools:context=".views.BookFragment"
         tools:layout_editor_absoluteX="16dp"
         tools:listitem="@layout/fragment_book" />
 
