@@ -2,6 +2,13 @@ package ca.team21.pagepal.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -10,6 +17,7 @@ import java.util.ArrayList;
  */
 public class User implements Parcelable {
 
+    private String uid;
     private String username;
     private String email;
     private ArrayList<Book> ownedBookList = new ArrayList<>();
@@ -30,7 +38,8 @@ public class User implements Parcelable {
      * @param username  The username to set.
      * @param email The email to set.
      */
-    public User(String username, String email) {
+    public User(String uid, String username, String email) {
+        this.uid = uid;
         this.username = username;
         this.email = email;
         this.ownedBookList = new ArrayList<>();
@@ -65,6 +74,23 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    /**
+     * Get the uid.
+     *
+     * @return The uid.
+     */
+    public String getUid() {
+        return this.uid;
+    }
+
+    /**
+     * Set the uid.
+     * @param uid	The string to use.
+     */
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     /**
      * Get the username
@@ -196,5 +222,11 @@ public class User implements Parcelable {
         dest.writeTypedList(ownedBookList);
         //dest.writeString(name);
         //location.writeToParcel(dest, flags);
+    }
+
+    public Task<Void> writeToDb() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("users");
+
+        return db.child(this.username).setValue(this);
     }
 }

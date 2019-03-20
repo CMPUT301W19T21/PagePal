@@ -229,8 +229,17 @@ public class SignUpActivity extends AppCompatActivity
             while( authUser == null) {
                 authUser = mAuth.getCurrentUser();
             }
-            user = new User(name, authUser.getEmail());
-            writeNewUser(authUser.getUid(), user);
+            user = new User(authUser.getUid(), name, authUser.getEmail());
+            user.writeToDb().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "User created at " + user.getUsername());
+                    } else {
+                        Log.w(TAG, task.getException());
+                    }
+                }
+            });
             return true;
         }
         return false;
@@ -275,7 +284,7 @@ public class SignUpActivity extends AppCompatActivity
      * @param user  The User object to store.
      */
     private void writeNewUser(final String uid, User user) {
-        dbRef.child(uid).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        user.writeToDb().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
