@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.Book;
+import ca.team21.pagepal.models.User;
 
 import static ca.team21.pagepal.models.Book.AVAILABLE;
 import static ca.team21.pagepal.views.MainActivity.BOOK_EXTRA;
@@ -137,9 +138,9 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         book.setTitle(title);
         book.setAuthor(author);
         book.setDescription(description);
-        book.setOwner(FirebaseAuth.getInstance().getUid());
+        book.setOwner(User.getInstance().getUsername());
 
-        writeBook(book);
+        book.writeToDb();
         returnIntent = new Intent();
         returnIntent.putExtra(BOOK_EXTRA, book);
     }

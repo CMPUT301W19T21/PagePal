@@ -48,8 +48,7 @@ public class EditUserActivity extends AppCompatActivity implements View.OnClickL
         dbRef = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(authUser.getUid());
 
-        Intent intent = getIntent();
-        user = intent.getParcelableExtra(USER_EXTRA);
+        user = User.getInstance();
 
         email = findViewById(R.id.email_input);
         saveButton = findViewById(R.id.save);
@@ -80,14 +79,7 @@ public class EditUserActivity extends AppCompatActivity implements View.OnClickL
      */
     private void writeChanges() {
         String newEmail = email.getText().toString();
-        dbRef.child("email").setValue(newEmail);
-        authUser.updateEmail(newEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "User email address updated");
-                }
-            }
-        });
+        user.setEmail(newEmail);
+        user.writeToDb();
     }
 }

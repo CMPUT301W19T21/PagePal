@@ -7,8 +7,13 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -22,7 +27,6 @@ public class User implements Parcelable {
     private String email;
     private ArrayList<Book> ownedBookList = new ArrayList<>();
     /*
-    private String name;
     private Location location = new Location(LocationManager.NETWORK_PROVIDER);
     private RequestList requestList = new RequestList();
     private BookList ownedList = new BookList();
@@ -30,6 +34,7 @@ public class User implements Parcelable {
     private NotificationList notificationList = new NotificationList();
     private BookHistoryList bookHistoryList = new BookHistoryList();
     */
+    private static final User user = new User();
 
     public User() {/* Empty constructor required for Firebase */}
 
@@ -56,7 +61,6 @@ public class User implements Parcelable {
         if (ownedBookList == null) {
             ownedBookList = new ArrayList<>();
         }
-        //name = in.readString();
         //location = in.readParcelable(Location.class.getClassLoader());
     }
 
@@ -74,6 +78,43 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    /**
+     * Gets the User object that matches the currently logged in user.
+     *
+     * @return  The User relating to the current user. The fields of the returned User may be null
+     *          until the query returns.
+     */
+    public static User getInstance() {
+        if (user.getUid() != null) {
+            return user;
+        }
+        String uid = FirebaseAuth.getInstance().getUid();
+        final Query query = FirebaseDatabase.getInstance().getReference()
+                .child("users").orderByChild("uid").equalTo(uid);
+        query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String key = "";
+                    for (DataSnapshot item: dataSnapshot.getChildren()) {
+                        key = item.getKey();
+                        break;
+                    }
+                    User newUser = dataSnapshot.child(key).getValue(User.class);
+                    user.setUsername(newUser.getUsername());
+                    user.setUid(newUser.getUid());
+                    user.setEmail(newUser.getEmail());
+                    //TODO add setters as things are implemented.
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        return user;
+    }
 
     /**
      * Get the uid.
@@ -118,6 +159,14 @@ public class User implements Parcelable {
     }
 
     /**
+     * Set the email
+     * @param email The String to set.
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
      * Get the user's owned books
      * @return THe user's books
      */
@@ -140,17 +189,6 @@ public class User implements Parcelable {
 
 
     /*
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Location getLocation() {
         return location;
     }
@@ -220,10 +258,14 @@ public class User implements Parcelable {
         dest.writeString(username);
         dest.writeString(email);
         dest.writeTypedList(ownedBookList);
-        //dest.writeString(name);
         //location.writeToParcel(dest, flags);
     }
 
+    /**
+     * Writes the User to the database.
+     *
+     * @return The Task object for adding listeners to.
+     */
     public Task<Void> writeToDb() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("users");
 

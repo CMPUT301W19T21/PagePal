@@ -78,6 +78,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
             });
             
             if (holder.mItem.getStatus().equals(BORROWED)) {
+                /* TODO fix this Query
                 FirebaseDatabase.getInstance().getReference("users")
                         .child(holder.mItem.getBorrower())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -85,7 +86,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 borrower = dataSnapshot.getValue(User.class);
                                 holder.usernameView.setVisibility(VISIBLE);
-                                holder.usernameView.setText("Borrowed by: " + borrower.getUsername()/*TODO + get borrower */);
+                                holder.usernameView.setText("Borrowed by: " + borrower.getUsername());
                             }
 
                             @Override
@@ -93,6 +94,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
                                 System.out.println("Borrower not found");
                             }
                         });
+                        */
             } else {
                 holder.usernameView.setVisibility(View.INVISIBLE);
             }
