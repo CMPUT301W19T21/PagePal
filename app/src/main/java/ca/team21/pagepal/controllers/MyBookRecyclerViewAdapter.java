@@ -8,14 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import ca.team21.pagepal.models.Loan;
 import ca.team21.pagepal.views.BookFragment.OnListFragmentInteractionListener;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.User;
@@ -78,15 +76,15 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
             });
             
             if (holder.mItem.getStatus().equals(BORROWED)) {
-                /* TODO fix this Query
-                FirebaseDatabase.getInstance().getReference("users")
-                        .child(holder.mItem.getBorrower())
+                FirebaseDatabase.getInstance().getReference("loans/owner")
+                        .child(holder.mItem.getOwner()).child(holder.mItem.getIsbn())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                borrower = dataSnapshot.getValue(User.class);
+                                Loan loan = dataSnapshot.getValue(Loan.class);
+                                borrower = loan.getBorrower();
                                 holder.usernameView.setVisibility(VISIBLE);
-                                holder.usernameView.setText("Borrowed by: " + borrower.getUsername());
+                                holder.usernameView.setText("Borrowed by: " + borrower);
                             }
 
                             @Override
@@ -94,7 +92,6 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
                                 System.out.println("Borrower not found");
                             }
                         });
-                        */
             } else {
                 holder.usernameView.setVisibility(View.INVISIBLE);
             }

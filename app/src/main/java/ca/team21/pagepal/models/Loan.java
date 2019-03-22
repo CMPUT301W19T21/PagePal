@@ -111,13 +111,13 @@ public class Loan {
      * @param ownerListener Listens for the result from writing the owner's object.
      */
     public void writeToDb(OnCompleteListener borrowerListener, OnCompleteListener ownerListener) {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("loans");
 
-        db.child(this.getBorrower())
-                .child(this.getOwner() + this.getBook())
+        db.child("borrower").child(this.getBorrower())
+                .child(this.getBook())
                 .setValue(this).addOnCompleteListener(borrowerListener);
-        db.child(this.getOwner())
-                .child(this.getBorrower() + this.getBook())
+        db.child("owner").child(this.getOwner())
+                .child(this.getBook())
                 .setValue(this).addOnCompleteListener(ownerListener);
     }
 
@@ -159,13 +159,13 @@ public class Loan {
 
     public void delete(DatabaseReference.CompletionListener borrowerListener,
                        DatabaseReference.CompletionListener ownerListener) {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("loans");
 
-        db.child(this.getBorrower())
-                .child(this.getOwner() + this.getBook())
+        db.child("borrower").child(this.getBorrower())
+                .child(this.getBook())
                 .removeValue(borrowerListener);
-        db.child(this.getOwner())
-                .child(this.getBorrower() + this.getBook())
+        db.child("owner").child(this.getOwner())
+                .child(this.getBook())
                 .removeValue(ownerListener);
     }
 }
