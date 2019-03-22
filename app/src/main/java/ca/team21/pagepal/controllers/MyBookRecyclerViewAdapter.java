@@ -35,8 +35,8 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
 
     private final ArrayList<Book> mValues;
     private final OnListFragmentInteractionListener mListener;
-    private User owner;
-    private User borrower;
+    private User user = User.getInstance();
+    private String borrower;
 
     public MyBookRecyclerViewAdapter(ArrayList<Book> items, OnListFragmentInteractionListener listener) {
         mValues = items;
@@ -57,7 +57,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
         holder.mAuthorView.setText(mValues.get(position).getAuthor());
         holder.mStatusView.setText(holder.mItem.getStatus());
 
-        if (holder.mItem.getOwner().equals(FirebaseAuth.getInstance().getUid())) {
+        if (holder.mItem.getOwner().equals(user.getUsername())) {
             holder.editButton.setVisibility(VISIBLE);
             holder.deleteButton.setVisibility(VISIBLE);
             holder.editButton.setOnClickListener(new View.OnClickListener() {
@@ -99,22 +99,6 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
                 holder.usernameView.setVisibility(View.INVISIBLE);
             }
             
-        } else {
-            FirebaseDatabase.getInstance().getReference("users")
-                    .child(holder.mItem.getOwner())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            owner = dataSnapshot.getValue(User.class);
-                            holder.usernameView.setVisibility(VISIBLE);
-                            holder.usernameView.setText("Owned by: " + owner.getUsername()/*TODO + get owner */);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            System.out.println("Owner not found");
-                        }
-                    });
         }
 
         if (holder.usernameView.getVisibility() == VISIBLE) {
@@ -123,8 +107,6 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
                 public void onClick(View v) {
                     if (holder.mItem.getStatus().equals(BORROWED)) {
                         mListener.viewUserInteraction(borrower);
-                    } else {
-                        mListener.viewUserInteraction(owner);
                     }
                 }
             });
@@ -181,25 +163,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
      * Deletes a book from the database
      * @param book Book to be deleted
      */
-    private void deleteBook(final Book book) {
-        final DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("books");
-        Query bookQuery = dbRef.orderByChild("owner").equalTo(book.getOwner());
-        bookQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data: dataSnapshot.getChildren()) {
-                    Book dbBook = data.getValue(Book.class);
-                    if (dbBook.getIsbn().equals(book.getIsbn())) {
-                        String bookKey = data.getKey();
-                        dbRef.child(bookKey).removeValue();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+    private void deleteBook(Book book) {
+        book.delete();
     }
 }

@@ -29,7 +29,6 @@ public class BookDetailsActivity extends AppCompatActivity {
 
     Book book;
     User user;
-    DatabaseReference dbref = FirebaseDatabase.getInstance().getReference().child("users");
     String ownerUsername;
     String ownerLabel;
 
@@ -71,42 +70,26 @@ public class BookDetailsActivity extends AppCompatActivity {
 
 
         //Get owner's info from db
-        dbref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("BookDetails", "Starting query");
-                User owner = dataSnapshot.child(book.getOwner()).getValue(User.class);
-                ownerUsername = owner.getUsername();
-                Log.d("BookDetails", ownerUsername);
+        ownerUsername = book.getOwner();
 
-                if (ownerUsername.equals(user.getUsername())) { // current user owns this book
-                    ownerLabel = "You own this book";
-                    if (book.getStatus().equals(Book.REQUESTED)) {
-                        acceptButton.setVisibility(View.VISIBLE);
-                        declineButton.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    ownerLabel = "Owner: " + ownerUsername;
-                    requestButton.setVisibility(View.VISIBLE);
-
-                    if (book.getStatus().equals(Book.AVAILABLE) || book.getStatus().equals(Book.REQUESTED)) {
-                        requestButton.setText("Request Book");
-                    } else if (book.getStatus().equals(Book.ACCEPTED) || book.getStatus().equals(Book.BORROWED)) {
-                        requestButton.setClickable(false);
-                        requestButton.setText("This book is unavailable");
-                    }
-                }
-
-                ownerView.setText(ownerLabel);
+        if (ownerUsername.equals(user.getUsername())) { // current user owns this book
+            ownerLabel = "You own this book";
+            if (book.getStatus().equals(Book.REQUESTED)) {
+                acceptButton.setVisibility(View.VISIBLE);
+                declineButton.setVisibility(View.VISIBLE);
             }
+        } else {
+            ownerLabel = "Owner: " + ownerUsername;
+            requestButton.setVisibility(View.VISIBLE);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("BookDetails", "Database Cancelled: ", databaseError.toException());
-                //done.countDown();
+            if (book.getStatus().equals(Book.AVAILABLE) || book.getStatus().equals(Book.REQUESTED)) {
+                requestButton.setText("Request Book");
+            } else if (book.getStatus().equals(Book.ACCEPTED) || book.getStatus().equals(Book.BORROWED)) {
+                requestButton.setClickable(false);
+                requestButton.setText("This book is unavailable");
             }
-        });
+        }
 
-
+        ownerView.setText(ownerLabel);
     }
 }

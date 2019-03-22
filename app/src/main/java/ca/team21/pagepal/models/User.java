@@ -116,6 +116,13 @@ public class User implements Parcelable {
         return user;
     }
 
+    //TODO load the given user.
+    public static User getUser(String username) {
+        final User user = new User();
+
+        return user;
+    }
+
     /**
      * Get the uid.
      *

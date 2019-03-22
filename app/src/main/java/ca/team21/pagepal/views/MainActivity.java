@@ -220,8 +220,8 @@ public class MainActivity extends AppCompatActivity
      * @param user The profile that the user clicked on
      */
     @Override
-    public void viewUserInteraction(User user) {
-        loadFragment(ProfileFragment.newInstance(user));
+    public void viewUserInteraction(String user) {
+        loadFragment(ProfileFragment.newInstance(User.getUser(user)));
     }
 
     /**
