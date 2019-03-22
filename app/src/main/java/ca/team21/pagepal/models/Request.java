@@ -20,9 +20,18 @@ public class Request {
 
     public Request() {}
 
-    public Request(String owner, String requester, String book) {}
+    public Request(String owner, String requester, String book) {
+        this.owner = owner;
+        this.requester = requester;
+        this.book = book;
+    }
 
-    public Request(String owner, String requester, String book, Location location) {}
+    public Request(String owner, String requester, String book, Location location) {
+        this.owner = owner;
+        this.requester = requester;
+        this.book = book;
+        this.location = location;
+    }
 
     /**
      * Set the book's owner.
