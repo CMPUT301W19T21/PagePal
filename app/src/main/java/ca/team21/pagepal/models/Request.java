@@ -127,6 +127,9 @@ public class Request {
                 .setValue(this).addOnCompleteListener(ownerListener);
     }
 
+    /**
+     * Delete the object from the database
+     */
     public void delete() {
         DatabaseReference.CompletionListener requester =
                 new DatabaseReference.CompletionListener() {
