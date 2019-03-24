@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,17 +87,17 @@ public class User implements Parcelable {
      *          until the query returns.
      */
     public static User getInstance() {
-        if (user.getUid() != null) {
+        if (user.getUid() != null && user.getUid().equals(FirebaseAuth.getInstance().getUid())) {
             return user;
-        }
-        String uid = FirebaseAuth.getInstance().getUid();
-        final Query query = FirebaseDatabase.getInstance().getReference()
-                .child("users").orderByChild("uid").equalTo(uid);
-        query.addValueEventListener(new ValueEventListener() {
+        } else {
+            String uid = FirebaseAuth.getInstance().getUid();
+            final Query query = FirebaseDatabase.getInstance().getReference()
+                    .child("users").orderByChild("uid").equalTo(uid);
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     String key = "";
-                    for (DataSnapshot item: dataSnapshot.getChildren()) {
+                    for (DataSnapshot item : dataSnapshot.getChildren()) {
                         key = item.getKey();
                         break;
                     }
@@ -113,7 +114,8 @@ public class User implements Parcelable {
                 }
             });
 
-        return user;
+            return user;
+        }
     }
 
     //TODO load the given user.
