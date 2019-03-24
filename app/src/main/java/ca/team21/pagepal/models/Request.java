@@ -128,10 +128,10 @@ public class Request {
     public void writeToDb(OnCompleteListener requesterListener, OnCompleteListener ownerListener) {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
 
-        db.child(this.getRequester())
+        db.child("requester").child(this.getRequester())
                 .child(this.getOwner() + this.getBook())
                 .setValue(this).addOnCompleteListener(requesterListener);
-        db.child(this.getOwner() + this.getBook())
+        db.child("owner").child(this.getOwner() + this.getBook())
                 .child(this.getRequester())
                 .setValue(this).addOnCompleteListener(ownerListener);
     }

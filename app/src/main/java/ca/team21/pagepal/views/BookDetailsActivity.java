@@ -1,6 +1,7 @@
 package ca.team21.pagepal.views;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.Notification;
 import ca.team21.pagepal.models.Request;
@@ -28,6 +31,8 @@ import static ca.team21.pagepal.views.MainActivity.USER_EXTRA;
  * Activity for viewing book details. Is also used for accepting/declining/requesting
  */
 public class BookDetailsActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private final String TAG = "BookDetailsActivity";
 
     Book book;
     User user;
@@ -78,19 +83,19 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
         ownerUsername = book.getOwner();
 
-        if (ownerUsername.equals(user.getUsername())) { // current user owns this book
+        if (ownerUsername.equals(user.getUsername())) { // if the current user owns this book
             ownerLabel = "You own this book";
             if (book.getStatus().equals(Book.REQUESTED)) {
                 acceptButton.setVisibility(View.VISIBLE);
                 declineButton.setVisibility(View.VISIBLE);
             }
-        } else {
+        } else { // if the current user does not own the book
             ownerLabel = "Owner: " + ownerUsername;
             requestButton.setVisibility(View.VISIBLE);
 
-            if (book.getStatus().equals(Book.AVAILABLE) || book.getStatus().equals(Book.REQUESTED)) {
+            if (book.getStatus().equals(Book.AVAILABLE) || book.getStatus().equals(Book.REQUESTED)) { // if the book can be requested
                 requestButton.setText("Request Book");
-            } else if (book.getStatus().equals(Book.ACCEPTED) || book.getStatus().equals(Book.BORROWED)) {
+            } else if (book.getStatus().equals(Book.ACCEPTED) || book.getStatus().equals(Book.BORROWED)) { // if the book cannot be requested
                 requestButton.setClickable(false);
                 requestButton.setText("This book is unavailable");
             }
@@ -106,13 +111,33 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
             case R.id.request_button:
                 Request request = new Request(book.getOwner(), user.getUsername(), book.getIsbn());
                 request.writeToDb();
+
                 String message = user.getUsername() + " has requested " + book.getTitle();
                 String senderUsername = user.getUsername();
                 String recipientUsername = book.getOwner();
                 Notification notification = new Notification(message, senderUsername, recipientUsername, book.getIsbn(), book.getOwner());
                 notification.writeToDb();
         }
-
     }
 
+    public ArrayList<String> getRequesters() {
+        DatabaseReference dbRefRequests = FirebaseDatabase.getInstance().getReference().child("requests").child("owner");
+
+        ArrayList<String> requesters = new ArrayList<>();
+
+        dbRefRequests.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot requester: dataSnapshot.getChildren()) {
+                    Log.d(TAG, requester.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "failed getting requesters", databaseError.toException());
+            }
+        });
+        return requesters;
+    }
 }
