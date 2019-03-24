@@ -248,12 +248,21 @@ public class Book implements Parcelable {
 
     /**
      * Write the Book to the database.
-     *
      * @return  The Task for adding listeners to.
      */
     public Task<Void> writeToDb() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
 
         return db.child(this.owner).child(this.isbn).setValue(this);
+    }
+
+    /**
+     * Delete the Book from the database
+     * @return  The Task for adding listeners to.
+     */
+    public Task<Void> delete() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
+
+        return db.child(this.owner).child(this.isbn).removeValue();
     }
 }

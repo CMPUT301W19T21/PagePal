@@ -243,8 +243,6 @@ public class SignUpActivity extends AppCompatActivity
             return true;
         }
         return false;
-
-
     }
 
     /**
@@ -275,24 +273,5 @@ public class SignUpActivity extends AppCompatActivity
      */
     private boolean passwordsMatch(String password, String confirmPassword) {
         return password.equals(confirmPassword);
-    }
-
-    /**
-     * Stores a user object in the database when a new user is created.
-     *
-     * @param uid   The FirebaseUser uid to serve as a key.
-     * @param user  The User object to store.
-     */
-    private void writeNewUser(final String uid, User user) {
-        user.writeToDb().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "User created at " + uid);
-                } else {
-                    Log.w(TAG, task.getException());
-                }
-            }
-        });
     }
 }

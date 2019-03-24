@@ -72,25 +72,6 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         if (sentIntent.hasExtra(BOOK_EXTRA)) {
             book = sentIntent.getParcelableExtra(BOOK_EXTRA);
 
-            // find existing book in database.
-            Query bookQuery = dbRef.orderByChild("owner").equalTo(book.getOwner());
-            bookQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data: dataSnapshot.getChildren()) {
-                        Book dbBook = data.getValue(Book.class);
-                        if (dbBook.getIsbn().equals(book.getIsbn())) {
-                            bookKey = data.getKey();
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
             isbnEdit.setText(book.getIsbn());
             titleEdit.setText(book.getTitle());
             authorEdit.setText(book.getAuthor());
@@ -143,28 +124,5 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         book.writeToDb();
         returnIntent = new Intent();
         returnIntent.putExtra(BOOK_EXTRA, book);
-    }
-
-    /**
-     * Writes the book to the database
-     * @param book Book to be written
-     */
-    private void writeBook(Book book) {
-        if (bookKey != null) {
-            dbRef.child(bookKey).setValue(book);
-        } else {
-            dbRef.push().setValue(book, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(@Nullable DatabaseError databaseError,
-                                        @NonNull DatabaseReference databaseReference) {
-                    if (databaseError != null) {
-                        Log.w(TAG, "Failed to insert book");
-                        databaseError.toException().printStackTrace();
-                    } else {
-                        Log.w(TAG, "Book inserted");
-                    }
-                }
-            });
-        }
     }
 }

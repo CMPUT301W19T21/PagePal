@@ -136,6 +136,9 @@ public class Request {
                 .setValue(this).addOnCompleteListener(ownerListener);
     }
 
+    /**
+     * Delete the object from the database
+     */
     public void delete() {
         DatabaseReference.CompletionListener requester =
                 new DatabaseReference.CompletionListener() {
@@ -173,10 +176,10 @@ public class Request {
                        DatabaseReference.CompletionListener ownerListener) {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
 
-        db.child(this.getRequester())
+        db.child("requester").child(this.getRequester())
                 .child(this.getOwner() + this.getBook())
                 .removeValue(requesterListener);
-        db.child(this.getOwner() + this.getBook())
+        db.child("owner").child(this.getOwner() + this.getBook())
                 .child(this.getRequester())
                 .removeValue(ownerListener);
     }
