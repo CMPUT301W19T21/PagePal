@@ -54,4 +54,7 @@
     <string name="borrower_label">Borrowed by:</string>
     <string name="display_borrower">Borrowed by: %1$s</string>
     <string name="display_owner">Owned by: %1$s</string>
+    <string name="decline_button">Decline</string>
+    <string name="accept_button">Accept</string>
+    <string name="requested_label">Requested by:</string>
 </resources>
