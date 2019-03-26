@@ -55,4 +55,11 @@ public class BookTest {
 
         assertEquals(REQUESTED, book.getStatus());
     }
+
+    @Test
+    public void setOwnerTest() {
+        book.setOwner("tan");
+
+        assertEquals("tan", book.getOwner());
+    }
 }

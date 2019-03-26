@@ -3,6 +3,10 @@ package ca.team21.pagepal.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 //import java.io.File;
 
 
@@ -36,14 +40,12 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
-    private String borrower;
     //private File photo;
 
     /**
      * Empty constructor for Book, sets default values
      */
     public Book() {
-        this.borrower = "";
         this.status = AVAILABLE;
     }
 
@@ -75,7 +77,6 @@ public class Book implements Parcelable {
         this.isbn = parcel.readString();
         this.status = parcel.readString();
         this.owner = parcel.readString();
-        this.borrower = parcel.readString();
         //this.photo = (File) parcel.readValue(null);
     }
 
@@ -107,7 +108,6 @@ public class Book implements Parcelable {
         dest.writeString(isbn);
         dest.writeString(status);
         dest.writeString(owner);
-        dest.writeString(borrower);
         //dest.writeValue(photo);
     }
 
@@ -154,7 +154,7 @@ public class Book implements Parcelable {
     /**
      * Sets status.
      *
-     * @param s the status
+     * @param status the status
      */
     public void setStatus(String status) {
         // if the passed string is not one of the status types
@@ -177,14 +177,6 @@ public class Book implements Parcelable {
         this.owner = uid;
     }
 
-    /**
-     * Sets borrower.
-     *
-     * @param uid the uid of the borrower
-     */
-    public void setBorrower(String uid) {
-        this.borrower = uid;
-    }
     /*
     public void setPhoto(File photo) {
         this.photo = photo;
@@ -246,20 +238,31 @@ public class Book implements Parcelable {
     }
 
     /**
-     * Gets borrower.
-     *
-     * @return the borrower
-     */
-    public String getBorrower() {
-        return borrower;
-    }
-
-    /**
      * Gets genre.
      *
      * @return the genre
      */
     public String getGenre() {
         return genre;
+    }
+
+    /**
+     * Write the Book to the database.
+     * @return  The Task for adding listeners to.
+     */
+    public Task<Void> writeToDb() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
+
+        return db.child(this.owner).child(this.isbn).setValue(this);
+    }
+
+    /**
+     * Delete the Book from the database
+     * @return  The Task for adding listeners to.
+     */
+    public Task<Void> delete() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
+
+        return db.child(this.owner).child(this.isbn).removeValue();
     }
 }
