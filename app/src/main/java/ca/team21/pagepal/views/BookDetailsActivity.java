@@ -3,6 +3,7 @@ package ca.team21.pagepal.views;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -73,11 +74,14 @@ public class BookDetailsActivity extends AppCompatActivity {
         isbnView.setText(isbnLabel);
         statusView.setText(book.getStatus().toUpperCase());
         descriptionView.setText(book.getDescription());
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
         byte [] stringToBit = Base64.decode(book.getPhoto(),Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
+        Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
 
 
-        imageView.setImageBitmap(bitmap);
+        imageView.setImageBitmap(rotated);
 
 
         //Get owner's info from db
