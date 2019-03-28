@@ -2,14 +2,20 @@ package ca.team21.pagepal;
 
 import org.junit.Test;
 
-import java.io.File;
+import ca.team21.pagepal.models.Book;
 
-import static ca.team21.pagepal.Book.REQUESTED;
+import static ca.team21.pagepal.models.Book.REQUESTED;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests the book class
+ */
 public class BookTest {
     private Book book = new Book();
 
+    /**
+     * Tests setting the title
+     */
     @Test
     public void setTitleTest() {
         String title = "Brave New World";
@@ -18,6 +24,9 @@ public class BookTest {
         assertEquals(title, book.getTitle());
     }
 
+    /**
+     * Tests setting the author
+     */
     @Test
     public void setAuthorTest() {
         String author = "Aldous Huxley";
@@ -26,14 +35,9 @@ public class BookTest {
         assertEquals(author, book.getAuthor());
     }
 
-    @Test
-    public void setIsbnTest() {
-        String isbn = " 0062696122";
-
-        book.setISBN(isbn);
-        assertEquals(isbn, book.getISBN());
-    }
-
+    /**
+     * Tests setting the description
+     */
     @Test
     public void setDescTest() {
         String desc = "Futuristic novel";
@@ -42,18 +46,13 @@ public class BookTest {
         assertEquals(desc, book.getDescription());
     }
 
+    /**
+     * Tests setting the status
+     */
     @Test
     public void setStatusTest() {
         book.setStatus(REQUESTED);
 
         assertEquals(REQUESTED, book.getStatus());
-    }
-
-    @Test
-    public void setPhotoTest() {
-        CoverPhoto img = new CoverPhoto(new File("default.png"));
-
-        book.setPhoto(img);
-        assertEquals(img, book.getPhoto());
     }
 }

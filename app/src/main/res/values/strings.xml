@@ -1,3 +1,57 @@
 <resources>
     <string name="app_name">PagePal</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="owned_books">My Books</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="action_settings">Settings</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="title_activity_login">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="create_account">Create Account</string>
+    <string name="username_input_label">Username:</string>
+    <string name="email_input_label">Email:</string>
+    <string name="password_label">Password:</string>
+    <string name="sign_up_button_label">Sign Up</string>
+    <string name="confirm_password_label">Confirm Password:</string>
+    <string name="title_activity_sign_up">Sign Up</string>
+    <string name="page_pal">PagePal</string>
+    <string name="title_profile">Profile</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="location_label">Location:</string>
+    <string name="location">Location</string>
+    <string name="save_label">Save</string>
+    <string name="cancel_label">Cancel</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="borrowing">Borrowing</string>
+    <string name="search_prompt">Find A New Read.</string>
+    <string name="author">Author</string>
+    <string name="edit_title">Title</string>
+    <string name="add_book_title">Add a Book</string>
+    <string name="description_edit">Description</string>
+    <string name="upload_new_image">Upload New Image</string>
+    <string name="scan_ISBN">Scan ISBN</string>
+    <string name="confirm">Confirm</string>
+    <string name="add_book_label">Add Book</string>
+    <string name="done_label">Done</string>
+    <string name="filter_label">Filter by:</string>
+    <string name="my_books_title">My Books</string>
+    <string name="isbn_hint">ISBN</string>
+    <string name="borrower_label">Borrowed by:</string>
+    <string name="display_borrower">Borrowed by: %1$s</string>
+    <string name="display_owner">Owned by: %1$s</string>
 </resources>
