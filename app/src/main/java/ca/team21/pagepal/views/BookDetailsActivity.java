@@ -194,6 +194,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
         book.setStatus(Book.REQUESTED);
         book.writeToDb();
+        finish();
     }
 
     private void decline(Request declined) {
@@ -236,5 +237,6 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         String message = user.getUsername() + " has accepted your request for " + book.getTitle();
         Notification notify = new Notification(message, user.getUsername(), requestToAccept.getRequester(), book.getIsbn(), user.getUsername());
         notify.writeToDb();
+        finish();
     }
 }
