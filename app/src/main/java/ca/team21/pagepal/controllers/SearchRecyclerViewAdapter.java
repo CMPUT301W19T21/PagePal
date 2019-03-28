@@ -23,6 +23,8 @@ import ca.team21.pagepal.views.SearchedResultsFragment;
 import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.models.Book;
 
+import static android.view.View.VISIBLE;
+
 /**
  * Class that implements a recycler view for SearchActivity
  */
@@ -54,7 +56,17 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         holder.mTitleView.setText(holder.mItem.getTitle());
         holder.mAuthorView.setText(mValues.get(position).getAuthor());
         holder.mStatusView.setText(holder.mItem.getStatus());
+        holder.ownerView.setVisibility(VISIBLE);
+        holder.ownerView.setText("Owner: " + holder.mItem.getOwner());
 
+        holder.ownerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.viewUserInteraction(holder.mItem.getOwner());
+                }
+            }
+        });
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +93,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         public final TextView mTitleView;
         public final TextView mAuthorView;
         public final TextView mStatusView;
-        //public final TextView borrowerView;
+        public final TextView ownerView;
         public final Button editButton;
         public final Button deleteButton;
         public Book mItem;
@@ -96,7 +108,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             mTitleView = (TextView) view.findViewById(R.id.title);
             mAuthorView = (TextView) view.findViewById(R.id.author);
             mStatusView = (TextView) view.findViewById(R.id.status);
-            //borrowerView = view.findViewById(R.id.borrower);
+            ownerView = view.findViewById(R.id.user);
             editButton = view.findViewById(R.id.edit_button);
             deleteButton = view.findViewById(R.id.delete_button);
         }
