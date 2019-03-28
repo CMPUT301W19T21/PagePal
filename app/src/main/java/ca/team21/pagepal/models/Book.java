@@ -1,5 +1,6 @@
 package ca.team21.pagepal.models;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -40,7 +41,7 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
-    //private File photo;
+    private Bitmap photo;
 
     /**
      * Empty constructor for Book, sets default values
@@ -56,13 +57,13 @@ public class Book implements Parcelable {
      * @param author Author of the book
      * @param ISBN   isbn of the book
      */
-    public Book(String title, String author, String ISBN) {
+    public Book(String title, String author, String ISBN, Bitmap bitmap) {
         this.title = title;
         this.author = author;
         this.isbn = ISBN;
         this.description = ""; // defaults to empty string
         this.status = AVAILABLE; // defaults to available
-        //this.photo = new File("");
+        this.photo = bitmap;
     }
 
     /**
@@ -77,7 +78,7 @@ public class Book implements Parcelable {
         this.isbn = parcel.readString();
         this.status = parcel.readString();
         this.owner = parcel.readString();
-        //this.photo = (File) parcel.readValue(null);
+        this.photo = parcel.readParcelable(Bitmap.class.getClassLoader());
     }
 
     /**
@@ -108,7 +109,7 @@ public class Book implements Parcelable {
         dest.writeString(isbn);
         dest.writeString(status);
         dest.writeString(owner);
-        //dest.writeValue(photo);
+        photo.writeToParcel(dest, flags);
     }
 
     public int describeContents() {
@@ -177,11 +178,14 @@ public class Book implements Parcelable {
         this.owner = uid;
     }
 
-    /*
-    public void setPhoto(File photo) {
-        this.photo = photo;
-    } */
 
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
 
     /**
      * Gets title.

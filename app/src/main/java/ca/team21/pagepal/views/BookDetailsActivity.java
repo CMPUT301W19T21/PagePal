@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +39,7 @@ public class BookDetailsActivity extends AppCompatActivity {
     TextView statusView;
     TextView descriptionView;
     TextView ownerView;
+    ImageView imageView;
     Button requestButton;
     Button acceptButton;
     Button declineButton;
@@ -51,6 +53,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         book = intent.getParcelableExtra(BOOK_EXTRA);
         user = intent.getParcelableExtra(USER_EXTRA);
 
+        imageView = findViewById(R.id.book_image_view);
         titleView = findViewById(R.id.title_view);
         authorView = findViewById(R.id.author_view);
         isbnView = findViewById(R.id.isbn_view);
@@ -67,6 +70,7 @@ public class BookDetailsActivity extends AppCompatActivity {
         isbnView.setText(isbnLabel);
         statusView.setText(book.getStatus().toUpperCase());
         descriptionView.setText(book.getDescription());
+        imageView.setImageBitmap(book.getPhoto());
 
 
         //Get owner's info from db

@@ -116,48 +116,46 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
                 return;
         }
     }
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             File f = new File(this.getCacheDir(), "filename");
-            try{
+            try {
                 f.createNewFile();
-            }
-            catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             Bundle extras = data.getExtras();
             Bitmap image = (Bitmap) extras.get("data");
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte [] byteMapData = stream.toByteArray();
+            byte[] byteMapData = stream.toByteArray();
             try {
                 FileOutputStream fos = new FileOutputStream(f);
                 fos.write(byteMapData);
                 fos.flush();
                 fos.close();
-            } catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-            try{
+            try {
                 Bitmap compressedImageBitmap = new Compressor(this).compressToBitmap(f);
                 compressedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                byte [] photoByteArray = stream.toByteArray();
-                String imageString = Base64.encodeToString(photoByteArray, Base64.DEFAULT);
-                CoverPhoto finalPhoto = new CoverPhoto(imageString);
-            } catch(IOException e){
+                book.setPhoto(compressedImageBitmap);
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
-        }
-        else{
+        } else {
             IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            if (scanningResult != null){
+            if (scanningResult != null) {
                 isbnEdit.setText(scanningResult.getContents());
-            }
-            else {
+            } else {
                 Toast toast = Toast.makeText(getApplicationContext(), "no scan data", Toast.LENGTH_SHORT);
                 toast.show();
-
+            }
+        }
+    }
     /**
      * Gets input from textEdits and either edits an existing book or creates a new book if it
      * doesn't exist yet.
