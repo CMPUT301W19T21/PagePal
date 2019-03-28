@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity
     public static final String BOOK_EXTRA = "ca.team21.pagepal.models.Book";
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    private DatabaseReference usersRef;
     private FirebaseUser authUser;
     private User user;
 
@@ -115,22 +114,8 @@ public class MainActivity extends AppCompatActivity
             finish();
             return;
         }
-        // Connect to database
-        usersRef = FirebaseDatabase.getInstance().getReference();
-
         // Get the user who is logged in
-
-        usersRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        user = dataSnapshot.child("users").child(authUser.getUid()).getValue(User.class);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
-                    }
-                });
+        user = User.getInstance();
 
         // Set up top toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -228,8 +213,8 @@ public class MainActivity extends AppCompatActivity
      * @param user The profile that the user clicked on
      */
     @Override
-    public void viewUserInteraction(User user) {
-        loadFragment(ProfileFragment.newInstance(user));
+    public void viewUserInteraction(String user) {
+        loadFragment(ProfileFragment.newInstance(User.getUser(user)));
     }
 
     /**
