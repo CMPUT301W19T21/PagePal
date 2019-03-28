@@ -55,7 +55,7 @@ public class PickMapsActivity extends FragmentActivity implements OnMapReadyCall
         }
     }
 
- 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +117,7 @@ public class PickMapsActivity extends FragmentActivity implements OnMapReadyCall
                 LatLng userLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
                 // Sets initial marker/map to be focused on user location
-                mMap.addMarker(new MarkerOptions().position(userLocation).title("Book Swap Location")); //TODO: Change Icon to something thematically appropriate
+                mMap.addMarker(new MarkerOptions().position(userLocation).title("Book Swap Location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
                 swapLatLng = userLocation;
 
@@ -134,7 +134,7 @@ public class PickMapsActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapLongClick(LatLng swapLocation) {
         mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(swapLocation).title("Book Swap Location")); //TODO: Change Icon to something thematically appropriate
+        mMap.addMarker(new MarkerOptions().position(swapLocation).title("Book Swap Location"));
         swapLatLng = swapLocation;
     }
 

@@ -74,7 +74,7 @@
 
         <activity
             android:name=".views.PickMapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_pick_maps"></activity>
         <activity
             android:name=".views.DisplayMapsActivity"
             android:label="@string/title_activity_display_maps"></activity>
