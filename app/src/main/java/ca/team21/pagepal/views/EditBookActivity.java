@@ -129,7 +129,6 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             }
             Bundle extras = data.getExtras();
             Bitmap image = (Bitmap) extras.get("data");
-            book.setPhoto(image);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteMapData = stream.toByteArray();
