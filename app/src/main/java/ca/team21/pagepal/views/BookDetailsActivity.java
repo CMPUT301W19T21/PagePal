@@ -57,6 +57,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     Button requestButton;
     Button acceptButton;
     Button declineButton;
+    Button viewLocationButton;
+    Button setLocationButton;
     Spinner requesterSpinner;
     ArrayAdapter<String> spinnerAdapter;
 
@@ -78,6 +80,9 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         requestButton = findViewById(R.id.request_button);
         acceptButton = findViewById(R.id.accept_button);
         declineButton = findViewById(R.id.decline_button);
+        viewLocationButton = findViewById(R.id.view_location_button);
+        setLocationButton = findViewById(R.id.set_location_button);
+
         requesterSpinner = findViewById(R.id.requester_spinner);
         requesterLabel = findViewById(R.id.requester_label);
 
@@ -118,7 +123,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
                 getRequesters();
             } else if (isAccepted) {
-                // TODO display location that was selected / edit location
+                setLocationButton.setVisibility(View.VISIBLE);
+                viewLocationButton.setVisibility(View.VISIBLE);
                 // TODO show button to initiate scan (owner)
             }
 
@@ -133,7 +139,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
                 if (isBorrower) {
                     requestButton.setText("Your request for this book has been accepted");
-                    // TODO show location that owner selected for pickup
+                    viewLocationButton.setVisibility(View.VISIBLE);
                     // TODO show button to initiate scan (borrower)
 
                 } else { // user is not the borrower
