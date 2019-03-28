@@ -89,6 +89,9 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             titleEdit.setText(book.getTitle());
             authorEdit.setText(book.getAuthor());
             descriptionEdit.setText(book.getDescription());
+        } else {
+            book = new Book();
+            book.setStatus(AVAILABLE);
         }
 
     }
@@ -126,6 +129,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             }
             Bundle extras = data.getExtras();
             Bitmap image = (Bitmap) extras.get("data");
+            book.setPhoto(image);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             image.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteMapData = stream.toByteArray();
@@ -140,7 +144,9 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             try {
                 Bitmap compressedImageBitmap = new Compressor(this).compressToBitmap(f);
                 compressedImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                book.setPhoto(compressedImageBitmap);
+                byte [] output = stream.toByteArray();
+                String stringPic = Base64.encodeToString(output, Base64.DEFAULT);
+                book.setPhoto(stringPic);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -165,11 +171,6 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         String title = titleEdit.getText().toString();
         String author = authorEdit.getText().toString();
         String description = descriptionEdit.getText().toString();
-
-        if (book == null) {
-            book = new Book();
-            book.setStatus(AVAILABLE);
-        }
 
         book.setIsbn(isbn);
         book.setTitle(title);

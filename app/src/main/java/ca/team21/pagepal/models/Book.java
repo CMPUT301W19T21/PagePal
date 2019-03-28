@@ -41,7 +41,7 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
-    private Bitmap photo;
+    private String photo;
 
     /**
      * Empty constructor for Book, sets default values
@@ -57,7 +57,7 @@ public class Book implements Parcelable {
      * @param author Author of the book
      * @param ISBN   isbn of the book
      */
-    public Book(String title, String author, String ISBN, Bitmap bitmap) {
+    public Book(String title, String author, String ISBN, String bitmap) {
         this.title = title;
         this.author = author;
         this.isbn = ISBN;
@@ -78,7 +78,7 @@ public class Book implements Parcelable {
         this.isbn = parcel.readString();
         this.status = parcel.readString();
         this.owner = parcel.readString();
-        this.photo = parcel.readParcelable(Bitmap.class.getClassLoader());
+        this.photo = parcel.readString();
     }
 
     /**
@@ -109,7 +109,7 @@ public class Book implements Parcelable {
         dest.writeString(isbn);
         dest.writeString(status);
         dest.writeString(owner);
-        photo.writeToParcel(dest, flags);
+        dest.writeString(photo);
     }
 
     public int describeContents() {
@@ -179,11 +179,11 @@ public class Book implements Parcelable {
     }
 
 
-    public void setPhoto(Bitmap photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 
-    public Bitmap getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
