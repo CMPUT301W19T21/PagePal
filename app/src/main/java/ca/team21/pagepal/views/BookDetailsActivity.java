@@ -100,26 +100,52 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
         ownerUsername = book.getOwner();
 
-        if (ownerUsername.equals(user.getUsername())) { // if the current user owns this book
+        boolean isOwner = ownerUsername.equals(user.getUsername());
+        boolean isBorrower = book.getBorrower().equals(user.getUsername());
+        boolean isAvailable = book.getStatus().equals(Book.AVAILABLE);
+        boolean isRequested = book.getStatus().equals(Book.REQUESTED);
+        boolean isAccepted = book.getStatus().equals(Book.ACCEPTED);
+        boolean isBorrowed = book.getStatus().equals(Book.BORROWED);
+
+
+        if (isOwner) { // if the current user owns this book
             ownerLabel = "You own this book";
-            if (book.getStatus().equals(Book.REQUESTED)) {
+            if (isRequested) {
                 acceptButton.setVisibility(View.VISIBLE);
                 declineButton.setVisibility(View.VISIBLE);
                 requesterSpinner.setVisibility(View.VISIBLE);
                 requesterLabel.setVisibility(View.VISIBLE);
 
                 getRequesters();
+            } else if (isAccepted) {
+                // TODO display location that was selected / edit location
+                // TODO show button to initiate scan (owner)
             }
+
         } else { // if the current user does not own the book
             ownerLabel = "Owner: " + ownerUsername;
             requestButton.setVisibility(View.VISIBLE);
 
-            if (book.getStatus().equals(Book.AVAILABLE) || book.getStatus().equals(Book.REQUESTED)) { // if the book can be requested
+            if (isAvailable || isRequested) { // if the book can be requested
                 requestButton.setText("Request Book");
-            } else if (book.getStatus().equals(Book.ACCEPTED) || book.getStatus().equals(Book.BORROWED)) { // if the book cannot be requested
+
+            } else if (isRequested) {
+
+                if (isBorrower) {
+                    requestButton.setText("Your request for this book has been accepted");
+                    // TODO show location that owner selected for pickup
+                    // TODO show button to initiate scan (borrower)
+
+                } else { // user is not the borrower
+                    requestButton.setClickable(false);
+                    requestButton.setText("This book is unavailable");
+                }
+
+            } else if (isBorrowed) {
                 requestButton.setClickable(false);
                 requestButton.setText("This book is unavailable");
             }
+
         }
 
         ownerView.setText(ownerLabel);
@@ -200,7 +226,6 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     private void decline(Request declined) {
         declined.delete();
         requesters.remove(declined);
-        updateSpinner();
 
         String message = user.getUsername() + " has declined your request for " + book.getTitle();
         Notification notify = new Notification(message, user.getUsername(), declined.getRequester(), book.getIsbn(), user.getUsername());
@@ -210,6 +235,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     private void declineRequest() {
         Request requestToDecline = requesters.get(selectedRequesterIndex);
         decline(requestToDecline);
+        updateSpinner();
 
         if (requesters.size() == 0) { // if last remaining request declined
             // update book to be Available
@@ -229,10 +255,14 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
             decline(r);
         }
 
+        //TODO owner selects location for pickup
+
         String owner = requestToAccept.getOwner();
         String bookIsbn = requestToAccept.getBook();
-        DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(owner).child(bookIsbn);
+        DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
         bookRef.child("status").setValue(Book.ACCEPTED);
+        bookRef.child("borrower").setValue(user.getUsername());
+        requestToAccept.delete(); // delete from DB
 
         String message = user.getUsername() + " has accepted your request for " + book.getTitle();
         Notification notify = new Notification(message, user.getUsername(), requestToAccept.getRequester(), book.getIsbn(), user.getUsername());

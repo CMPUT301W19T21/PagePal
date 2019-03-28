@@ -40,6 +40,7 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
+    private String borrower;
     //private File photo;
 
     /**
@@ -244,6 +245,14 @@ public class Book implements Parcelable {
      */
     public String getGenre() {
         return genre;
+    }
+
+    public void setBorrower(String borrower) {
+        this.borrower = borrower;
+    }
+
+    public String getBorrower() {
+        return borrower;
     }
 
     /**
