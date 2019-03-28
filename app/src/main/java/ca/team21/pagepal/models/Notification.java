@@ -43,7 +43,7 @@ public class Notification {
     public Task<Void> writeToDb() {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("notifications");
 
-        return dbRef.child(this.getRecipient()).setValue(this);
+        return dbRef.child(this.getRecipient()).child(this.getTimestamp().toString()).setValue(this);
     }
 
     /**
