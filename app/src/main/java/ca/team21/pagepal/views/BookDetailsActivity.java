@@ -127,26 +127,17 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.request_button:
-                Request request = new Request(book.getOwner(), user.getUsername(), book.getIsbn());
-                request.writeToDb();
-
-                String message = user.getUsername() + " has requested " + book.getTitle();
-                String senderUsername = user.getUsername();
-                String recipientUsername = book.getOwner();
-                Notification notification = new Notification(message, senderUsername, recipientUsername, book.getIsbn(), book.getOwner());
-                notification.writeToDb();
-
-                book.setStatus(Book.REQUESTED);
-                book.writeToDb();
+                sendRequest();
                 break;
             case R.id.decline_button:
                 declineRequest();
                 break;
+            case R.id.accept_button:
+                acceptRequest();
+                break;
         }
-
     }
 
     @Override
@@ -171,10 +162,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                 for (DataSnapshot request: dataSnapshot.getChildren()) {
                      requesters.add(request.getValue(Request.class));
                 }
-                for (Request r: requesters) {
-                    requesterUsernames.add(r.getRequester());
-                }
-                spinnerAdapter.notifyDataSetChanged();
+                updateSpinner();
             }
 
             @Override
@@ -186,18 +174,43 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
-    private void declineRequest() {
-        Request requestToDecline = requesters.get(selectedRequesterIndex);
-        requestToDecline.delete();
-        requesterUsernames.remove(requestToDecline.getRequester());
+    private void updateSpinner() {
+        requesterUsernames.clear();
+        for (Request r: requesters) {
+            requesterUsernames.add(r.getRequester());
+        }
         spinnerAdapter.notifyDataSetChanged();
-        requesters.remove(requestToDecline);
+    }
+
+    private void sendRequest() {
+        Request request = new Request(book.getOwner(), user.getUsername(), book.getIsbn());
+        request.writeToDb();
+
+        String message = user.getUsername() + " has requested " + book.getTitle();
+        String senderUsername = user.getUsername();
+        String recipientUsername = book.getOwner();
+        Notification notification = new Notification(message, senderUsername, recipientUsername, book.getIsbn(), book.getOwner());
+        notification.writeToDb();
+
+        book.setStatus(Book.REQUESTED);
+        book.writeToDb();
+    }
+
+    private void decline(Request declined) {
+        declined.delete();
+        requesters.remove(declined);
+        updateSpinner();
 
         String message = user.getUsername() + " has declined your request for " + book.getTitle();
-        Notification declined = new Notification(message, user.getUsername(), requestToDecline.getRequester(), book.getIsbn(), user.getUsername());
-        declined.writeToDb();
+        Notification notify = new Notification(message, user.getUsername(), declined.getRequester(), book.getIsbn(), user.getUsername());
+        notify.writeToDb();
+    }
 
-        if (requesters.size() == 0) { // last remaining request declined
+    private void declineRequest() {
+        Request requestToDecline = requesters.get(selectedRequesterIndex);
+        decline(requestToDecline);
+
+        if (requesters.size() == 0) { // if last remaining request declined
             // update book to be Available
             String owner = requestToDecline.getOwner();
             String bookIsbn = requestToDecline.getBook();
@@ -208,4 +221,20 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    private void acceptRequest() {
+        Request requestToAccept = requesters.remove(selectedRequesterIndex);
+
+        for (Request r: requesters) { // decline all other requests
+            decline(r);
+        }
+
+        String owner = requestToAccept.getOwner();
+        String bookIsbn = requestToAccept.getBook();
+        DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(owner).child(bookIsbn);
+        bookRef.child("status").setValue(Book.ACCEPTED);
+
+        String message = user.getUsername() + " has accepted your request for " + book.getTitle();
+        Notification notify = new Notification(message, user.getUsername(), requestToAccept.getRequester(), book.getIsbn(), user.getUsername());
+        notify.writeToDb();
+    }
 }
