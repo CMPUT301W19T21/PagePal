@@ -55,10 +55,7 @@ public class PickMapsActivity extends FragmentActivity implements OnMapReadyCall
         }
     }
 
-    /**
-     *  When activity lifecycle begins, sets up layout and makes an async call to get a map
-     * @param savedInstanceState
-     */
+ 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
