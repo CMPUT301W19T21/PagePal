@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -76,12 +77,13 @@ public class BookDetailsActivity extends AppCompatActivity {
         descriptionView.setText(book.getDescription());
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
-        byte [] stringToBit = Base64.decode(book.getPhoto(),Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
-        Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
+        if (!book.getPhoto().equals("")){
+            byte [] stringToBit = Base64.decode(book.getPhoto(),Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
+            Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
+            imageView.setImageBitmap(rotated);
+        }
 
-
-        imageView.setImageBitmap(rotated);
 
 
         //Get owner's info from db

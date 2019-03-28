@@ -63,7 +63,7 @@ public class Book implements Parcelable {
         this.isbn = ISBN;
         this.description = ""; // defaults to empty string
         this.status = AVAILABLE; // defaults to available
-        this.photo = bitmap;
+        this.photo = "";
     }
 
     /**
