@@ -23,10 +23,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import ca.team21.pagepal.R;
@@ -42,8 +40,7 @@ public class MainActivity extends AppCompatActivity
         BorrowingFragment.OnBorrowingInteractionListener,
         BookFragment.OnListFragmentInteractionListener,
         NotificationsFragment.OnNotificationsInteractionListener,
-        ProfileFragment.OnProfileInteractionListener,
-        SearchedResultsFragment.OnSearchFragmentInteractionListener {
+        ProfileFragment.OnProfileInteractionListener {
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
@@ -108,10 +105,6 @@ public class MainActivity extends AppCompatActivity
         loadFragment(HomeFragment.newInstance());
 
         Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            final String keyword = getIntent().getStringExtra(SearchManager.QUERY);
-            queryBooks(keyword);
-        }
         if (intent.hasExtra(USER_EXTRA)) {
             User userToView = intent.getParcelableExtra(USER_EXTRA);
             loadFragment(ProfileFragment.newInstance(userToView));
@@ -147,55 +140,6 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-    /**
-     * Queries the firebase realtime database, filters the results, maps them to Books and adds the Books to a list.
-     *
-     * @param query a string representation of the user's search query
-     */
-    public void queryBooks(final String query) {
-
-        final ArrayList<Book> bookList = new ArrayList<Book>();
-        final String[] keyWords = query.split("\\s+");
-        // Query Firebase
-        Query bookQuery = FirebaseDatabase.getInstance().getReference().child("books");
-
-        bookQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot users: dataSnapshot.getChildren()) { // for each user
-                        for (DataSnapshot data: users.getChildren()) { // for each of their books
-                            String status = data.child("status").getValue(String.class);
-                            // Filter by Status
-                            if (status != null && ( status.equals("Available") || status.equals("Requested"))) {
-
-                                Book book = data.getValue(Book.class);
-                                for (String keyWord : keyWords) {
-
-                                    if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                            (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
-                                        bookList.add(book);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    loadFragment(SearchedResultsFragment.newInstance(bookList));
-
-                }
-
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError){
-                Log.w(TAG, "queryBooks:failure", databaseError.toException());
-            }
-
-        });
-
-
-    }
 
 
     // TODO Remove the toolbar and place the sign out option in the user profile page.
@@ -208,6 +152,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+        //return true;
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -300,12 +251,4 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    public void viewBookInteraction(Book book) {
-        Intent intent = new Intent(this, BookDetailsActivity.class);
-        intent.putExtra(MainActivity.BOOK_EXTRA, book);
-        User requester = User.getInstance();
-        intent.putExtra(MainActivity.USER_EXTRA, requester);
-        startActivity(intent);
-    }
 }
