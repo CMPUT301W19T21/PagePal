@@ -1,5 +1,6 @@
 package ca.team21.pagepal.models;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -40,7 +41,9 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
-    //private File photo;
+    private String photo;
+    private String borrower;
+
 
     /**
      * Empty constructor for Book, sets default values
@@ -56,13 +59,13 @@ public class Book implements Parcelable {
      * @param author Author of the book
      * @param ISBN   isbn of the book
      */
-    public Book(String title, String author, String ISBN) {
+    public Book(String title, String author, String ISBN, String bitmap) {
         this.title = title;
         this.author = author;
         this.isbn = ISBN;
         this.description = ""; // defaults to empty string
         this.status = AVAILABLE; // defaults to available
-        //this.photo = new File("");
+        this.photo = "";
     }
 
     /**
@@ -76,8 +79,9 @@ public class Book implements Parcelable {
         this.description = parcel.readString();
         this.isbn = parcel.readString();
         this.status = parcel.readString();
+        this.genre = parcel.readString();
         this.owner = parcel.readString();
-        //this.photo = (File) parcel.readValue(null);
+        this.photo = parcel.readString();
     }
 
     /**
@@ -108,7 +112,7 @@ public class Book implements Parcelable {
         dest.writeString(isbn);
         dest.writeString(status);
         dest.writeString(owner);
-        //dest.writeValue(photo);
+        dest.writeString(photo);
     }
 
     public int describeContents() {
@@ -177,11 +181,14 @@ public class Book implements Parcelable {
         this.owner = username;
     }
 
-    /*
-    public void setPhoto(File photo) {
-        this.photo = photo;
-    } */
 
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
 
     /**
      * Gets title.
@@ -244,6 +251,18 @@ public class Book implements Parcelable {
      */
     public String getGenre() {
         return genre;
+    }
+
+    public void setBorrower(String borrower) {
+        this.borrower = borrower;
+    }
+
+    public String getBorrower() {
+        if (borrower == null) {
+            return "";
+        } else {
+            return borrower;
+        }
     }
 
     /**

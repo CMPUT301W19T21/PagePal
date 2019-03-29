@@ -59,4 +59,6 @@
     <string name="requested_label">Requested by:</string>
     <string name="title_activity_pick_maps">Map</string>
     <string name="title_activity_display_maps">Map</string>
+    <string name="view_location">View Pickup Location</string>
+    <string name="set_location">Set Pickup Location</string>
 </resources>

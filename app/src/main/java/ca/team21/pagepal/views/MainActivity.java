@@ -105,9 +105,16 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Intent.ACTION_SEARCH.equals(getIntent().getAction())) {
+        loadFragment(HomeFragment.newInstance());
+
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             final String keyword = getIntent().getStringExtra(SearchManager.QUERY);
             queryBooks(keyword);
+        }
+        if (intent.hasExtra(USER_EXTRA)) {
+            User userToView = intent.getParcelableExtra(USER_EXTRA);
+            loadFragment(ProfileFragment.newInstance(userToView));
         }
 
         // Wait for user to authenticate or timeout
@@ -135,7 +142,7 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        loadFragment(HomeFragment.newInstance());
+
 
 
 

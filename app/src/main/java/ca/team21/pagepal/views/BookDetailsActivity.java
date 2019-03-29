@@ -1,14 +1,22 @@
 package ca.team21.pagepal.views;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,12 +46,15 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
     private final String TAG = "BookDetailsActivity";
 
+    private final int MAP_REQUEST_CODE = 1;
+
     Book book;
     User user;
     DatabaseReference dbRefUsers = FirebaseDatabase.getInstance().getReference().child("users");
     String ownerUsername;
     String ownerLabel;
     int selectedRequesterIndex;
+    Request selectedRequest;
     ArrayList<Request> requesters = new ArrayList<>();
     ArrayList<String> requesterUsernames = new ArrayList<>();
 
@@ -53,10 +64,12 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     TextView statusView;
     TextView descriptionView;
     TextView ownerView;
+    ImageView imageView;
     TextView requesterLabel;
     Button requestButton;
     Button acceptButton;
     Button declineButton;
+    Button viewLocationButton;
     Spinner requesterSpinner;
     ArrayAdapter<String> spinnerAdapter;
 
@@ -69,6 +82,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         book = intent.getParcelableExtra(BOOK_EXTRA);
         user = intent.getParcelableExtra(USER_EXTRA);
 
+        imageView = findViewById(R.id.book_image_view);
         titleView = findViewById(R.id.title_view);
         authorView = findViewById(R.id.author_view);
         isbnView = findViewById(R.id.isbn_view);
@@ -78,6 +92,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         requestButton = findViewById(R.id.request_button);
         acceptButton = findViewById(R.id.accept_button);
         declineButton = findViewById(R.id.decline_button);
+        viewLocationButton = findViewById(R.id.view_location_button);
+
         requesterSpinner = findViewById(R.id.requester_spinner);
         requesterLabel = findViewById(R.id.requester_label);
 
@@ -86,6 +102,10 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         acceptButton.setOnClickListener(this);
         declineButton.setOnClickListener(this);
         requesterSpinner.setOnItemSelectedListener(this);
+        viewLocationButton.setOnClickListener(this);
+        ownerView.setOnClickListener(this);
+
+        ownerView.setClickable(true);
 
         spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, requesterUsernames);
         requesterSpinner.setAdapter(spinnerAdapter);
@@ -96,30 +116,65 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         isbnView.setText(isbnLabel);
         statusView.setText(book.getStatus().toUpperCase());
         descriptionView.setText(book.getDescription());
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        if (!book.getPhoto().equals("")){
+            byte [] stringToBit = Base64.decode(book.getPhoto(),Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
+            Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
+            imageView.setImageBitmap(rotated);
+        }
+
 
 
         ownerUsername = book.getOwner();
 
-        if (ownerUsername.equals(user.getUsername())) { // if the current user owns this book
+        boolean isOwner = ownerUsername.equals(user.getUsername());
+        boolean isBorrower = book.getBorrower().equals(user.getUsername());
+        boolean isAvailable = book.getStatus().equals(Book.AVAILABLE);
+        boolean isRequested = book.getStatus().equals(Book.REQUESTED);
+        boolean isAccepted = book.getStatus().equals(Book.ACCEPTED);
+        boolean isBorrowed = book.getStatus().equals(Book.BORROWED);
+
+
+        if (isOwner) { // if the current user owns this book
             ownerLabel = "You own this book";
-            if (book.getStatus().equals(Book.REQUESTED)) {
+            if (isRequested) {
                 acceptButton.setVisibility(View.VISIBLE);
                 declineButton.setVisibility(View.VISIBLE);
                 requesterSpinner.setVisibility(View.VISIBLE);
                 requesterLabel.setVisibility(View.VISIBLE);
 
                 getRequesters();
+            } else if (isAccepted) {
+                viewLocationButton.setVisibility(View.VISIBLE);
+                // TODO show button to initiate scan (owner)
             }
+
         } else { // if the current user does not own the book
             ownerLabel = "Owner: " + ownerUsername;
             requestButton.setVisibility(View.VISIBLE);
 
-            if (book.getStatus().equals(Book.AVAILABLE) || book.getStatus().equals(Book.REQUESTED)) { // if the book can be requested
+            if (isAvailable || isRequested) { // if the book can be requested
                 requestButton.setText("Request Book");
-            } else if (book.getStatus().equals(Book.ACCEPTED) || book.getStatus().equals(Book.BORROWED)) { // if the book cannot be requested
+
+            } else if (isAccepted) {
+
+                if (isBorrower) {
+                    requestButton.setText("Your request for this book has been accepted");
+                    requestButton.setClickable(false);
+                    viewLocationButton.setVisibility(View.VISIBLE);
+
+                } else { // user is not the borrower
+                    requestButton.setClickable(false);
+                    requestButton.setText("This book is unavailable");
+                }
+
+            } else if (isBorrowed) {
                 requestButton.setClickable(false);
                 requestButton.setText("This book is unavailable");
             }
+
         }
 
         ownerView.setText(ownerLabel);
@@ -137,6 +192,12 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
             case R.id.accept_button:
                 acceptRequest();
                 break;
+            case R.id.owner_view:
+                Intent viewUserIntent = new Intent(this, MainActivity.class);
+                viewUserIntent.putExtra(MainActivity.USER_EXTRA, book.getOwner());
+                startActivity(viewUserIntent);
+            case R.id.view_location_button:
+                viewLocation();
         }
     }
 
@@ -194,12 +255,12 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
         book.setStatus(Book.REQUESTED);
         book.writeToDb();
+        finish();
     }
 
     private void decline(Request declined) {
         declined.delete();
         requesters.remove(declined);
-        updateSpinner();
 
         String message = user.getUsername() + " has declined your request for " + book.getTitle();
         Notification notify = new Notification(message, user.getUsername(), declined.getRequester(), book.getIsbn(), user.getUsername());
@@ -209,6 +270,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     private void declineRequest() {
         Request requestToDecline = requesters.get(selectedRequesterIndex);
         decline(requestToDecline);
+        updateSpinner();
 
         if (requesters.size() == 0) { // if last remaining request declined
             // update book to be Available
@@ -222,19 +284,55 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void acceptRequest() {
-        Request requestToAccept = requesters.remove(selectedRequesterIndex);
+        selectedRequest = requesters.remove(selectedRequesterIndex);
 
         for (Request r: requesters) { // decline all other requests
             decline(r);
         }
 
-        String owner = requestToAccept.getOwner();
-        String bookIsbn = requestToAccept.getBook();
-        DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(owner).child(bookIsbn);
+        Intent intent = new Intent(this, PickMapsActivity.class);
+        startActivityForResult(intent, MAP_REQUEST_CODE);
+
+        String owner = selectedRequest.getOwner();
+        String bookIsbn = selectedRequest.getBook();
+        DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
         bookRef.child("status").setValue(Book.ACCEPTED);
+        bookRef.child("borrower").setValue(selectedRequest.getRequester());
 
         String message = user.getUsername() + " has accepted your request for " + book.getTitle();
-        Notification notify = new Notification(message, user.getUsername(), requestToAccept.getRequester(), book.getIsbn(), user.getUsername());
+        Notification notify = new Notification(message, user.getUsername(), selectedRequest.getRequester(), book.getIsbn(), user.getUsername());
         notify.writeToDb();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == MAP_REQUEST_CODE && resultCode == RESULT_OK) {
+            selectedRequest.setLatitude(data.getDoubleExtra("latitude", -1));
+            selectedRequest.setLongitude(data.getDoubleExtra("longitude", -1));
+
+            selectedRequest.writeToDb();
+            finish();
+        }
+    }
+
+    public void viewLocation() {
+        DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("requests").child("requester")
+                .child(user.getUsername()).child(book.getOwner() + book.getIsbn());
+
+        requestRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Request borrower = dataSnapshot.getValue(Request.class);
+                Intent intent = new Intent(BookDetailsActivity.this, DisplayMapsActivity.class);
+                intent.putExtra("latitude", borrower.getLatitude());
+                intent.putExtra("longitude", borrower.getLongitude());
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
