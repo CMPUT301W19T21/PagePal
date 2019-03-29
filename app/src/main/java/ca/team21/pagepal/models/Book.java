@@ -82,6 +82,7 @@ public class Book implements Parcelable {
         this.genre = parcel.readString();
         this.owner = parcel.readString();
         this.photo = parcel.readString();
+        this.borrower = parcel.readString();
     }
 
     /**
@@ -114,6 +115,7 @@ public class Book implements Parcelable {
         dest.writeString(genre);
         dest.writeString(owner);
         dest.writeString(photo);
+        dest.writeString(borrower);
     }
 
     public int describeContents() {
