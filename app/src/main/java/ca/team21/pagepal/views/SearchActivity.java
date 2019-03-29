@@ -86,7 +86,7 @@ public class SearchActivity extends AppCompatActivity implements SearchedResults
                         for (DataSnapshot data: users.getChildren()) { // for each of their books
                             String status = data.child("status").getValue(String.class);
                             // Filter by Status
-                                if (status != null && ( status.equals("Available") || status.equals("Requested"))) {
+                                if (status != null && ( status.equals("Available") || status.equals("Requested") || status.equals("Accepted"))) { // TODO remove accepted
 
                                     Book book = data.getValue(Book.class);
                                     for (String keyWord : keyWords) {

@@ -77,8 +77,27 @@ public class Book implements Parcelable {
         this.description = parcel.readString();
         this.isbn = parcel.readString();
         this.status = parcel.readString();
+        this.genre = parcel.readString();
         this.owner = parcel.readString();
-        //this.photo = (File) parcel.readValue(null);
+        this.borrower = parcel.readString();
+        //this.photo = (File) parcel.readValue(null); // TODO write photo to parcelable
+    }
+
+    /**
+     * Writes Book object to a parcel
+     * @param dest parcel to write to
+     * @param flags flags used by parcelable
+     */
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(author);
+        dest.writeString(description);
+        dest.writeString(isbn);
+        dest.writeString(status);
+        dest.writeString(genre);
+        dest.writeString(owner);
+        dest.writeString(borrower);
+        //dest.writeValue(photo);
     }
 
     /**
@@ -97,20 +116,6 @@ public class Book implements Parcelable {
         }
     };
 
-    /**
-     * Writes Book object to a parcel
-     * @param dest parcel to write to
-     * @param flags flags used by parcelable
-     */
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(author);
-        dest.writeString(description);
-        dest.writeString(isbn);
-        dest.writeString(status);
-        dest.writeString(owner);
-        //dest.writeValue(photo);
-    }
 
     public int describeContents() {
         return hashCode();
@@ -252,7 +257,11 @@ public class Book implements Parcelable {
     }
 
     public String getBorrower() {
-        return borrower;
+        if (borrower == null) {
+            return "";
+        } else {
+            return borrower;
+        }
     }
 
     /**
