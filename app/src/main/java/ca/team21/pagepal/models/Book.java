@@ -171,10 +171,10 @@ public class Book implements Parcelable {
     /**
      * Sets owner.
      *
-     * @param uid the uid of the owner
+     * @param username the username of the owner
      */
-    public void setOwner(String uid) {
-        this.owner = uid;
+    public void setOwner(String username) {
+        this.owner = username;
     }
 
     /*

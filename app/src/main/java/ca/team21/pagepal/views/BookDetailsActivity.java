@@ -16,6 +16,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.models.Notification;
+import ca.team21.pagepal.models.Request;
 import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.models.Book;
 
@@ -25,7 +27,7 @@ import static ca.team21.pagepal.views.MainActivity.USER_EXTRA;
 /**
  * Activity for viewing book details. Is also used for accepting/declining/requesting
  */
-public class BookDetailsActivity extends AppCompatActivity {
+public class BookDetailsActivity extends AppCompatActivity implements View.OnClickListener{
 
     Book book;
     User user;
@@ -61,6 +63,10 @@ public class BookDetailsActivity extends AppCompatActivity {
         acceptButton = findViewById(R.id.accept_button);
         declineButton = findViewById(R.id.decline_button);
 
+        requestButton.setOnClickListener(this);
+        acceptButton.setOnClickListener(this);
+        declineButton.setOnClickListener(this);
+
         titleView.setText(book.getTitle());
         authorView.setText(book.getAuthor());
         String isbnLabel = "ISBN: " + book.getIsbn();
@@ -69,7 +75,6 @@ public class BookDetailsActivity extends AppCompatActivity {
         descriptionView.setText(book.getDescription());
 
 
-        //Get owner's info from db
         ownerUsername = book.getOwner();
 
         if (ownerUsername.equals(user.getUsername())) { // current user owns this book
@@ -92,4 +97,22 @@ public class BookDetailsActivity extends AppCompatActivity {
 
         ownerView.setText(ownerLabel);
     }
+
+    @Override
+    public void onClick(View v) {
+
+        switch(v.getId()) {
+            case R.id.request_button:
+                Request request = new Request(book.getOwner(), user.getUsername(), book.getIsbn());
+                request.writeToDb();
+                String message = user.getUsername() + " has requested " + book.getTitle();
+                String senderUsername = user.getUsername();
+                String recipientUsername = book.getOwner();
+                Notification notification = new Notification(message, senderUsername, recipientUsername, book.getIsbn(), book.getOwner());
+                notification.writeToDb();
+        }
+
+        ownerView.setText(ownerLabel);
+    }
+
 }
