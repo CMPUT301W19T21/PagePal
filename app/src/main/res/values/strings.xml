@@ -54,4 +54,6 @@
     <string name="borrower_label">Borrowed by:</string>
     <string name="display_borrower">Borrowed by: %1$s</string>
     <string name="display_owner">Owned by: %1$s</string>
+    <string name="title_activity_pick_maps">Map</string>
+    <string name="title_activity_display_maps">Map</string>
 </resources>
