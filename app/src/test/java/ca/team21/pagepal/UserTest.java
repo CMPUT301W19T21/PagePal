@@ -7,16 +7,15 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import ca.team21.pagepal.models.User;
+
 import static org.junit.Assert.assertEquals;
-
-
 
 /**
  * Tests the user class
  * TODO re-add getters and setters to User
  */
 public class UserTest {
-    /*
     private User user = new User();
 
     @Test
@@ -36,13 +35,12 @@ public class UserTest {
     }
 
     @Test
-    public void testSetName() {
-        String name = "Wayne Gretzky";
+    public void testSetUid() {
+        String uid = "ABC123";
+        user.setUid(uid);
 
-        user.setName(name);
-        assertEquals(name, user.getName());
+        assertEquals(uid, user.getUid());
     }
-
     /*
     @Test
     public void testSetLocation() {

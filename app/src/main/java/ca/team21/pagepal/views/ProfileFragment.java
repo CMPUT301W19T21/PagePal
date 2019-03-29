@@ -74,9 +74,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mUser = getArguments().getParcelable(ARG_USER);
-        }
+        mUser = User.getInstance();
     }
 
     @Override
@@ -86,9 +84,7 @@ public class ProfileFragment extends Fragment {
         container.removeAllViews();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        String uid = FirebaseDatabase.getInstance().getReference().child("users")
-                .orderByChild("username").equalTo(mUser.getUsername())
-                .getRef().getKey();
+        String uid = User.getInstance().getUid();
 
         if (authUid.equals(uid)) {
             Button editButton = view.findViewById(R.id.edit_button);
