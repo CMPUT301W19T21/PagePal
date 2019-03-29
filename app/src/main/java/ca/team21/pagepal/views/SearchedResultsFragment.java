@@ -126,6 +126,6 @@ public class SearchedResultsFragment extends Fragment {
      */
     public interface OnSearchFragmentInteractionListener {
        void viewBookInteraction(Book book) ;
-       void viewUserInteraction(String username);
+       void viewUserInteraction(User user);
     }
 }
