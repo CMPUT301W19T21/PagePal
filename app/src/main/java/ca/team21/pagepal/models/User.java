@@ -1,12 +1,11 @@
 package ca.team21.pagepal.models;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.firebase.client.Firebase;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -18,10 +17,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import ca.team21.pagepal.BR;
+
 /**
  * Represents a user with a unique username.
  */
-public class User implements Parcelable {
+public class User extends BaseObservable implements Parcelable {
 
     private String uid;
     private String username;
@@ -118,20 +119,13 @@ public class User implements Parcelable {
         }
     }
 
-    //TODO load the given user.
-    public static User getUser(String username) {
-        final User user = new User();
-
-        return user;
-    }
-
     /**
      * Get the uid.
      *
      * @return The uid.
      */
     public String getUid() {
-        return this.uid;
+        return this.uid != null ? this.uid : "";
     }
 
     /**
@@ -146,8 +140,9 @@ public class User implements Parcelable {
      * Get the username
      * @return the username
      */
+    @Bindable
     public String getUsername() {
-        return username;
+        return username != null ? this.username : "";
     }
 
     /**
@@ -157,14 +152,16 @@ public class User implements Parcelable {
      */
     public void setUsername(String username) {
         this.username = username;
+        notifyPropertyChanged(BR.username);
     }
 
     /** Get the user's email
      *
      * @return The email
      */
+    @Bindable
     public String getEmail() {
-        return this.email;
+        return this.email != null ? this.email : "";
     }
 
     /**
@@ -173,12 +170,14 @@ public class User implements Parcelable {
      */
     public void setEmail(String email) {
         this.email = email;
+        notifyPropertyChanged(BR.email);
     }
 
     /**
      * Get the user's owned books
      * @return THe user's books
      */
+    @Bindable
     public ArrayList<Book> getOwnedBookList() {return ownedBookList;}
 
     /**
@@ -193,11 +192,14 @@ public class User implements Parcelable {
         // if book is not already in list
         if (!ownedBookList.contains(book)) {
             ownedBookList.add(book);
+            notifyPropertyChanged(BR.ownedBookList);
         }
     }
 
 
     /*
+
+    @Bindable
     public Location getLocation() {
         return location;
     }
@@ -208,6 +210,7 @@ public class User implements Parcelable {
 
 
     /*
+    @Bindable
     public RequestList getRequestList() {
         return requestList;
     }
@@ -232,6 +235,7 @@ public class User implements Parcelable {
     }
 
 
+    @Bindable
     public BookList getBorrowedList() {return borrowedList;}
 
     public void addBorrowedBook(Book book) {
@@ -243,6 +247,7 @@ public class User implements Parcelable {
     }
 
 
+    @Bindable
     public NotificationList getNotificationList() {
         return notificationList;
     }

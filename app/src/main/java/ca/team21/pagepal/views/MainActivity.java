@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void viewUserInteraction(String user) {
-        loadFragment(ProfileFragment.newInstance(User.getUser(user)));
+        loadFragment(ProfileFragment.newInstance(user));
     }
 
     /**
