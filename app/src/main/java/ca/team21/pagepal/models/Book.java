@@ -42,6 +42,8 @@ public class Book implements Parcelable {
     private String genre;
     private String owner;
     private String photo;
+    private String borrower;
+
 
     /**
      * Empty constructor for Book, sets default values
@@ -77,6 +79,7 @@ public class Book implements Parcelable {
         this.description = parcel.readString();
         this.isbn = parcel.readString();
         this.status = parcel.readString();
+        this.genre = parcel.readString();
         this.owner = parcel.readString();
         this.photo = parcel.readString();
     }
@@ -172,10 +175,10 @@ public class Book implements Parcelable {
     /**
      * Sets owner.
      *
-     * @param uid the uid of the owner
+     * @param username the username of the owner
      */
-    public void setOwner(String uid) {
-        this.owner = uid;
+    public void setOwner(String username) {
+        this.owner = username;
     }
 
 
@@ -248,6 +251,18 @@ public class Book implements Parcelable {
      */
     public String getGenre() {
         return genre;
+    }
+
+    public void setBorrower(String borrower) {
+        this.borrower = borrower;
+    }
+
+    public String getBorrower() {
+        if (borrower == null) {
+            return "";
+        } else {
+            return borrower;
+        }
     }
 
     /**

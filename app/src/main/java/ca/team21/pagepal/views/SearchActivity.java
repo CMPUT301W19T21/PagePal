@@ -19,6 +19,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
+import java.nio.charset.MalformedInputException;
 import java.util.ArrayList;
 
 import ca.team21.pagepal.R;
@@ -81,19 +82,20 @@ public class SearchActivity extends AppCompatActivity implements SearchedResults
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot data: dataSnapshot.getChildren()) {
-                        String status = data.child("status").getValue(String.class);
-                        // Filter by Status
-                            if (status.equals("Available") || status.equals("Requested")) {
+                    for (DataSnapshot users: dataSnapshot.getChildren()) { // for each user
+                        for (DataSnapshot data: users.getChildren()) { // for each of their books
+                            String status = data.child("status").getValue(String.class);
+                            // Filter by Status
+                                if (status != null && ( status.equals("Available") || status.equals("Requested") || status.equals("Accepted"))) { // TODO remove accepted
 
-                                Book book = data.getValue(Book.class);
-                                for (String keyWord : keyWords) {
+                                    Book book = data.getValue(Book.class);
+                                    for (String keyWord : keyWords) {
 
-                                    if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                            (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
-                                        bookList.add(book);
-
+                                        if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                                (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                                (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
+                                            bookList.add(book);
+                                        }
                                     }
                                 }
                             }
@@ -122,11 +124,14 @@ public class SearchActivity extends AppCompatActivity implements SearchedResults
     /**
      *  Used to implement OnSearchFragmentInteractionListener
      * @param book an instance of the Book class
-     * @param user an instance of the User class
      */
     @Override
-    public void viewBookInteraction(Book book, User user) {
-
+    public void viewBookInteraction(Book book) {
+        Intent intent = new Intent(this, BookDetailsActivity.class);
+        intent.putExtra(MainActivity.BOOK_EXTRA, book);
+        User requester = User.getInstance();
+        intent.putExtra(MainActivity.USER_EXTRA, requester);
+        startActivity(intent);
     }
 
     /**

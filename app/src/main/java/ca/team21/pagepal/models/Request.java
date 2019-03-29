@@ -16,13 +16,28 @@ public class Request {
     private String owner;
     private String requester;
     private String book;
-    private Location location;
+
+    // didn't use Location class because of errors when reading from Firebase due to Location not having an empty constructor
+    private Double latitude;
+    private Double longitude;
 
     public Request() {}
 
-    public Request(String owner, String requester, String book) {}
+    public Request(String owner, String requester, String book) {
+        this.owner = owner;
+        this.requester = requester;
+        this.book = book;
+        this.latitude = 0.0;
+        this.longitude = 0.0;
+    }
 
-    public Request(String owner, String requester, String book, Location location) {}
+    public Request(String owner, String requester, String book, Double latitude, Double longitude) {
+        this.owner = owner;
+        this.requester = requester;
+        this.book = book;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     /**
      * Set the book's owner.
@@ -49,12 +64,6 @@ public class Request {
     }
 
     /**
-     * Set the pickup location.
-     * @param location The Location for pickup.
-     */
-    public void setLocation(Location location) {}
-
-    /**
      * Get the ISBN of the book being requested.
      * @return  The ISBN String.
      */
@@ -78,8 +87,20 @@ public class Request {
         return requester;
     }
 
-    public Location getLocation() {
-        return location;
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 
     /**
