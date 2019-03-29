@@ -49,6 +49,13 @@ public class PickMapsActivity extends FragmentActivity implements OnMapReadyCall
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    LatLng userLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
+                    // Sets initial marker/map to be focused on user location
+                    mMap.addMarker(new MarkerOptions().position(userLocation).title("Book Swap Location"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+                    swapLatLng = userLocation;
 
                 }
             }
