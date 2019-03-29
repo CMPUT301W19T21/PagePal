@@ -1,5 +1,6 @@
 package ca.team21.pagepal.models;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -40,8 +41,9 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
+    private String photo;
     private String borrower;
-    //private File photo;
+
 
     /**
      * Empty constructor for Book, sets default values
@@ -57,13 +59,13 @@ public class Book implements Parcelable {
      * @param author Author of the book
      * @param ISBN   isbn of the book
      */
-    public Book(String title, String author, String ISBN) {
+    public Book(String title, String author, String ISBN, String bitmap) {
         this.title = title;
         this.author = author;
         this.isbn = ISBN;
         this.description = ""; // defaults to empty string
         this.status = AVAILABLE; // defaults to available
-        //this.photo = new File("");
+        this.photo = "";
     }
 
     /**
@@ -79,25 +81,7 @@ public class Book implements Parcelable {
         this.status = parcel.readString();
         this.genre = parcel.readString();
         this.owner = parcel.readString();
-        this.borrower = parcel.readString();
-        //this.photo = (File) parcel.readValue(null); // TODO write photo to parcelable
-    }
-
-    /**
-     * Writes Book object to a parcel
-     * @param dest parcel to write to
-     * @param flags flags used by parcelable
-     */
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(author);
-        dest.writeString(description);
-        dest.writeString(isbn);
-        dest.writeString(status);
-        dest.writeString(genre);
-        dest.writeString(owner);
-        dest.writeString(borrower);
-        //dest.writeValue(photo);
+        this.photo = parcel.readString();
     }
 
     /**
@@ -116,6 +100,20 @@ public class Book implements Parcelable {
         }
     };
 
+    /**
+     * Writes Book object to a parcel
+     * @param dest parcel to write to
+     * @param flags flags used by parcelable
+     */
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(author);
+        dest.writeString(description);
+        dest.writeString(isbn);
+        dest.writeString(status);
+        dest.writeString(owner);
+        dest.writeString(photo);
+    }
 
     public int describeContents() {
         return hashCode();
@@ -183,11 +181,14 @@ public class Book implements Parcelable {
         this.owner = username;
     }
 
-    /*
-    public void setPhoto(File photo) {
-        this.photo = photo;
-    } */
 
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
 
     /**
      * Gets title.

@@ -1,16 +1,22 @@
 package ca.team21.pagepal.views;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +64,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     TextView statusView;
     TextView descriptionView;
     TextView ownerView;
+    ImageView imageView;
     TextView requesterLabel;
     Button requestButton;
     Button acceptButton;
@@ -75,6 +82,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         book = intent.getParcelableExtra(BOOK_EXTRA);
         user = intent.getParcelableExtra(USER_EXTRA);
 
+        imageView = findViewById(R.id.book_image_view);
         titleView = findViewById(R.id.title_view);
         authorView = findViewById(R.id.author_view);
         isbnView = findViewById(R.id.isbn_view);
@@ -108,6 +116,15 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         isbnView.setText(isbnLabel);
         statusView.setText(book.getStatus().toUpperCase());
         descriptionView.setText(book.getDescription());
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        if (!book.getPhoto().equals("")){
+            byte [] stringToBit = Base64.decode(book.getPhoto(),Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
+            Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
+            imageView.setImageBitmap(rotated);
+        }
+
 
 
         ownerUsername = book.getOwner();
