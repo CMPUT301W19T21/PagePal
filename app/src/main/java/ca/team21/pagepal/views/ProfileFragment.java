@@ -1,9 +1,11 @@
 package ca.team21.pagepal.views;
 
 import android.content.Context;
+import android.databinding.Observable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import ca.team21.pagepal.BR;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.User;
 
@@ -76,7 +79,6 @@ public class ProfileFragment extends Fragment {
         super.onAttach(context);
         Bundle args = getArguments();
         String username = args.getString(ARG_USERNAME);
-        mUser = args.getParcelable(ARG_USER);
         if (username != null) {
             FirebaseDatabase.getInstance().getReference("users").child(username)
                     .addValueEventListener(new ValueEventListener() {
@@ -93,6 +95,8 @@ public class ProfileFragment extends Fragment {
 
                 }
             });
+        } else {
+            mUser = args.getParcelable(ARG_USER);
         }
 
         if (context instanceof OnProfileInteractionListener) {
@@ -134,6 +138,19 @@ public class ProfileFragment extends Fragment {
 
         usernameView.setText(mUser.getUsername());
         emailView.setText(mUser.getEmail());
+
+        mUser.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                switch (propertyId) {
+                    case BR.username:
+                        usernameView.setText(mUser.getUsername());
+                    case BR.email:
+                        emailView.setText(mUser.getEmail());
+                }
+            }
+        });
+
         return view;
     }
 
