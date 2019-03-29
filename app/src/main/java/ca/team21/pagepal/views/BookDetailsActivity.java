@@ -108,8 +108,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         isbnView.setText(isbnLabel);
         statusView.setText(book.getStatus().toUpperCase());
         descriptionView.setText(book.getDescription());
-      
-      
+
+
         ownerUsername = book.getOwner();
 
         boolean isOwner = ownerUsername.equals(user.getUsername());
