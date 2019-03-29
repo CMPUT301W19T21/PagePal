@@ -111,6 +111,7 @@ public class Book implements Parcelable {
         dest.writeString(description);
         dest.writeString(isbn);
         dest.writeString(status);
+        dest.writeString(genre);
         dest.writeString(owner);
         dest.writeString(photo);
     }
