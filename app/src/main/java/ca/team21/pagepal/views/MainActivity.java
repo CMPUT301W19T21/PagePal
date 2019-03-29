@@ -102,6 +102,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loadFragment(HomeFragment.newInstance());
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(USER_EXTRA)) {
+            User userToView = intent.getParcelableExtra(USER_EXTRA);
+            loadFragment(ProfileFragment.newInstance(userToView));
+        }
+
         // Wait for user to authenticate or timeout
         long waitTime = new Date().getTime() + 2 * 1000;
         while ( authUser == null && new Date().getTime() < waitTime ) {
@@ -127,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        loadFragment(HomeFragment.newInstance());
+
 
 
 

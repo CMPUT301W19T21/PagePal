@@ -40,6 +40,7 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
+    private String borrower;
     //private File photo;
 
     /**
@@ -76,8 +77,27 @@ public class Book implements Parcelable {
         this.description = parcel.readString();
         this.isbn = parcel.readString();
         this.status = parcel.readString();
+        this.genre = parcel.readString();
         this.owner = parcel.readString();
-        //this.photo = (File) parcel.readValue(null);
+        this.borrower = parcel.readString();
+        //this.photo = (File) parcel.readValue(null); // TODO write photo to parcelable
+    }
+
+    /**
+     * Writes Book object to a parcel
+     * @param dest parcel to write to
+     * @param flags flags used by parcelable
+     */
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(author);
+        dest.writeString(description);
+        dest.writeString(isbn);
+        dest.writeString(status);
+        dest.writeString(genre);
+        dest.writeString(owner);
+        dest.writeString(borrower);
+        //dest.writeValue(photo);
     }
 
     /**
@@ -96,20 +116,6 @@ public class Book implements Parcelable {
         }
     };
 
-    /**
-     * Writes Book object to a parcel
-     * @param dest parcel to write to
-     * @param flags flags used by parcelable
-     */
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(author);
-        dest.writeString(description);
-        dest.writeString(isbn);
-        dest.writeString(status);
-        dest.writeString(owner);
-        //dest.writeValue(photo);
-    }
 
     public int describeContents() {
         return hashCode();
@@ -171,10 +177,10 @@ public class Book implements Parcelable {
     /**
      * Sets owner.
      *
-     * @param uid the uid of the owner
+     * @param username the username of the owner
      */
-    public void setOwner(String uid) {
-        this.owner = uid;
+    public void setOwner(String username) {
+        this.owner = username;
     }
 
     /*
@@ -244,6 +250,18 @@ public class Book implements Parcelable {
      */
     public String getGenre() {
         return genre;
+    }
+
+    public void setBorrower(String borrower) {
+        this.borrower = borrower;
+    }
+
+    public String getBorrower() {
+        if (borrower == null) {
+            return "";
+        } else {
+            return borrower;
+        }
     }
 
     /**

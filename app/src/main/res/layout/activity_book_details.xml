@@ -73,8 +73,7 @@
         android:id="@+id/owner_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/request_button"
+        app:layout_constraintBottom_toTopOf="@+id/view_location_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
@@ -95,7 +94,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Button"
+        android:background="@android:color/holo_green_light"
+        android:text="@string/accept_button"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -106,8 +106,45 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Button"
+        android:background="@android:color/holo_red_light"
+        android:text="@string/decline_button"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/requester_spinner"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:spinnerMode="dropdown"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/accept_button"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/requester_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/requested_label"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/decline_button"
+        app:layout_constraintEnd_toStartOf="@+id/requester_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/owner_view" />
+
+    <Button
+        android:id="@+id/view_location_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/view_location"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/decline_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
