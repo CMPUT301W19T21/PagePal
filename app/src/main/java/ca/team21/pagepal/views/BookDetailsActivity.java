@@ -50,7 +50,6 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
     Book book;
     User user;
-    DatabaseReference dbRefUsers = FirebaseDatabase.getInstance().getReference().child("users");
     String ownerUsername;
     String ownerLabel;
     int selectedRequesterIndex;
