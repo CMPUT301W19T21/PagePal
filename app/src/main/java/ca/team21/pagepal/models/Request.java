@@ -177,6 +177,100 @@ public class Request {
                     }
                 };
         this.delete(requester, owner);
+
+    }
+    /**
+     * Remove the object from the database.
+     * @param requesterListener CompletionListener for the requester's object.
+     * @param ownerListener CompletionListener for the owner's object.
+     */
+    public void delete(DatabaseReference.CompletionListener requesterListener,
+                       DatabaseReference.CompletionListener ownerListener) {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
+
+        db.child("requester").child(this.getRequester())
+                .child(this.getOwner() + this.getBook())
+                .removeValue(requesterListener);
+        db.child("owner").child(this.getOwner() + this.getBook())
+                .child(this.getRequester())
+                .removeValue(ownerListener);
+
+    }
+
+    /**
+     * Write the object to the database.
+     */
+    public void writeToDb() {
+        OnCompleteListener requester = new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful()) {
+                    Log.d("RequesterWrite", "Requester:Successfully written");
+                } else {
+                    Log.w("RequesterWrite", task.getException());
+                }
+            }
+        };
+
+        OnCompleteListener owner = new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful()) {
+                    Log.d("OwnerWrite", "Owner:Successfully written");
+                } else {
+                    Log.w("OwnerWrite", task.getException());
+                }
+            }
+        };
+
+        this.writeToDb(requester, owner);
+    }
+
+    /**
+     * Write the object to the database.
+     * @param requesterListener Listens for the result from writing the requester's object.
+     * @param ownerListener Listens for the result from writing the owner's object.
+     */
+    public void writeToDb(OnCompleteListener requesterListener, OnCompleteListener ownerListener) {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
+
+        db.child("requester").child(this.getRequester())
+                .child(this.getOwner() + this.getBook())
+                .setValue(this).addOnCompleteListener(requesterListener);
+        db.child("owner").child(this.getOwner() + this.getBook())
+                .child(this.getRequester())
+                .setValue(this).addOnCompleteListener(ownerListener);
+    }
+
+    /**
+     * Delete the object from the database
+     */
+    public void delete() {
+        DatabaseReference.CompletionListener requester =
+                new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError,
+                                           @NonNull DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Log.w("RequesterDelete", databaseError.toException());
+                        } else {
+                            Log.d("RequesterDelete", "Requester:Successfully Deleted");
+                        }
+                    }
+                };
+        DatabaseReference.CompletionListener owner =
+                new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError,
+                                           @NonNull DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            Log.w("OwnerDelete", databaseError.toException());
+                        } else {
+                            Log.d("OwnerDelete", "Owner:Successfully Deleted");
+                        }
+                    }
+                };
+        this.delete(requester, owner);
     }
     /**
      * Remove the object from the database.

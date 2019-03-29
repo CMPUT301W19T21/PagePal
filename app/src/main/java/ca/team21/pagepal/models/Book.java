@@ -40,7 +40,6 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
-    private String borrower;
     //private File photo;
 
     /**
@@ -115,7 +114,6 @@ public class Book implements Parcelable {
             return new Book[0];
         }
     };
-
 
     public int describeContents() {
         return hashCode();
@@ -262,6 +260,26 @@ public class Book implements Parcelable {
         } else {
             return borrower;
         }
+    }
+
+    /**
+     * Write the Book to the database.
+     * @return  The Task for adding listeners to.
+     */
+    public Task<Void> writeToDb() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
+
+        return db.child(this.owner).child(this.isbn).setValue(this);
+    }
+
+    /**
+     * Delete the Book from the database
+     * @return  The Task for adding listeners to.
+     */
+    public Task<Void> delete() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
+
+        return db.child(this.owner).child(this.isbn).removeValue();
     }
 
     /**
