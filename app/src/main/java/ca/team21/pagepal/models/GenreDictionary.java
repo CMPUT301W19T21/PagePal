@@ -18,7 +18,7 @@ public class GenreDictionary {
         }
 
         else{
-            genreScore.put(genre, 1);
+            genreScore.put(genre, 0);
 
         }
 

@@ -10,23 +10,20 @@ import android.widget.TextView;
 
 import com.google.firebase.database.core.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import ca.team21.pagepal.Book;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.BookHistoryList;
+import ca.team21.pagepal.models.User;
+import ca.team21.pagepal.views.BorrowingFragment;
 
 public class BookHistoryRecyclerViewAdapter extends RecyclerView.Adapter<BookHistoryRecyclerViewAdapter.ViewHolder>{
 
-    private List<BookHistoryList> listItems;
-    private Context context;
+    private List<BookHistoryList> mHistory;
+    private final BorrowingFragment.OnListFragmentInteractionListener mListener;
+    private User owner;
 
-    public BookHistoryRecyclerViewAdapter(List<BookHistoryList>, Context context){
-        this.listItems = listItems;
-        this.context = context;
-
-
-    }
 
 
     @Override
@@ -38,9 +35,8 @@ public class BookHistoryRecyclerViewAdapter extends RecyclerView.Adapter<BookHis
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BookHistoryRecyclerViewAdapter.ViewHolder viewHolder, int position) {
-        BookHistoryList listItem = listItems.get(position);
-    }
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+
 
     @Override
     public int getItemCount() {
