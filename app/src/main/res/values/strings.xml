@@ -61,4 +61,5 @@
     <string name="title_activity_display_maps">Map</string>
     <string name="view_location">View Pickup Location</string>
     <string name="set_location">Set Pickup Location</string>
+    <string name="borrowing_title"><![CDATA[Borrowing & Requested Books]]></string>
 </resources>
