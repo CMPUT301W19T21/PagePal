@@ -12,7 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Loan {
 
-    private String book;
+    private Book book;
     private String owner;
     private String borrower;
 
@@ -22,7 +22,7 @@ public class Loan {
         */
     }
 
-    public Loan(String book, String owner, String borrower) {
+    public Loan(Book book, String owner, String borrower) {
         this.book = book;
         this.owner = owner;
         this.borrower = borrower;
@@ -32,7 +32,7 @@ public class Loan {
      * Set the book being loaned.
      * @param book  The ISBN of the book.
      */
-    public void setBook(String book) {
+    public void setBook(Book book) {
         this.book = book;
     }
 
@@ -56,7 +56,7 @@ public class Loan {
      * Get the book being loaned.
      * @return  The ISBN of the book.
      */
-    public String getBook() {
+    public Book getBook() {
         return book;
     }
 
@@ -114,10 +114,10 @@ public class Loan {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("loans");
 
         db.child("borrower").child(this.getBorrower())
-                .child(this.getBook())
+                .child(this.getBook().getIsbn())
                 .setValue(this).addOnCompleteListener(borrowerListener);
         db.child("owner").child(this.getOwner())
-                .child(this.getBook())
+                .child(this.getBook().getIsbn())
                 .setValue(this).addOnCompleteListener(ownerListener);
     }
 
@@ -162,10 +162,10 @@ public class Loan {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("loans");
 
         db.child("borrower").child(this.getBorrower())
-                .child(this.getBook())
+                .child(this.getBook().getIsbn())
                 .removeValue(borrowerListener);
         db.child("owner").child(this.getOwner())
-                .child(this.getBook())
+                .child(this.getBook().getIsbn())
                 .removeValue(ownerListener);
     }
 }

@@ -243,7 +243,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void sendRequest() {
-        Request request = new Request(book.getOwner(), user.getUsername(), book.getIsbn());
+        Request request = new Request(book.getOwner(), user.getUsername(), book);
         request.writeToDb();
 
         String message = user.getUsername() + " has requested " + book.getTitle();
@@ -274,7 +274,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         if (requesters.size() == 0) { // if last remaining request declined
             // update book to be Available
             String owner = requestToDecline.getOwner();
-            String bookIsbn = requestToDecline.getBook();
+            String bookIsbn = requestToDecline.getBook().getIsbn();
             DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
             bookRef.child("status").setValue(Book.AVAILABLE);
             Toast.makeText(this, "Last remaining request declined", Toast.LENGTH_LONG).show();
@@ -293,7 +293,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         startActivityForResult(intent, MAP_REQUEST_CODE);
 
         String owner = selectedRequest.getOwner();
-        String bookIsbn = selectedRequest.getBook();
+        String bookIsbn = selectedRequest.getBook().getIsbn();
         DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
         bookRef.child("status").setValue(Book.ACCEPTED);
         bookRef.child("borrower").setValue(selectedRequest.getRequester());

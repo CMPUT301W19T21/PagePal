@@ -24,10 +24,9 @@ public class RequestTest {
 
     @Test
     public void testSetBook() {
-        String isbn = "13564987";
-        request.setBook(isbn);
+        request.setBook(book);
 
-        assertEquals(isbn, request.getBook());
+        assertEquals(book, request.getBook());
     }
 
     @Test
