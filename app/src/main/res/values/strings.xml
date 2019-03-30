@@ -35,6 +35,21 @@
     <string name="save_label">Save</string>
     <string name="cancel_label">Cancel</string>
 
+    <string-array name = "Genre">
+        <item>Choose Genre</item>
+        <item>Fantasy</item>
+        <item>Western</item>
+        <item>Romance</item>
+        <item>Thriller / Horror</item>
+        <item>Mystery</item>
+        <item>Detective Story</item>
+        <item>Musical / Play</item>
+        <item>Comics </item>
+        <item>Children Books</item>
+        <item>Other</item>
+
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="borrowing">Borrowing</string>
@@ -54,4 +69,5 @@
     <string name="borrower_label">Borrowed by:</string>
     <string name="display_borrower">Borrowed by: %1$s</string>
     <string name="display_owner">Owned by: %1$s</string>
+
 </resources>

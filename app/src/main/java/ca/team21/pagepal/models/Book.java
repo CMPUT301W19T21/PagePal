@@ -58,6 +58,7 @@ public class Book implements Parcelable {
         this.title = title;
         this.author = author;
         this.isbn = ISBN;
+        this.genre = genre;
         this.description = ""; // defaults to empty string
         this.status = AVAILABLE; // defaults to available
         //this.photo = new File("");
@@ -73,6 +74,7 @@ public class Book implements Parcelable {
         this.author = parcel.readString();
         this.description = parcel.readString();
         this.isbn = parcel.readString();
+        this.genre = parcel.readString();
         this.status = parcel.readString();
         this.owner = parcel.readString();
         this.borrower = parcel.readString();
@@ -97,7 +99,8 @@ public class Book implements Parcelable {
 
     /**
      * Writes Book object to a parcel
-     * @param dest parcel to write to
+     *
+     * @param dest  parcel to write to
      * @param flags flags used by parcelable
      */
     public void writeToParcel(Parcel dest, int flags) {
@@ -108,6 +111,7 @@ public class Book implements Parcelable {
         dest.writeString(status);
         dest.writeString(owner);
         dest.writeString(borrower);
+        dest.writeString(genre);
         //dest.writeValue(photo);
     }
 
@@ -134,6 +138,16 @@ public class Book implements Parcelable {
     }
 
     /**
+     * Sets the genre of the book
+     *
+     * @param genre Genre of the book
+     */
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+
+    /**
      * Sets description.
      *
      * @param description the description
@@ -154,14 +168,14 @@ public class Book implements Parcelable {
     /**
      * Sets status.
      *
-     * @param s the status
+     * @param status the status
      */
     public void setStatus(String status) {
         // if the passed string is not one of the status types
         if (!status.equals(AVAILABLE) &&
-            !status.equals(REQUESTED) &&
-            !status.equals(ACCEPTED) &&
-            !status.equals(BORROWED)){
+                !status.equals(REQUESTED) &&
+                !status.equals(ACCEPTED) &&
+                !status.equals(BORROWED)) {
             throw new IllegalArgumentException("Incorrect status type");
         } else {
             this.status = status;
@@ -228,6 +242,15 @@ public class Book implements Parcelable {
     }
 
     /**
+     * Gets Genre.
+     *
+     * @return the genre
+     */
+    public String getGenre() {
+        return genre;
+    }
+
+    /**
      * Gets status.
      *
      * @return the status
@@ -259,7 +282,4 @@ public class Book implements Parcelable {
      *
      * @return the genre
      */
-    public String getGenre() {
-        return genre;
-    }
 }

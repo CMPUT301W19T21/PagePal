@@ -7,8 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +31,7 @@ import static ca.team21.pagepal.views.MainActivity.BOOK_EXTRA;
 /**
  * Activity to edit and add books
  */
-public class EditBookActivity extends AppCompatActivity implements View.OnClickListener{
+public class EditBookActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener{
 
     private String TAG = "EditBookActivity";
 
@@ -58,6 +62,12 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         titleEdit = findViewById(R.id.title_edit);
         authorEdit = findViewById(R.id.author_edit);
         descriptionEdit = findViewById(R.id.description_edit);
+        Spinner spinner = findViewById(R.id.genre_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Genre, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+
         uploadImageButton = findViewById(R.id.upload_image_button);
         scanISBNButton = findViewById(R.id.scan_ISBN_button);
         doneButton = findViewById(R.id.done_button);
@@ -67,6 +77,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         scanISBNButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
+        spinner.setOnItemSelectedListener(this);
 
         if (sentIntent.hasExtra(BOOK_EXTRA)) {
             book = sentIntent.getParcelableExtra(BOOK_EXTRA);
@@ -76,7 +87,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             bookQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for(DataSnapshot data: dataSnapshot.getChildren()) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
                         Book dbBook = data.getValue(Book.class);
                         if (dbBook.getIsbn().equals(book.getIsbn())) {
                             bookKey = data.getKey();
@@ -94,9 +105,30 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             titleEdit.setText(book.getTitle());
             authorEdit.setText(book.getAuthor());
             descriptionEdit.setText(book.getDescription());
+            String searchedItem = book.getGenre();
+            int itemPosition = adapter.getPosition(searchedItem);
+            spinner.setSelection(itemPosition);
+
         }
 
     }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+
+        if (parent.getItemAtPosition(position).equals("Choose Genre")) {
+            //do nothing
+        } else {
+            String genreEdit = parent.getItemAtPosition(position).toString();
+            book.setGenre(genreEdit);
+            //Toast.makeText(parent.getContext(), genreEdit, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -128,6 +160,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         String author = authorEdit.getText().toString();
         String description = descriptionEdit.getText().toString();
 
+
         if (book == null) {
             book = new Book();
             book.setStatus(AVAILABLE);
@@ -138,6 +171,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         book.setAuthor(author);
         book.setDescription(description);
         book.setOwner(FirebaseAuth.getInstance().getUid());
+
 
         writeBook(book);
         returnIntent = new Intent();
@@ -166,4 +200,6 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             });
         }
     }
+
+
 }

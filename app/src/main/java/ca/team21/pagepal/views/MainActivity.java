@@ -1,5 +1,7 @@
 package ca.team21.pagepal.views;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,10 +10,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.support.v7.widget.SearchView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Date;
 
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.controllers.ReccomendationRecyclerViewAdapter;
 import ca.team21.pagepal.models.Book;
 import ca.team21.pagepal.models.User;
 
@@ -156,6 +163,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+        //return true;
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -245,6 +260,15 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(USER_EXTRA, user);
         startActivityForResult(intent, EDIT_USER);
     }
+
+   /** private void initRecyclerView(){
+        LinearLayout layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        ReccomendationRecyclerViewAdapter = new ReccomendationRecyclerViewAdapter(this, );
+        recyclerView.setAdapter(adapter);
+
+    }
+    */
 
 
 }
