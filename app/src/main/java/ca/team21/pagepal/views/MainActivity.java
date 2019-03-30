@@ -33,6 +33,8 @@ import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.Book;
 import ca.team21.pagepal.models.User;
 
+import static android.content.Intent.EXTRA_TEXT;
+
 /**
  * Home page activity, this is the first thing the user sees after logging in. From this page they
  * can access all of the functionality of the app using a bottom navigation bar.
@@ -112,9 +114,9 @@ public class MainActivity extends AppCompatActivity
             final String keyword = getIntent().getStringExtra(SearchManager.QUERY);
             queryBooks(keyword);
         }
-        if (intent.hasExtra(USER_EXTRA)) {
-            User userToView = intent.getParcelableExtra(USER_EXTRA);
-            loadFragment(ProfileFragment.newInstance(userToView));
+        if (intent.hasExtra(EXTRA_TEXT)) {
+            String username = intent.getStringExtra(EXTRA_TEXT);
+            loadFragment(ProfileFragment.newInstance(username));
         }
 
         // Wait for user to authenticate or timeout
@@ -234,10 +236,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onHomeInteraction() {
-    }
-
-    @Override
-    public void onBorrowingInteraction() {
     }
 
     /**
