@@ -7,4 +7,8 @@
         <item name="accepted">Accepted</item>
         <item name="borrowed">Borrowed</item>
     </string-array>
+    <string-array name="borrowing_filters">
+        <item name="borrowing">Borrowing</item>
+        <item name="requested">Requested</item>
+    </string-array>
 </resources>

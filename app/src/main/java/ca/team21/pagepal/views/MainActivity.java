@@ -236,9 +236,6 @@ public class MainActivity extends AppCompatActivity
     public void onHomeInteraction() {
     }
 
-    @Override
-    public void onBorrowingInteraction() {
-    }
 
     /**
      * Responds to clicking the Add Book button

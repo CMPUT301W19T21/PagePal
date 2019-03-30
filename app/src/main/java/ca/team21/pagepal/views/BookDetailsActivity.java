@@ -243,6 +243,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void sendRequest() {
+        book.setStatus(Book.REQUESTED);
         Request request = new Request(book.getOwner(), user.getUsername(), book);
         request.writeToDb();
 
@@ -252,7 +253,6 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         Notification notification = new Notification(message, senderUsername, recipientUsername, book.getIsbn(), book.getOwner());
         notification.writeToDb();
 
-        book.setStatus(Book.REQUESTED);
         book.writeToDb();
         finish();
     }
