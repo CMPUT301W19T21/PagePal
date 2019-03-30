@@ -166,6 +166,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
             mStatusView = (TextView) view.findViewById(R.id.status);
             usernameView = view.findViewById(R.id.user);
             editButton = view.findViewById(R.id.edit_button);
+
             deleteButton = view.findViewById(R.id.delete_button);
         }
 

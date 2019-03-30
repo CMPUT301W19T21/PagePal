@@ -1,6 +1,7 @@
 package ca.team21.pagepal.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -99,7 +100,19 @@ public class ProfileFragment extends Fragment {
                     onButtonPressed(mUser);
                 }
             });
+
+            Button HistoryButton = view.findViewById(R.id.history_button);
+            HistoryButton.setVisibility(VISIBLE);
+            HistoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), BookHistoryActivity.class);
+                    startActivity(intent);
+                }
+            });
+
         }
+
 
         usernameView = view.findViewById(R.id.username);
         emailView = view.findViewById(R.id.email);

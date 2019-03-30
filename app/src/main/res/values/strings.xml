@@ -34,6 +34,7 @@
     <string name="location">Location</string>
     <string name="save_label">Save</string>
     <string name="cancel_label">Cancel</string>
+    <string name="ReadingHistory">Reading History</string>
 
     <string-array name = "Genre">
         <item>Choose Genre</item>
