@@ -39,7 +39,7 @@ public class ProfileFragment extends Fragment {
     private static final String ARG_USER = "user";
     private static final String ARG_USERNAME = "username";
     // Parameters
-    private User mUser = new User();
+    private User mUser;
     private String authUid;
 
     private OnProfileInteractionListener mListener;
@@ -80,6 +80,7 @@ public class ProfileFragment extends Fragment {
         Bundle args = getArguments();
         String username = args.getString(ARG_USERNAME);
         if (username != null) {
+            mUser = new User();
             FirebaseDatabase.getInstance().getReference("users").child(username)
                     .addValueEventListener(new ValueEventListener() {
                 @Override

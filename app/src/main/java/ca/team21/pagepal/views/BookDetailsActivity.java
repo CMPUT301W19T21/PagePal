@@ -1,6 +1,7 @@
 package ca.team21.pagepal.views;
 
 import android.content.Intent;
+import android.databinding.Observable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -30,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import ca.team21.pagepal.BR;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.Notification;
 import ca.team21.pagepal.models.Request;
@@ -81,6 +83,50 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         book = intent.getParcelableExtra(BOOK_EXTRA);
         user = intent.getParcelableExtra(USER_EXTRA);
 
+        FirebaseDatabase.getInstance().getReference("books").child(book.getOwner()).child(book.getIsbn())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Book temp = dataSnapshot.getValue(Book.class);
+                        book.setTitle(temp.getTitle());
+                        book.setAuthor(temp.getAuthor());
+                        book.setDescription(temp.getDescription());
+                        book.setIsbn(temp.getIsbn());
+                        book.setStatus(temp.getStatus());
+                        book.setGenre(temp.getGenre());
+                        book.setOwner(temp.getOwner());
+                        book.setPhoto(temp.getPhoto());
+                        book.setBorrower(temp.getBorrower());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+        book.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                switch (propertyId) {
+                    case BR.title:
+                        titleView.setText(book.getTitle());
+                    case BR.author:
+                        authorView.setText(book.getAuthor());
+                    case BR.isbn:
+                        isbnView.setText("ISBN: " + book.getIsbn());
+                    case BR.status:
+                        statusView.setText(book.getStatus());
+                    case BR.description:
+                        descriptionView.setText(book.getDescription());
+                    case BR.owner:
+                        ownerView.setText("Owner: " + book.getOwner());
+                    case BR.photo:
+                        setPicture();
+                }
+            }
+        });
+
         imageView = findViewById(R.id.book_image_view);
         titleView = findViewById(R.id.title_view);
         authorView = findViewById(R.id.author_view);
@@ -115,16 +161,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         isbnView.setText(isbnLabel);
         statusView.setText(book.getStatus().toUpperCase());
         descriptionView.setText(book.getDescription());
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        if (!book.getPhoto().equals("")){
-            byte [] stringToBit = Base64.decode(book.getPhoto(),Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
-            Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
-            imageView.setImageBitmap(rotated);
-        }
 
-
+        setPicture();
 
         ownerUsername = book.getOwner();
 
@@ -193,8 +231,9 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.owner_view:
                 Intent viewUserIntent = new Intent(this, MainActivity.class);
-                viewUserIntent.putExtra(MainActivity.USER_EXTRA, book.getOwner());
+                viewUserIntent.putExtra(Intent.EXTRA_TEXT, book.getOwner());
                 startActivity(viewUserIntent);
+                break;
             case R.id.view_location_button:
                 viewLocation();
         }
@@ -234,6 +273,17 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
+    private void setPicture() {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        if (!book.getPhoto().equals("")) {
+            byte[] stringToBit = Base64.decode(book.getPhoto(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
+            Bitmap rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            imageView.setImageBitmap(rotated);
+        }
+    }
+
     private void updateSpinner() {
         requesterUsernames.clear();
         for (Request r: requesters) {
@@ -243,7 +293,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void sendRequest() {
-        Request request = new Request(book.getOwner(), user.getUsername(), book.getIsbn());
+        book.setStatus(Book.REQUESTED);
+        Request request = new Request(book.getOwner(), user.getUsername(), book);
         request.writeToDb();
 
         String message = user.getUsername() + " has requested " + book.getTitle();
@@ -252,7 +303,6 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         Notification notification = new Notification(message, senderUsername, recipientUsername, book.getIsbn(), book.getOwner());
         notification.writeToDb();
 
-        book.setStatus(Book.REQUESTED);
         book.writeToDb();
         finish();
     }
@@ -274,7 +324,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         if (requesters.size() == 0) { // if last remaining request declined
             // update book to be Available
             String owner = requestToDecline.getOwner();
-            String bookIsbn = requestToDecline.getBook();
+            String bookIsbn = requestToDecline.getBook().getIsbn();
             DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
             bookRef.child("status").setValue(Book.AVAILABLE);
             Toast.makeText(this, "Last remaining request declined", Toast.LENGTH_LONG).show();
@@ -293,7 +343,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         startActivityForResult(intent, MAP_REQUEST_CODE);
 
         String owner = selectedRequest.getOwner();
-        String bookIsbn = selectedRequest.getBook();
+        String bookIsbn = selectedRequest.getBook().getIsbn();
         DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
         bookRef.child("status").setValue(Book.ACCEPTED);
         bookRef.child("borrower").setValue(selectedRequest.getRequester());

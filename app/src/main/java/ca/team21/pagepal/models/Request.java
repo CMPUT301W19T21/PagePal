@@ -15,7 +15,7 @@ public class Request {
 
     private String owner;
     private String requester;
-    private String book;
+    private Book book;
 
     // didn't use Location class because of errors when reading from Firebase due to Location not having an empty constructor
     private Double latitude;
@@ -23,7 +23,7 @@ public class Request {
 
     public Request() {}
 
-    public Request(String owner, String requester, String book) {
+    public Request(String owner, String requester, Book book) {
         this.owner = owner;
         this.requester = requester;
         this.book = book;
@@ -31,7 +31,7 @@ public class Request {
         this.longitude = 0.0;
     }
 
-    public Request(String owner, String requester, String book, Double latitude, Double longitude) {
+    public Request(String owner, String requester, Book book, Double latitude, Double longitude) {
         this.owner = owner;
         this.requester = requester;
         this.book = book;
@@ -59,7 +59,7 @@ public class Request {
      * Set the book that is being requested.
      * @param book  The ISBN String of the book.
      */
-    public void setBook(String book) {
+    public void setBook(Book book) {
         this.book = book;
     }
 
@@ -67,7 +67,7 @@ public class Request {
      * Get the ISBN of the book being requested.
      * @return  The ISBN String.
      */
-    public String getBook() {
+    public Book getBook() {
         return book;
     }
 
@@ -141,9 +141,9 @@ public class Request {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
 
         db.child("requester").child(this.getRequester())
-                .child(this.getOwner() + this.getBook())
+                .child(this.getOwner() + this.getBook().getIsbn())
                 .setValue(this).addOnCompleteListener(requesterListener);
-        db.child("owner").child(this.getOwner() + this.getBook())
+        db.child("owner").child(this.getOwner() + this.getBook().getIsbn())
                 .child(this.getRequester())
                 .setValue(this).addOnCompleteListener(ownerListener);
     }
@@ -189,9 +189,9 @@ public class Request {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("requests");
 
         db.child("requester").child(this.getRequester())
-                .child(this.getOwner() + this.getBook())
+                .child(this.getOwner() + this.getBook().getIsbn())
                 .removeValue(requesterListener);
-        db.child("owner").child(this.getOwner() + this.getBook())
+        db.child("owner").child(this.getOwner() + this.getBook().getIsbn())
                 .child(this.getRequester())
                 .removeValue(ownerListener);
     }

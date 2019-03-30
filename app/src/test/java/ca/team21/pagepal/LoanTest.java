@@ -2,6 +2,7 @@ package ca.team21.pagepal;
 
 import org.junit.Test;
 
+import ca.team21.pagepal.models.Book;
 import ca.team21.pagepal.models.Loan;
 
 import static org.junit.Assert.assertEquals;
@@ -12,10 +13,10 @@ public class LoanTest {
 
     @Test
     public void testSetBook() {
-        String isbn = "12345";
-        loan.setBook(isbn);
+        Book book = new Book();
+        loan.setBook(book);
 
-        assertEquals(isbn, loan.getBook());
+        assertEquals(book, loan.getBook());
     }
 
     @Test
