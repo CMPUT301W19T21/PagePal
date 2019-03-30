@@ -80,6 +80,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         cancelButton.setOnClickListener(this);
 
         if (savedInstanceState != null) {
+            book = savedInstanceState.getParcelable("BOOK");
             isbnView.setText(savedInstanceState.getString("ISBN"));
             titleEdit.setText(savedInstanceState.getString("TITLE"));
             authorEdit.setText(savedInstanceState.getString("AUTHOR"));
@@ -114,11 +115,13 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelable("BOOK", book != null ? book : new Book());
         savedInstanceState.putString("ISBN", isbnView.getText().toString());
         savedInstanceState.putString("TITLE", titleEdit.getText().toString());
         savedInstanceState.putString("AUTHOR", authorEdit.getText().toString());
         savedInstanceState.putString("DESCRIPTION", descriptionEdit.getText().toString());
-        savedInstanceState.putString("PHOTO", book.getPhoto());
+        Book tempBook = savedInstanceState.getParcelable("BOOK");
+        savedInstanceState.putString("PHOTO", tempBook != null ? tempBook.getPhoto() : "");
     }
 
     @Override
@@ -129,18 +132,27 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 return;
             case R.id.delete_image_button:
-                book.setPhoto("");
-                book.writeToDb();
-                coverPhoto.setImageResource(R.drawable.ic_book_24px);
-                break;
+                if (book.getPhoto().equals("")) {
+                    break;
+                } else {
+                    book.setPhoto("");
+                    book.writeToDb();
+                    coverPhoto.setImageResource(R.drawable.ic_book_24px);
+                    break;
+                }
             case R.id.isbn:
                 IntentIntegrator scanIntegrator = new IntentIntegrator(this);
                 scanIntegrator.initiateScan();
                 return;
             case R.id.done_button:
-                processInput();
-                finish();
-                return;
+                if (isbnView.getText().toString().equals(getString(R.string.isbn_prompt))) {
+                    isbnView.setError("ISBN must be scanned!");
+                    return;
+                } else {
+                    processInput();
+                    finish();
+                    return;
+                }
             case R.id.cancel_button:
                 finish();
                 return;
@@ -181,9 +193,10 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
 
         } else {
             IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            if (scanningResult != null) {
+            if (scanningResult != null && scanningResult.getContents() != null) {
                 isbnView.setText(scanningResult.getContents());
             } else {
+                isbnView.setText(getString(R.string.isbn_prompt));
                 Toast toast = Toast.makeText(getApplicationContext(), "no scan data", Toast.LENGTH_SHORT);
                 toast.show();
             }

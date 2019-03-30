@@ -190,7 +190,7 @@ public class Book implements Parcelable {
     }
 
     public String getPhoto() {
-        return photo;
+        return photo != null ? photo : "";
     }
 
     /**
