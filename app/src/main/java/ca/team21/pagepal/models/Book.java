@@ -1,12 +1,20 @@
 package ca.team21.pagepal.models;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import ca.team21.pagepal.BR;
 
 //import java.io.File;
 
@@ -15,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
  * Represents a Book
  * TODO: Implement cover photo (will need to store in database somehow, can't just be a local file)
  */
-public class Book implements Parcelable {
+public class Book extends BaseObservable implements Parcelable {
 
     /**
      * The constant AVAILABLE.
@@ -129,6 +137,7 @@ public class Book implements Parcelable {
      */
     public void setTitle(String title) {
         this.title = title;
+        notifyPropertyChanged(BR.title);
     }
 
     /**
@@ -138,6 +147,7 @@ public class Book implements Parcelable {
      */
     public void setAuthor(String author) {
         this.author = author;
+        notifyPropertyChanged(BR.author);
     }
 
     /**
@@ -147,6 +157,7 @@ public class Book implements Parcelable {
      */
     public void setDescription(String description) {
         this.description = description;
+        notifyPropertyChanged(BR.description);
     }
 
     /**
@@ -156,6 +167,7 @@ public class Book implements Parcelable {
      */
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+        notifyPropertyChanged(BR.isbn);
     }
 
     /**
@@ -172,6 +184,7 @@ public class Book implements Parcelable {
             throw new IllegalArgumentException("Incorrect status type");
         } else {
             this.status = status;
+            notifyPropertyChanged(BR.status);
         }
     }
 
@@ -182,15 +195,23 @@ public class Book implements Parcelable {
      */
     public void setOwner(String username) {
         this.owner = username;
+        notifyPropertyChanged(BR.owner);
     }
 
 
     public void setPhoto(String photo) {
         this.photo = photo;
+        notifyPropertyChanged(BR.photo);
     }
 
+    public void setGenre(String genre) {
+        this.genre = genre;
+        notifyPropertyChanged(BR.genre);
+    }
+
+    @Bindable
     public String getPhoto() {
-        return photo;
+        return photo != null ? photo : "";
     }
 
     /**
@@ -198,8 +219,9 @@ public class Book implements Parcelable {
      *
      * @return the title
      */
+    @Bindable
     public String getTitle() {
-        return title;
+        return title != null ? title : "";
     }
 
     /**
@@ -207,8 +229,9 @@ public class Book implements Parcelable {
      *
      * @return the author
      */
+    @Bindable
     public String getAuthor() {
-        return author;
+        return author != null ? author : "";
     }
 
     /**
@@ -216,8 +239,9 @@ public class Book implements Parcelable {
      *
      * @return the isbn
      */
+    @Bindable
     public String getIsbn() {
-        return isbn;
+        return isbn != null ? isbn : "";
     }
 
     /**
@@ -225,8 +249,9 @@ public class Book implements Parcelable {
      *
      * @return the description
      */
+    @Bindable
     public String getDescription() {
-        return description;
+        return description != null ? description : "";
     }
 
     /**
@@ -234,8 +259,9 @@ public class Book implements Parcelable {
      *
      * @return the status
      */
+    @Bindable
     public String getStatus() {
-        return status;
+        return status != null ? status : "";
     }
 
     /**
@@ -243,8 +269,9 @@ public class Book implements Parcelable {
      *
      * @return the owner
      */
+    @Bindable
     public String getOwner() {
-        return owner;
+        return owner != null ? owner : "";
     }
 
     /**
@@ -252,20 +279,19 @@ public class Book implements Parcelable {
      *
      * @return the genre
      */
+    @Bindable
     public String getGenre() {
-        return genre;
+        return genre != null ? genre : "";
     }
 
     public void setBorrower(String borrower) {
         this.borrower = borrower;
+        notifyPropertyChanged(BR.borrower);
     }
 
+    @Bindable
     public String getBorrower() {
-        if (borrower == null) {
-            return "";
-        } else {
-            return borrower;
-        }
+        return borrower != null ? borrower : "";
     }
 
     /**
