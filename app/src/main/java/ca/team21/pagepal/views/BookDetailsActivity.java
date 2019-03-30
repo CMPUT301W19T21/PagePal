@@ -108,22 +108,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         book.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable sender, int propertyId) {
-                switch (propertyId) {
-                    case BR.title:
-                        titleView.setText(book.getTitle());
-                    case BR.author:
-                        authorView.setText(book.getAuthor());
-                    case BR.isbn:
-                        isbnView.setText("ISBN: " + book.getIsbn());
-                    case BR.status:
-                        statusView.setText(book.getStatus());
-                    case BR.description:
-                        descriptionView.setText(book.getDescription());
-                    case BR.owner:
-                        ownerView.setText("Owner: " + book.getOwner());
-                    case BR.photo:
-                        setPicture();
-                }
+                setDisplayInfo();
             }
         });
 
@@ -155,6 +140,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, requesterUsernames);
         requesterSpinner.setAdapter(spinnerAdapter);
 
+    }
+    private void setDisplayInfo () {
         titleView.setText(book.getTitle());
         authorView.setText(book.getAuthor());
         String isbnLabel = "ISBN: " + book.getIsbn();
@@ -176,6 +163,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
         if (isOwner) { // if the current user owns this book
             ownerLabel = "You own this book";
+            ownerView.setClickable(false);
             if (isRequested) {
                 acceptButton.setVisibility(View.VISIBLE);
                 declineButton.setVisibility(View.VISIBLE);
@@ -275,7 +263,6 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
     private void setPicture() {
         Matrix matrix = new Matrix();
-        matrix.postRotate(90);
         if (!book.getPhoto().equals("")) {
             byte[] stringToBit = Base64.decode(book.getPhoto(), Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
