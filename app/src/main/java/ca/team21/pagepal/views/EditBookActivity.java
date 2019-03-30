@@ -2,24 +2,19 @@ package ca.team21.pagepal.views;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -30,7 +25,6 @@ import java.io.IOException;
 
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.Book;
-import ca.team21.pagepal.models.CoverPhoto;
 import ca.team21.pagepal.models.User;
 import id.zelory.compressor.Compressor;
 
@@ -50,12 +44,13 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
     private Intent sentIntent;
     private Intent returnIntent;
 
-    private EditText isbnEdit;
+    private ImageView coverPhoto;
+    private Button isbnView;
     private EditText titleEdit;
     private EditText authorEdit;
     private EditText descriptionEdit;
     private Button uploadImageButton;
-    private Button scanISBNButton;
+    private Button deleteImageButton;
     private Button doneButton;
     private Button cancelButton;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -68,32 +63,62 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
 
         sentIntent = getIntent();
 
-        isbnEdit = findViewById(R.id.isbn_edit);
+        coverPhoto = findViewById(R.id.photo);
+        isbnView = findViewById(R.id.isbn);
         titleEdit = findViewById(R.id.title_edit);
         authorEdit = findViewById(R.id.author_edit);
         descriptionEdit = findViewById(R.id.description_edit);
         uploadImageButton = findViewById(R.id.upload_image_button);
-        scanISBNButton = findViewById(R.id.scan_ISBN_button);
+        deleteImageButton = findViewById(R.id.delete_image_button);
         doneButton = findViewById(R.id.done_button);
         cancelButton = findViewById(R.id.cancel_button);
 
+        isbnView.setOnClickListener(this);
         uploadImageButton.setOnClickListener(this);
-        scanISBNButton.setOnClickListener(this);
+        deleteImageButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
 
-        if (sentIntent.hasExtra(BOOK_EXTRA)) {
+        if (savedInstanceState != null) {
+            isbnView.setText(savedInstanceState.getString("ISBN"));
+            titleEdit.setText(savedInstanceState.getString("TITLE"));
+            authorEdit.setText(savedInstanceState.getString("AUTHOR"));
+            descriptionEdit.setText(savedInstanceState.getString("DESCRIPTION"));
+            setDisplayPhoto(savedInstanceState.getString("PHOTO"));
+        } else if (sentIntent.hasExtra(BOOK_EXTRA)) {
             book = sentIntent.getParcelableExtra(BOOK_EXTRA);
 
-            isbnEdit.setText(book.getIsbn());
+            isbnView.setText(book.getIsbn());
             titleEdit.setText(book.getTitle());
             authorEdit.setText(book.getAuthor());
             descriptionEdit.setText(book.getDescription());
+            setDisplayPhoto(book.getPhoto());
+
         } else {
             book = new Book();
             book.setStatus(AVAILABLE);
         }
 
+    }
+
+    private void setDisplayPhoto(String bitString) {
+        Matrix matrix = new Matrix();
+        if (bitString != null && !bitString.equals("")) {
+            byte [] stringToBit = Base64.decode(bitString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
+            Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
+            coverPhoto.setImageBitmap(rotated);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("ISBN", isbnView.getText().toString());
+        savedInstanceState.putString("TITLE", titleEdit.getText().toString());
+        savedInstanceState.putString("AUTHOR", authorEdit.getText().toString());
+        savedInstanceState.putString("DESCRIPTION", descriptionEdit.getText().toString());
+        savedInstanceState.putString("PHOTO", book.getPhoto());
     }
 
     @Override
@@ -102,13 +127,15 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             case R.id.upload_image_button:
                 Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                //TODO open camera to take picture of book
-                // book.setIsbn( ISBN from scan )
                 return;
-            case R.id.scan_ISBN_button:
+            case R.id.delete_image_button:
+                book.setPhoto("");
+                book.writeToDb();
+                coverPhoto.setImageResource(R.drawable.ic_book_24px);
+                break;
+            case R.id.isbn:
                 IntentIntegrator scanIntegrator = new IntentIntegrator(this);
                 scanIntegrator.initiateScan();
-                //TODO open camera to scan ISBN, auto fill info from google books
                 return;
             case R.id.done_button:
                 processInput();
@@ -146,6 +173,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
                 byte [] output = stream.toByteArray();
                 String stringPic = Base64.encodeToString(output, Base64.DEFAULT);
                 book.setPhoto(stringPic);
+                setDisplayPhoto(book.getPhoto());
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -154,7 +182,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         } else {
             IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (scanningResult != null) {
-                isbnEdit.setText(scanningResult.getContents());
+                isbnView.setText(scanningResult.getContents());
             } else {
                 Toast toast = Toast.makeText(getApplicationContext(), "no scan data", Toast.LENGTH_SHORT);
                 toast.show();
@@ -166,7 +194,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
      * doesn't exist yet.
      */
     private void processInput() {
-        String isbn = isbnEdit.getText().toString();
+        String isbn = isbnView.getText().toString();
         String title = titleEdit.getText().toString();
         String author = authorEdit.getText().toString();
         String description = descriptionEdit.getText().toString();
