@@ -262,12 +262,10 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void setPicture() {
-        Matrix matrix = new Matrix();
         if (!book.getPhoto().equals("")) {
             byte[] stringToBit = Base64.decode(book.getPhoto(), Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
-            Bitmap rotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            imageView.setImageBitmap(rotated);
+            imageView.setImageBitmap(bitmap);
         }
     }
 

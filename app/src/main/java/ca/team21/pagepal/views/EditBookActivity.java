@@ -125,13 +125,10 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setDisplayPhoto(String bitString) {
-        Matrix matrix = new Matrix();
         if (bitString != null && !bitString.equals("")) {
             byte [] stringToBit = Base64.decode(bitString, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
-            matrix.postRotate(orientation);
-            Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
-            coverPhoto.setImageBitmap(rotated);
+            coverPhoto.setImageBitmap(bitmap);
         }
     }
 
@@ -191,8 +188,13 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             }
             Bundle extras = data.getExtras();
             Bitmap image = (Bitmap) extras.get("data");
+            Matrix matrix = new Matrix();
+            if (image.getWidth() > image.getHeight()) {
+                matrix.postRotate(90);
+            }
+            Bitmap rotated = Bitmap.createBitmap(image,0,0,image.getWidth(),image.getHeight(), matrix, true);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            rotated.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteMapData = stream.toByteArray();
             try {
                 FileOutputStream fos = new FileOutputStream(f);
