@@ -52,12 +52,17 @@ public class PickMapsActivity extends FragmentActivity implements OnMapReadyCall
 
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        LatLng userLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
-                        // Sets initial marker/map to be focused on user location
-                        mMap.addMarker(new MarkerOptions().position(userLocation).title("Book Swap Location"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
-                        swapLatLng = userLocation;
+                        if (lastLocation != null) {
+                            LatLng userLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
+                            // Sets initial marker/map to be focused on user location
+                            mMap.addMarker(new MarkerOptions().position(userLocation).title("Book Swap Location"));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+                            swapLatLng = userLocation;
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Turn on Location Services", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), "Turn on Location Services", Toast.LENGTH_SHORT).show();
 
@@ -130,12 +135,18 @@ public class PickMapsActivity extends FragmentActivity implements OnMapReadyCall
                      // Gets current user location
                      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                      Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                     LatLng userLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
-                     // Sets initial marker/map to be focused on user location
-                     mMap.addMarker(new MarkerOptions().position(userLocation).title("Book Swap Location"));
-                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
-                     swapLatLng = userLocation;
+                     if (lastLocation != null) {
+                         LatLng userLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
+                         // Sets initial marker/map to be focused on user location
+                         mMap.addMarker(new MarkerOptions().position(userLocation).title("Book Swap Location"));
+                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+                         swapLatLng = userLocation;
+                     } else {
+                         Toast.makeText(getApplicationContext(), "Turn on Location Services", Toast.LENGTH_SHORT).show();
+
+                     }
                  } else {
                      Toast.makeText(getApplicationContext(), "Turn on Location Services", Toast.LENGTH_SHORT).show();
 
