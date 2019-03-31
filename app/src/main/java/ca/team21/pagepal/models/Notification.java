@@ -115,4 +115,10 @@ public class Notification {
     public void setUnread(Boolean unread) {
         this.unread = unread;
     }
+
+    public Task<Void> delete() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("notifications");
+
+        return db.child(this.getRecipient()).child(this.getTimestamp().toString()).removeValue();
+    }
 }

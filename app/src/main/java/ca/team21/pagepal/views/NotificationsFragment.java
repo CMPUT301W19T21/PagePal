@@ -2,12 +2,27 @@ package ca.team21.pagepal.views;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.controllers.NotificationRecyclerViewAdapter;
+import ca.team21.pagepal.controllers.SearchRecyclerViewAdapter;
+import ca.team21.pagepal.models.Book;
+import ca.team21.pagepal.models.Loan;
+import ca.team21.pagepal.models.Notification;
+import ca.team21.pagepal.models.User;
 
 
 /**
@@ -28,7 +43,29 @@ public class NotificationsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private NotificationRecyclerViewAdapter adapter;
     private OnNotificationsInteractionListener mListener;
+    private final User user = User.getInstance();
+
+    private ArrayList<Notification> notifications = new ArrayList<>();
+    private Query notificationsQuery;
+    private ValueEventListener notificationListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            notifications.clear();
+            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                Notification notification = data.getValue(Notification.class);
+                notifications.add(notification);
+            }
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    };
+
 
     public NotificationsFragment() {
         // Required empty public constructor
@@ -57,10 +94,10 @@ public class NotificationsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        notificationsQuery = FirebaseDatabase.getInstance().getReference().child("notifications")
+                .child(user.getUsername());
+        notificationsQuery.addValueEventListener(notificationListener);
     }
 
     @Override
