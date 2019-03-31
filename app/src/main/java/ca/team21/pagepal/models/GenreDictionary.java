@@ -21,11 +21,6 @@ public class GenreDictionary {
             genreScore.put(genre, 0);
 
         }
-
-
-
-
+        return genreScore;
     }
-
-
 }

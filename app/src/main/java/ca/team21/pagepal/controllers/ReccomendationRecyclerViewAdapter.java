@@ -19,15 +19,19 @@ import ca.team21.pagepal.views.BookFragment;
 public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<ReccomendationRecyclerViewAdapter.ViewHolder> {
 
     private final ArrayList<Book> mValues;
+    public static final String TAG = "ReccomendationAdapter";
 
     private User owner;
     private User borrower;
 
+    public ReccomendationRecyclerViewAdapter(ArrayList<Book> values) {
+        mValues = values;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Log.d(TAG, "onCreateViewHolder: called.");
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recommendation,parent, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_recommendation,viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -40,7 +44,7 @@ public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<Recc
 
     @Override
     public int getItemCount() {
-        return reccommendedBooks.size();
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

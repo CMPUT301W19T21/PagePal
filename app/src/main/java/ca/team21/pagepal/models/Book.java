@@ -1,7 +1,20 @@
 package ca.team21.pagepal.models;
 
+import android.databinding.BaseObservable;
+import android.databinding.Bindable;
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import ca.team21.pagepal.BR;
 
 //import java.io.File;
 
@@ -10,7 +23,7 @@ import android.os.Parcelable;
  * Represents a Book
  * TODO: Implement cover photo (will need to store in database somehow, can't just be a local file)
  */
-public class Book implements Parcelable {
+public class Book extends BaseObservable implements Parcelable {
 
     /**
      * The constant AVAILABLE.
@@ -36,14 +49,14 @@ public class Book implements Parcelable {
     private String status;
     private String genre;
     private String owner;
+    private String photo;
     private String borrower;
-    //private File photo;
+
 
     /**
      * Empty constructor for Book, sets default values
      */
     public Book() {
-        this.borrower = "";
         this.status = AVAILABLE;
     }
 
@@ -54,14 +67,13 @@ public class Book implements Parcelable {
      * @param author Author of the book
      * @param ISBN   isbn of the book
      */
-    public Book(String title, String author, String ISBN) {
+    public Book(String title, String author, String ISBN, String bitmap) {
         this.title = title;
         this.author = author;
         this.isbn = ISBN;
-        this.genre = genre;
         this.description = ""; // defaults to empty string
         this.status = AVAILABLE; // defaults to available
-        //this.photo = new File("");
+        this.photo = "";
     }
 
     /**
@@ -74,11 +86,11 @@ public class Book implements Parcelable {
         this.author = parcel.readString();
         this.description = parcel.readString();
         this.isbn = parcel.readString();
-        this.genre = parcel.readString();
         this.status = parcel.readString();
+        this.genre = parcel.readString();
         this.owner = parcel.readString();
+        this.photo = parcel.readString();
         this.borrower = parcel.readString();
-        //this.photo = (File) parcel.readValue(null);
     }
 
     /**
@@ -99,8 +111,7 @@ public class Book implements Parcelable {
 
     /**
      * Writes Book object to a parcel
-     *
-     * @param dest  parcel to write to
+     * @param dest parcel to write to
      * @param flags flags used by parcelable
      */
     public void writeToParcel(Parcel dest, int flags) {
@@ -109,10 +120,10 @@ public class Book implements Parcelable {
         dest.writeString(description);
         dest.writeString(isbn);
         dest.writeString(status);
-        dest.writeString(owner);
-        dest.writeString(borrower);
         dest.writeString(genre);
-        //dest.writeValue(photo);
+        dest.writeString(owner);
+        dest.writeString(photo);
+        dest.writeString(borrower);
     }
 
     public int describeContents() {
@@ -126,6 +137,7 @@ public class Book implements Parcelable {
      */
     public void setTitle(String title) {
         this.title = title;
+        notifyPropertyChanged(BR.title);
     }
 
     /**
@@ -135,17 +147,8 @@ public class Book implements Parcelable {
      */
     public void setAuthor(String author) {
         this.author = author;
+        notifyPropertyChanged(BR.author);
     }
-
-    /**
-     * Sets the genre of the book
-     *
-     * @param genre Genre of the book
-     */
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
 
     /**
      * Sets description.
@@ -154,6 +157,7 @@ public class Book implements Parcelable {
      */
     public void setDescription(String description) {
         this.description = description;
+        notifyPropertyChanged(BR.description);
     }
 
     /**
@@ -163,6 +167,7 @@ public class Book implements Parcelable {
      */
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+        notifyPropertyChanged(BR.isbn);
     }
 
     /**
@@ -173,45 +178,50 @@ public class Book implements Parcelable {
     public void setStatus(String status) {
         // if the passed string is not one of the status types
         if (!status.equals(AVAILABLE) &&
-                !status.equals(REQUESTED) &&
-                !status.equals(ACCEPTED) &&
-                !status.equals(BORROWED)) {
+            !status.equals(REQUESTED) &&
+            !status.equals(ACCEPTED) &&
+            !status.equals(BORROWED)){
             throw new IllegalArgumentException("Incorrect status type");
         } else {
             this.status = status;
+            notifyPropertyChanged(BR.status);
         }
     }
 
     /**
      * Sets owner.
      *
-     * @param uid the uid of the owner
+     * @param username the username of the owner
      */
-    public void setOwner(String uid) {
-        this.owner = uid;
+    public void setOwner(String username) {
+        this.owner = username;
+        notifyPropertyChanged(BR.owner);
     }
 
-    /**
-     * Sets borrower.
-     *
-     * @param uid the uid of the borrower
-     */
-    public void setBorrower(String uid) {
-        this.borrower = uid;
-    }
-    /*
-    public void setPhoto(File photo) {
+
+    public void setPhoto(String photo) {
         this.photo = photo;
-    } */
+        notifyPropertyChanged(BR.photo);
+    }
 
+    public void setGenre(String genre) {
+        this.genre = genre;
+        notifyPropertyChanged(BR.genre);
+    }
+
+    @Bindable
+    public String getPhoto() {
+        return photo != null ? photo : "";
+    }
 
     /**
      * Gets title.
      *
      * @return the title
      */
+    @Bindable
     public String getTitle() {
-        return title;
+        return title != null ? title : "";
     }
 
     /**
@@ -219,8 +229,9 @@ public class Book implements Parcelable {
      *
      * @return the author
      */
+    @Bindable
     public String getAuthor() {
-        return author;
+        return author != null ? author : "";
     }
 
     /**
@@ -228,8 +239,9 @@ public class Book implements Parcelable {
      *
      * @return the isbn
      */
+    @Bindable
     public String getIsbn() {
-        return isbn;
+        return isbn != null ? isbn : "";
     }
 
     /**
@@ -237,17 +249,9 @@ public class Book implements Parcelable {
      *
      * @return the description
      */
+    @Bindable
     public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Gets Genre.
-     *
-     * @return the genre
-     */
-    public String getGenre() {
-        return genre;
+        return description != null ? description : "";
     }
 
     /**
@@ -255,8 +259,9 @@ public class Book implements Parcelable {
      *
      * @return the status
      */
+    @Bindable
     public String getStatus() {
-        return status;
+        return status != null ? status : "";
     }
 
     /**
@@ -264,17 +269,9 @@ public class Book implements Parcelable {
      *
      * @return the owner
      */
+    @Bindable
     public String getOwner() {
-        return owner;
-    }
-
-    /**
-     * Gets borrower.
-     *
-     * @return the borrower
-     */
-    public String getBorrower() {
-        return borrower;
+        return owner != null ? owner : "";
     }
 
     /**
@@ -282,4 +279,38 @@ public class Book implements Parcelable {
      *
      * @return the genre
      */
+    @Bindable
+    public String getGenre() {
+        return genre != null ? genre : "";
+    }
+
+    public void setBorrower(String borrower) {
+        this.borrower = borrower;
+        notifyPropertyChanged(BR.borrower);
+    }
+
+    @Bindable
+    public String getBorrower() {
+        return borrower != null ? borrower : "";
+    }
+
+    /**
+     * Write the Book to the database.
+     * @return  The Task for adding listeners to.
+     */
+    public Task<Void> writeToDb() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
+
+        return db.child(this.owner).child(this.isbn).setValue(this);
+    }
+
+    /**
+     * Delete the Book from the database
+     * @return  The Task for adding listeners to.
+     */
+    public Task<Void> delete() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("books");
+
+        return db.child(this.owner).child(this.isbn).removeValue();
+    }
 }

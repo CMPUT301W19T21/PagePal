@@ -50,8 +50,6 @@
         <item>Other</item>
 
     </string-array>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="borrowing">Borrowing</string>
     <string name="search_prompt">Find A New Read.</string>
@@ -59,7 +57,7 @@
     <string name="edit_title">Title</string>
     <string name="add_book_title">Add a Book</string>
     <string name="description_edit">Description</string>
-    <string name="upload_new_image">Upload New Image</string>
+    <string name="upload_new_image">New Image</string>
     <string name="scan_ISBN">Scan ISBN</string>
     <string name="confirm">Confirm</string>
     <string name="add_book_label">Add Book</string>
@@ -70,5 +68,15 @@
     <string name="borrower_label">Borrowed by:</string>
     <string name="display_borrower">Borrowed by: %1$s</string>
     <string name="display_owner">Owned by: %1$s</string>
-
+    <string name="decline_button">Decline</string>
+    <string name="accept_button">Accept</string>
+    <string name="requested_label">Requested by:</string>
+    <string name="title_activity_pick_maps">Map</string>
+    <string name="title_activity_display_maps">Map</string>
+    <string name="view_location">View Pickup Location</string>
+    <string name="set_location">Set Pickup Location</string>
+    <string name="delete_photo">Image</string>
+    <string name="isbn_prompt">Please scan the ISBN</string>
+    <string name="photo_description">Photo of the book</string>
+    <string name="borrowing_title"><![CDATA[Borrowing & Requested Books]]></string>
 </resources>

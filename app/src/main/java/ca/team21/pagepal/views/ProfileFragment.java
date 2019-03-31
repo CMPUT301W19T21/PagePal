@@ -1,9 +1,11 @@
 package ca.team21.pagepal.views;
 
 import android.content.Context;
-import android.content.Intent;
+import android.databinding.Observable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import ca.team21.pagepal.BR;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.User;
 
@@ -31,6 +37,7 @@ public class ProfileFragment extends Fragment {
     // Parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_USER = "user";
+    private static final String ARG_USERNAME = "username";
     // Parameters
     private User mUser;
     private String authUid;
@@ -51,11 +58,18 @@ public class ProfileFragment extends Fragment {
      * @param user The user to load
      * @return A new instance of fragment ProfileFragment.
      */
+    public static ProfileFragment newInstance(String user) {
+        ProfileFragment fragment = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_USERNAME, user);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static ProfileFragment newInstance(User user) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_USER, user);
-        //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,6 +77,29 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Bundle args = getArguments();
+        String username = args.getString(ARG_USERNAME);
+        if (username != null) {
+            mUser = new User();
+            FirebaseDatabase.getInstance().getReference("users").child(username)
+                    .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    User temp = dataSnapshot.getValue(User.class);
+                    mUser.setUid(temp.getUid());
+                    mUser.setUsername(temp.getUsername());
+                    mUser.setEmail(temp.getEmail());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        } else {
+            mUser = args.getParcelable(ARG_USER);
+        }
+
         if (context instanceof OnProfileInteractionListener) {
             mListener = (OnProfileInteractionListener) context;
         } else {
@@ -75,9 +112,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mUser = getArguments().getParcelable(ARG_USER);
-        }
     }
 
     @Override
@@ -87,9 +121,7 @@ public class ProfileFragment extends Fragment {
         container.removeAllViews();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        String uid = FirebaseDatabase.getInstance().getReference().child("users")
-                .orderByChild("username").equalTo(mUser.getUsername())
-                .getRef().getKey();
+        String uid = mUser.getUid();
 
         if (authUid.equals(uid)) {
             Button editButton = view.findViewById(R.id.edit_button);
@@ -100,25 +132,26 @@ public class ProfileFragment extends Fragment {
                     onButtonPressed(mUser);
                 }
             });
-
-            Button HistoryButton = view.findViewById(R.id.history_button);
-            HistoryButton.setVisibility(VISIBLE);
-            HistoryButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), BookHistoryActivity.class);
-                    startActivity(intent);
-                }
-            });
-
         }
-
 
         usernameView = view.findViewById(R.id.username);
         emailView = view.findViewById(R.id.email);
 
         usernameView.setText(mUser.getUsername());
         emailView.setText(mUser.getEmail());
+
+        mUser.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                switch (propertyId) {
+                    case BR.username:
+                        usernameView.setText(mUser.getUsername());
+                    case BR.email:
+                        emailView.setText(mUser.getEmail());
+                }
+            }
+        });
+
         return view;
     }
 
@@ -131,8 +164,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-
     }
 
     @Override

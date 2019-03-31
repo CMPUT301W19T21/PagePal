@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +22,8 @@ import java.util.ArrayList;
 import ca.team21.pagepal.views.SearchedResultsFragment;
 import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.models.Book;
+
+import static android.view.View.VISIBLE;
 
 /**
  * Class that implements a recycler view for SearchActivity
@@ -53,14 +56,24 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         holder.mTitleView.setText(holder.mItem.getTitle());
         holder.mAuthorView.setText(mValues.get(position).getAuthor());
         holder.mStatusView.setText(holder.mItem.getStatus());
+        holder.ownerView.setVisibility(VISIBLE);
+        holder.ownerView.setText("Owner: " + holder.mItem.getOwner());
 
+        holder.ownerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.viewUserInteraction(holder.mItem.getOwner());
+                }
+            }
+        });
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.viewBookInteraction(holder.mItem, new User());
+                    mListener.viewBookInteraction(holder.mItem);
                 }
             }
         });
@@ -80,7 +93,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
         public final TextView mTitleView;
         public final TextView mAuthorView;
         public final TextView mStatusView;
-        //public final TextView borrowerView;
+        public final TextView ownerView;
         public final Button editButton;
         public final Button deleteButton;
         public Book mItem;
@@ -95,7 +108,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             mTitleView = (TextView) view.findViewById(R.id.title);
             mAuthorView = (TextView) view.findViewById(R.id.author);
             mStatusView = (TextView) view.findViewById(R.id.status);
-            //borrowerView = view.findViewById(R.id.borrower);
+            ownerView = view.findViewById(R.id.user);
             editButton = view.findViewById(R.id.edit_button);
             deleteButton = view.findViewById(R.id.delete_button);
         }

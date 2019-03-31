@@ -125,7 +125,7 @@ public class SearchedResultsFragment extends Fragment {
      * activity.
      */
     public interface OnSearchFragmentInteractionListener {
-       void viewBookInteraction(Book book, User user) ;
-       void viewUserInteraction(User user);
+       void viewBookInteraction(Book book) ;
+       void viewUserInteraction(String username);
     }
 }

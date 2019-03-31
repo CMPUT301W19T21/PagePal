@@ -1,11 +1,13 @@
 package ca.team21.pagepal.views;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import ca.team21.pagepal.R;
 
@@ -64,12 +66,25 @@ public class HomeFragment extends Fragment {
 
     }
 
+    /**
+     * TODO: Update comments
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
-    }
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // Configure Search Widget
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) rootView.findViewById(R.id.findBooks);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setIconifiedByDefault(false);
+        return rootView;    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {

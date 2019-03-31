@@ -39,6 +39,7 @@ public class BookFragment extends Fragment implements AdapterView.OnItemSelected
     // Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String ARG_BOOKLIST = "bookList";
+    private final User user = User.getInstance();
     // Customize parameters
     private int mColumnCount = 1;
     private ArrayList<Book> mBookList;
@@ -102,7 +103,7 @@ public class BookFragment extends Fragment implements AdapterView.OnItemSelected
         */
 
         ownedBooksQuery = FirebaseDatabase.getInstance().getReference().child("books")
-                .orderByChild("owner").equalTo(FirebaseAuth.getInstance().getUid());
+                .child(user.getUsername());
         ownedBooksQuery.addValueEventListener(bookListener);
     }
 
@@ -187,6 +188,6 @@ public class BookFragment extends Fragment implements AdapterView.OnItemSelected
         void onBookListAddButtonClick();
         void viewMyBookInteraction(Book book);
         void editBookInteraction(Book book);
-        void viewUserInteraction(User user);
+        void viewUserInteraction(String user);
     }
 }

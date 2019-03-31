@@ -10,14 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v7.widget.SearchView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,14 +23,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import ca.team21.pagepal.R;
-import ca.team21.pagepal.controllers.ReccomendationRecyclerViewAdapter;
 import ca.team21.pagepal.models.Book;
 import ca.team21.pagepal.models.User;
+
+import static android.content.Intent.EXTRA_TEXT;
 
 /**
  * Home page activity, this is the first thing the user sees after logging in. From this page they
@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity
         BorrowingFragment.OnBorrowingInteractionListener,
         BookFragment.OnListFragmentInteractionListener,
         NotificationsFragment.OnNotificationsInteractionListener,
-        ProfileFragment.OnProfileInteractionListener {
+        ProfileFragment.OnProfileInteractionListener,
+        SearchedResultsFragment.OnSearchFragmentInteractionListener {
 
     private static final String TAG = "MainActivity";
     private static final int EDIT_USER = 9;
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity
     public static final String BOOK_EXTRA = "ca.team21.pagepal.models.Book";
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    private DatabaseReference usersRef;
     private FirebaseUser authUser;
     private User user;
 
@@ -107,6 +107,18 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        loadFragment(HomeFragment.newInstance());
+
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            final String keyword = getIntent().getStringExtra(SearchManager.QUERY);
+            queryBooks(keyword);
+        }
+        if (intent.hasExtra(EXTRA_TEXT)) {
+            String username = intent.getStringExtra(EXTRA_TEXT);
+            loadFragment(ProfileFragment.newInstance(username));
+        }
+
         // Wait for user to authenticate or timeout
         long waitTime = new Date().getTime() + 2 * 1000;
         while ( authUser == null && new Date().getTime() < waitTime ) {
@@ -119,22 +131,8 @@ public class MainActivity extends AppCompatActivity
             finish();
             return;
         }
-        // Connect to database
-        usersRef = FirebaseDatabase.getInstance().getReference();
-
         // Get the user who is logged in
-
-        usersRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        user = dataSnapshot.child("users").child(authUser.getUid()).getValue(User.class);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.w(TAG, "loadUser:onCancelled", databaseError.toException());
-                    }
-                });
+        user = User.getInstance();
 
         // Set up top toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -146,8 +144,57 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        loadFragment(HomeFragment.newInstance());
 
+
+
+
+    }
+    /**
+     * Queries the firebase realtime database, filters the results, maps them to Books and adds the Books to a list.
+     *
+     * @param query a string representation of the user's search query
+     */
+    public void queryBooks(final String query) {
+
+        final ArrayList<Book> bookList = new ArrayList<Book>();
+        final String[] keyWords = query.split("\\s+");
+        // Query Firebase
+        Query bookQuery = FirebaseDatabase.getInstance().getReference().child("books");
+
+        bookQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot users: dataSnapshot.getChildren()) { // for each user
+                        for (DataSnapshot data: users.getChildren()) { // for each of their books
+                            String status = data.child("status").getValue(String.class);
+                            // Filter by Status
+                            if (status != null && ( status.equals("Available") || status.equals("Requested"))) {
+
+                                Book book = data.getValue(Book.class);
+                                for (String keyWord : keyWords) {
+
+                                    if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                            (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
+                                        bookList.add(book);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    loadFragment(SearchedResultsFragment.newInstance(bookList));
+
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError){
+                Log.w(TAG, "queryBooks:failure", databaseError.toException());
+            }
+
+        });
 
 
     }
@@ -163,13 +210,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-
-        //return true;
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -196,10 +236,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onHomeInteraction() {
-    }
-
-    @Override
-    public void onBorrowingInteraction() {
     }
 
     /**
@@ -239,7 +275,7 @@ public class MainActivity extends AppCompatActivity
      * @param user The profile that the user clicked on
      */
     @Override
-    public void viewUserInteraction(User user) {
+    public void viewUserInteraction(String user) {
         loadFragment(ProfileFragment.newInstance(user));
     }
 
@@ -261,14 +297,13 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intent, EDIT_USER);
     }
 
-   /** private void initRecyclerView(){
-        LinearLayout layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        ReccomendationRecyclerViewAdapter = new ReccomendationRecyclerViewAdapter(this, );
-        recyclerView.setAdapter(adapter);
 
+    @Override
+    public void viewBookInteraction(Book book) {
+        Intent intent = new Intent(this, BookDetailsActivity.class);
+        intent.putExtra(MainActivity.BOOK_EXTRA, book);
+        User requester = User.getInstance();
+        intent.putExtra(MainActivity.USER_EXTRA, requester);
+        startActivity(intent);
     }
-    */
-
-
 }

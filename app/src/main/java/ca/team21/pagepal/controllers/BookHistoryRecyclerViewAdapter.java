@@ -21,7 +21,6 @@ import ca.team21.pagepal.views.BorrowingFragment;
 public class BookHistoryRecyclerViewAdapter extends RecyclerView.Adapter<BookHistoryRecyclerViewAdapter.ViewHolder>{
 
     private List<BookHistoryList> mHistory;
-    private final BorrowingFragment.OnListFragmentInteractionListener mListener;
     private User owner;
 
 
@@ -38,9 +37,10 @@ public class BookHistoryRecyclerViewAdapter extends RecyclerView.Adapter<BookHis
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
 
+    }
     @Override
     public int getItemCount() {
-        return listItems.size();
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
