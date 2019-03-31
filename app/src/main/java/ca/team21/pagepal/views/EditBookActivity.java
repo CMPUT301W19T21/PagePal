@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -22,6 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.Book;
@@ -55,6 +59,9 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
     private Button cancelButton;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    private CameraManager cameraManager;
+    int orientation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +79,21 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         deleteImageButton = findViewById(R.id.delete_image_button);
         doneButton = findViewById(R.id.done_button);
         cancelButton = findViewById(R.id.cancel_button);
+
+
+        cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+
+
+
+        try {
+            String[] cameraIdList = cameraManager.getCameraIdList();
+            CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraIdList[0]);
+            orientation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
 
         isbnView.setOnClickListener(this);
         uploadImageButton.setOnClickListener(this);
@@ -103,12 +125,10 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setDisplayPhoto(String bitString) {
-        Matrix matrix = new Matrix();
         if (bitString != null && !bitString.equals("")) {
             byte [] stringToBit = Base64.decode(bitString, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
-            Bitmap rotated = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(), matrix, true);
-            coverPhoto.setImageBitmap(rotated);
+            coverPhoto.setImageBitmap(bitmap);
         }
     }
 
@@ -136,7 +156,6 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
                     break;
                 } else {
                     book.setPhoto("");
-                    book.writeToDb();
                     coverPhoto.setImageResource(R.drawable.ic_book_24px);
                     break;
                 }
@@ -168,8 +187,13 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             }
             Bundle extras = data.getExtras();
             Bitmap image = (Bitmap) extras.get("data");
+            Matrix matrix = new Matrix();
+            if (image.getWidth() > image.getHeight()) {
+                matrix.postRotate(90);
+            }
+            Bitmap rotated = Bitmap.createBitmap(image,0,0,image.getWidth(),image.getHeight(), matrix, true);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            rotated.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] byteMapData = stream.toByteArray();
             try {
                 FileOutputStream fos = new FileOutputStream(f);
