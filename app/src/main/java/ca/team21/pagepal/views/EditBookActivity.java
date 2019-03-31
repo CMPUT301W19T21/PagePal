@@ -156,7 +156,6 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
                     break;
                 } else {
                     book.setPhoto("");
-                    book.writeToDb();
                     coverPhoto.setImageResource(R.drawable.ic_book_24px);
                     break;
                 }
