@@ -43,7 +43,7 @@
     <string name="edit_title">Title</string>
     <string name="add_book_title">Add a Book</string>
     <string name="description_edit">Description</string>
-    <string name="upload_new_image">Upload New Image</string>
+    <string name="upload_new_image">New Image</string>
     <string name="scan_ISBN">Scan ISBN</string>
     <string name="confirm">Confirm</string>
     <string name="add_book_label">Add Book</string>
@@ -61,5 +61,8 @@
     <string name="title_activity_display_maps">Map</string>
     <string name="view_location">View Pickup Location</string>
     <string name="set_location">Set Pickup Location</string>
+    <string name="delete_photo">Image</string>
+    <string name="isbn_prompt">Please scan the ISBN</string>
+    <string name="photo_description">Photo of the book</string>
     <string name="borrowing_title"><![CDATA[Borrowing & Requested Books]]></string>
 </resources>
