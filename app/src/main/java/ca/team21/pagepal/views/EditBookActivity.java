@@ -125,6 +125,9 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             descriptionEdit.setText(book.getDescription());
             String searchedItem = book.getGenre();
             int itemPosition = adapter.getPosition(searchedItem);
+            if (searchedItem.equals("")) { // if book had no genre
+                itemPosition = 0;
+            }
             spinner.setSelection(itemPosition);
             setDisplayPhoto(book.getPhoto());
 
