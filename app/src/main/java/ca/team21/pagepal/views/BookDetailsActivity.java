@@ -92,8 +92,9 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         book = intent.getParcelableExtra(BOOK_EXTRA);
         user = intent.getParcelableExtra(USER_EXTRA);
 
-        FirebaseDatabase.getInstance().getReference("books").child(book.getOwner()).child(book.getIsbn())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        final DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference("books").child(book.getOwner()).child(book.getIsbn());
+
+                bookRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Book temp = dataSnapshot.getValue(Book.class);
@@ -106,6 +107,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                         book.setOwner(temp.getOwner());
                         book.setPhoto(temp.getPhoto());
                         book.setBorrower(temp.getBorrower());
+                        bookRef.removeEventListener(this);
                     }
 
                     @Override
