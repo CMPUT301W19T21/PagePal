@@ -36,6 +36,8 @@ import ca.team21.pagepal.models.Request;
 import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.models.Book;
 
+import static ca.team21.pagepal.models.Book.ACCEPTED;
+import static ca.team21.pagepal.models.Book.BORROWED;
 import static ca.team21.pagepal.views.MainActivity.BOOK_EXTRA;
 import static ca.team21.pagepal.views.MainActivity.USER_EXTRA;
 
@@ -167,7 +169,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         isBorrower = book.getBorrower().equals(user.getUsername());
         isAvailable = book.getStatus().equals(Book.AVAILABLE);
         isRequested = book.getStatus().equals(Book.REQUESTED);
-        isAccepted = book.getStatus().equals(Book.ACCEPTED);
+        isAccepted = book.getStatus().equals(ACCEPTED);
         isBorrowed = book.getStatus().equals(Book.BORROWED);
 
 
@@ -207,6 +209,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                     viewLocationButton.setVisibility(View.VISIBLE);
                     exchangeButton.setVisibility(View.VISIBLE);
                     exchangeButton.setText("Borrow Book");
+                    requestButton.setVisibility(View.INVISIBLE);
 
                 } else { // user is not the borrower
                     requestButton.setClickable(false);
@@ -385,9 +388,10 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         String owner = selectedRequest.getOwner();
         String bookIsbn = selectedRequest.getBook().getIsbn();
         DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
-        bookRef.child("status").setValue(Book.ACCEPTED);
+        bookRef.child("status").setValue(ACCEPTED);
         bookRef.child("borrower").setValue(selectedRequest.getRequester());
 
+        book.setStatus(ACCEPTED);
         selectedRequest.setBook(book);
         selectedRequest.writeToDb();
 
@@ -408,9 +412,9 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         else {
             IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (scanningResult != null && scanningResult.getContents() != null) {
-                if (isAccepted) {
+                if (ACCEPTED.equals(book.getStatus())) {
                     prepareLoan(scanningResult.getContents());
-                } else if (isBorrowed) {
+                } else if (BORROWED.equals(book.getStatus())) {
                     prepareReturn(scanningResult.getContents());
                 }
             } else {
@@ -448,7 +452,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         } else {
             DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("requests").child("owner")
                     .child(book.getOwner() + book.getIsbn()).child(book.getBorrower());
-            if (isOwner) {
+            if (user.getUsername().equals(book.getOwner())) {
                 requestRef.child("ownerReady").setValue(true);
                 exchangeButton.setText("Waiting for borrower");
                 exchangeButton.setClickable(false);
@@ -496,13 +500,13 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
             DatabaseReference loanRef = FirebaseDatabase.getInstance().getReference().child("loans").child("owner")
                     .child(book.getOwner()).child(book.getIsbn());
 
-            if (isOwner) {
+            if (user.getUsername().equals(book.getBorrower())) {
+                exchangeButton.setClickable(false);
+                exchangeButton.setText("Waiting for owner");
+                loanRef.child("borrowerReady").setValue(true);
+            } else {
                 loanRef.child("ownerReady").setValue(true);
                 exchangeButton.setText("Waiting for borrower");
-                exchangeButton.setClickable(false);
-            } else {
-                loanRef.child("borrowerReady").setValue(true);
-                exchangeButton.setText("Waiting for owner");
                 exchangeButton.setClickable(false);
             }
 
