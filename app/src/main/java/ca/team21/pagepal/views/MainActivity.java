@@ -252,9 +252,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void viewMyBookInteraction(Book book) {
         Intent intent = new Intent(this, BookDetailsActivity.class);
+        book.setPhoto("");// Intents may be too big without this
         intent.putExtra(BOOK_EXTRA, book);
         intent.putExtra(USER_EXTRA, user);
-        startActivityForResult(intent, VIEW_MY_BOOK);
+        startActivity(intent);
     }
 
     /**
@@ -308,6 +309,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void viewBookInteraction(Book book) {
+        book.setPhoto(""); // Intents may be too big without this
         Intent intent = new Intent(this, BookDetailsActivity.class);
         intent.putExtra(MainActivity.BOOK_EXTRA, book);
         User requester = User.getInstance();

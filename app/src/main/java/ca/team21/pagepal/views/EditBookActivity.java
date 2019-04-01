@@ -222,7 +222,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             }
             Bitmap rotated = Bitmap.createBitmap(image,0,0,image.getWidth(),image.getHeight(), matrix, true);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            rotated.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            rotated.compress(Bitmap.CompressFormat.PNG, 75, stream);
             byte[] byteMapData = stream.toByteArray();
             try {
                 FileOutputStream fos = new FileOutputStream(f);
