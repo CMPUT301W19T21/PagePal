@@ -4,11 +4,12 @@
     xmlns:app = "http://schemas.android.com/apk/res-auto"
 
     android:layout_width="120dp"
-        android:layout_height="160dp"
+        android:layout_height="150dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="2dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="5dp"
         app:cardBackgroundColor="#008577"
         app:cardCornerRadius="4dp"
         app:cardElevation="1dp"
@@ -42,20 +43,6 @@
                 app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/ic_book_24px" />
 
-            <!--
-             <ImageView
-                android:id="@+id/ReccIcon"
-                android:layout_width="80dp"
-                android:layout_height="96dp"
-                android:layout_marginTop="8dp"
-                android:scaleType="fitXY"
-                 android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/ReccAuthor"
-                app:layout_constraintEnd_toEndOf="@+id/ReccPhoto"
-                app:layout_constraintStart_toStartOf="@+id/ReccPhoto"
-                app:layout_constraintTop_toBottomOf="@+id/ReccTitle"
-                app:layout_constraintVertical_bias="1.0"/>
-            -->
 
             <ImageView
                 android:id="@+id/ReccPhoto"

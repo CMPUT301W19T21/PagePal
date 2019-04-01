@@ -17,7 +17,7 @@
         android:maxWidth="240dp"
         android:text="@string/username"
         android:textAlignment="center"
-        android:textSize="30sp"
+        android:textSize="36sp"
         app:layout_constraintBottom_toTopOf="@+id/email_input_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"

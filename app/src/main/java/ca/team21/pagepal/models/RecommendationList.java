@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import ca.team21.pagepal.GenreDictionary;
+
 /**
  * A list of recommendations generated based on a user's history of loans and what they liked and disliked
  * (This is our WOW feature)

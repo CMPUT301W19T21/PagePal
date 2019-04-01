@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".views.EditUserActivity">
 
     <TextView
@@ -12,6 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:labelFor="@+id/email_input"
+        android:textColor="#ffff"
+        android:backgroundTint="#ffff"
         android:text="@string/email_input_label"
         app:layout_constraintStart_toStartOf="@+id/email_input"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,6 +27,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
+        android:textColor="#ffff"
+        android:backgroundTint="#ffff"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,6 +41,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:labelFor="@+id/location_input"
+        android:textColor="#ffff"
+        android:backgroundTint="#ffff"
         android:text="@string/location_label"
         app:layout_constraintStart_toStartOf="@+id/location_input"
         app:layout_constraintTop_toBottomOf="@+id/email_input" />
@@ -48,6 +55,8 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
+        android:textColor="#ffff"
+        android:backgroundTint="#ffff"
         app:layout_constraintEnd_toEndOf="@+id/email_input"
         app:layout_constraintStart_toStartOf="@+id/email_input"
         app:layout_constraintTop_toBottomOf="@+id/location_label" />

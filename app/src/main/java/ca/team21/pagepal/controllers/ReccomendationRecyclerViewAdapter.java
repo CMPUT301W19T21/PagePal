@@ -59,13 +59,7 @@ public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<Recc
             holder.title.setVisibility(View.VISIBLE);
             holder.icon.setVisibility(View.VISIBLE);
 
-            /*
-            book_item.getPhoto().replace("", );
-            byte[] stringToBit = Base64.decode(book_item.getPhoto(), Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
-            holder.icon.setImageBitmap(bitmap)
-            holder.icon.setVisibility(View.VISIBLE);
-            */
+
 
         }
         holder.book.setOnClickListener(new View.OnClickListener() {
