@@ -1,10 +1,13 @@
 package ca.team21.pagepal;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,11 +40,12 @@ public class MessagingService extends FirebaseMessagingService {
     /**
      * Called when message is received.
      * Gets information about the book related to the notification, and then creates notification
+     *
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
+        Log.d(TAG, "Remote Message Received");
         if (remoteMessage.getData() != null) {
             String isbn = remoteMessage.getData().get("isbn");
             final String title = remoteMessage.getData().get("title");
@@ -55,7 +59,7 @@ public class MessagingService extends FirebaseMessagingService {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Book book = dataSnapshot.getValue(Book.class);
 
-                            sendMessageNotification( title,  message,  book,  user);
+                            sendMessageNotification(title, message, book, user);
 
                         }
 
@@ -72,7 +76,8 @@ public class MessagingService extends FirebaseMessagingService {
 
 
     /**
-     *  Retrieves new token if token is updated, and writes it in firebase
+     * Retrieves new token if token is updated, and writes it in firebase
+     *
      * @param token string message token
      */
     @Override
@@ -85,6 +90,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     /**
      * Stores token in firebase under users
+     *
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
@@ -114,10 +120,11 @@ public class MessagingService extends FirebaseMessagingService {
 
     /**
      * Creates push notification
-     * @param title string title of notifications (always set to be PagePal)
+     *
+     * @param title   string title of notifications (always set to be PagePal)
      * @param message message of notification
-     * @param book specific book mentioned in notification
-     * @param user the user
+     * @param book    specific book mentioned in notification
+     * @param user    the user
      */
     private void sendMessageNotification(String title, String message, Book book, User user) {
         Intent newIntent = new Intent(getApplicationContext(), BookDetailsActivity.class);
@@ -125,17 +132,40 @@ public class MessagingService extends FirebaseMessagingService {
         newIntent.putExtra(USER_EXTRA, user);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, newIntent, 0);
         // Set up notifications
-        Notification notification = new Notification.Builder(getApplicationContext())
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "channelId")
                 .setContentTitle(title)
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(android.R.drawable.btn_star)
-                .addAction(android.R.drawable.btn_star, "See Book", pendingIntent)
-                .build();
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.i("THIS IMPORTANT THING", "MAd");
+
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("channelId", "PagePal", importance);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId("chanelId");
+            notificationManager.notify(1, builder.build());
+        } else {
+            Notification notification = new Notification.Builder(getApplicationContext())
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(android.R.drawable.btn_star)
+                    .addAction(android.R.drawable.btn_star, "See Book", pendingIntent)
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(1, notification);
+
+        }
     }
-
 }
+
+
+
 
