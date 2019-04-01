@@ -10,10 +10,12 @@ import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import ca.team21.pagepal.models.Loan;
+import ca.team21.pagepal.models.Request;
 import ca.team21.pagepal.views.BookFragment.OnListFragmentInteractionListener;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.User;
@@ -163,6 +165,31 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
      * @param book Book to be deleted
      */
     private void deleteBook(Book book) {
+        removeAssociatedRequests(book);
         book.delete();
+    }
+
+    private void removeAssociatedRequests(final Book book) {
+        DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("requests").child("owner");
+
+        requestRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot owners: dataSnapshot.getChildren()) {
+                      for (DataSnapshot request: owners.getChildren()) {
+                          Request requestToDelete = request.getValue(Request.class);
+                          if (requestToDelete.getBook().getIsbn().equals(book.getIsbn())
+                                && requestToDelete.getOwner().equals(book.getOwner())) {
+                              requestToDelete.delete();
+                          }
+                      }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
