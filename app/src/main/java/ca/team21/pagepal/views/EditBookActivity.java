@@ -253,8 +253,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         }
     }
     /**
-     * Gets input from textEdits and either edits an existing book or creates a new book if it
-     * doesn't exist yet.
+     * Gets input from textEdits and sets information in the book object
      */
     private void processInput() {
         String isbn = isbnView.getText().toString();

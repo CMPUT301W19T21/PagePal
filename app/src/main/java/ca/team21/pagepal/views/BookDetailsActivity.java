@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.databinding.Observable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -22,22 +19,25 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.Firebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 
-import ca.team21.pagepal.BR;
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.models.Loan;
 import ca.team21.pagepal.models.Notification;
 import ca.team21.pagepal.models.Request;
 import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.models.Book;
 
+import static ca.team21.pagepal.models.Book.ACCEPTED;
+import static ca.team21.pagepal.models.Book.BORROWED;
 import static ca.team21.pagepal.views.MainActivity.BOOK_EXTRA;
 import static ca.team21.pagepal.views.MainActivity.USER_EXTRA;
 
@@ -47,33 +47,41 @@ import static ca.team21.pagepal.views.MainActivity.USER_EXTRA;
 public class BookDetailsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private final String TAG = "BookDetailsActivity";
-
     private final int MAP_REQUEST_CODE = 1;
 
-    Book book;
-    User user;
-    String ownerUsername;
-    String ownerLabel;
-    int selectedRequesterIndex;
-    Request selectedRequest;
-    ArrayList<Request> requesters = new ArrayList<>();
-    ArrayList<String> requesterUsernames = new ArrayList<>();
+    private Book book;
+    private User user;
+    private String ownerUsername;
+    private String ownerLabel;
+    private int selectedRequesterIndex;
+    private Request selectedRequest;
+    private ArrayList<Request> requesters = new ArrayList<>();
+    private ArrayList<String> requesterUsernames = new ArrayList<>();
 
-    TextView titleView;
-    TextView authorView;
-    TextView isbnView;
-    TextView statusView;
-    TextView descriptionView;
-    TextView ownerView;
-    TextView genre_view;
-    ImageView imageView;
-    TextView requesterLabel;
-    Button requestButton;
-    Button acceptButton;
-    Button declineButton;
-    Button viewLocationButton;
-    Spinner requesterSpinner;
-    ArrayAdapter<String> spinnerAdapter;
+    private TextView titleView;
+    private TextView authorView;
+    private TextView isbnView;
+    private TextView statusView;
+    private TextView descriptionView;
+    private TextView ownerView;
+    private TextView genre_view;
+    private ImageView imageView;
+    private TextView requesterLabel;
+    private TextView borrowerView;
+    private Button requestButton;
+    private Button acceptButton;
+    private Button declineButton;
+    private Button viewLocationButton;
+    private Button exchangeButton;
+    private Spinner requesterSpinner;
+    private ArrayAdapter<String> spinnerAdapter;
+
+    private boolean isOwner;
+    private boolean isBorrower;
+    private boolean isAvailable;
+    private boolean isRequested;
+    private boolean isAccepted;
+    private boolean isBorrowed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +133,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         acceptButton = findViewById(R.id.accept_button);
         declineButton = findViewById(R.id.decline_button);
         viewLocationButton = findViewById(R.id.view_location_button);
+        exchangeButton = findViewById(R.id.exchange_button);
+        borrowerView = findViewById(R.id.borrower_view);
 
         requesterSpinner = findViewById(R.id.requester_spinner);
         requesterLabel = findViewById(R.id.requester_label);
@@ -136,6 +146,8 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         requesterSpinner.setOnItemSelectedListener(this);
         viewLocationButton.setOnClickListener(this);
         ownerView.setOnClickListener(this);
+        requestButton.setOnClickListener(this);
+        exchangeButton.setOnClickListener(this);
 
         ownerView.setClickable(true);
 
@@ -156,12 +168,12 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
         ownerUsername = book.getOwner();
 
-        boolean isOwner = ownerUsername.equals(user.getUsername());
-        boolean isBorrower = book.getBorrower().equals(user.getUsername());
-        boolean isAvailable = book.getStatus().equals(Book.AVAILABLE);
-        boolean isRequested = book.getStatus().equals(Book.REQUESTED);
-        boolean isAccepted = book.getStatus().equals(Book.ACCEPTED);
-        boolean isBorrowed = book.getStatus().equals(Book.BORROWED);
+        isOwner = ownerUsername.equals(user.getUsername());
+        isBorrower = book.getBorrower().equals(user.getUsername());
+        isAvailable = book.getStatus().equals(Book.AVAILABLE);
+        isRequested = book.getStatus().equals(Book.REQUESTED);
+        isAccepted = book.getStatus().equals(ACCEPTED);
+        isBorrowed = book.getStatus().equals(Book.BORROWED);
 
 
         if (isOwner) { // if the current user owns this book
@@ -176,22 +188,31 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                 getRequesters();
             } else if (isAccepted) {
                 viewLocationButton.setVisibility(View.VISIBLE);
-                // TODO show button to initiate scan (owner)
+                exchangeButton.setVisibility(View.VISIBLE);
+                borrowerView.setText("You will be lending this book to " + book.getBorrower());
+                exchangeButton.setText("Lend book");
+            } else if (isBorrowed) {
+                exchangeButton.setVisibility(View.VISIBLE);
+                exchangeButton.setText("Pick-Up");
+                borrowerView.setText("Borrower: " + book.getBorrower());
             }
 
         } else { // if the current user does not own the book
             ownerLabel = "Owner: " + ownerUsername;
-            requestButton.setVisibility(View.VISIBLE);
 
             if (isAvailable || isRequested) { // if the book can be requested
+                requestButton.setVisibility(View.VISIBLE);
                 requestButton.setText("Request Book");
+                checkRequesting();
 
             } else if (isAccepted) {
 
                 if (isBorrower) {
-                    requestButton.setText("Your request for this book has been accepted");
-                    requestButton.setClickable(false);
+                    borrowerView.setText("Your request for this book has been accepted");
                     viewLocationButton.setVisibility(View.VISIBLE);
+                    exchangeButton.setVisibility(View.VISIBLE);
+                    exchangeButton.setText("Borrow Book");
+                    requestButton.setVisibility(View.INVISIBLE);
 
                 } else { // user is not the borrower
                     requestButton.setClickable(false);
@@ -199,12 +220,19 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                 }
 
             } else if (isBorrowed) {
-                requestButton.setClickable(false);
-                requestButton.setText("This book is unavailable");
+
+                if (isBorrower) {
+                    borrowerView.setText("You are borrowing this book");
+                    exchangeButton.setVisibility(View.VISIBLE);
+                    exchangeButton.setText("Return");
+
+                } else {
+                    requestButton.setVisibility(View.VISIBLE);
+                    requestButton.setClickable(false);
+                    requestButton.setText("This book is unavailable");
+                }
             }
-
         }
-
         ownerView.setText(ownerLabel);
     }
 
@@ -227,6 +255,10 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.view_location_button:
                 viewLocation();
+                break;
+            case R.id.exchange_button:
+                IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+                scanIntegrator.initiateScan();
         }
     }
 
@@ -249,6 +281,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         dbRefRequests.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                requesters.clear();
                 for (DataSnapshot request: dataSnapshot.getChildren()) {
                      requesters.add(request.getValue(Request.class));
                 }
@@ -260,6 +293,31 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                 Log.d(TAG, "Requesters query failed", databaseError.toException());
                 Toast.makeText(BookDetailsActivity.this, "Failed retrieving requesters from database", Toast.LENGTH_SHORT).show();
                 finish();
+            }
+        });
+    }
+
+    /**
+     * Checks if the current user is already requesting this book
+     */
+    private void checkRequesting() {
+        DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("requests").child("requester")
+                .child(user.getUsername());
+
+        requestRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot requestData: dataSnapshot.getChildren()) {
+                    if (requestData.child("book").child("isbn").getValue().equals(book.getIsbn())) {
+                        requestButton.setClickable(false);
+                        requestButton.setText("You have already requested this book");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -333,8 +391,12 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         String owner = selectedRequest.getOwner();
         String bookIsbn = selectedRequest.getBook().getIsbn();
         DatabaseReference bookRef = FirebaseDatabase.getInstance().getReference().child("books").child(owner).child(bookIsbn);
-        bookRef.child("status").setValue(Book.ACCEPTED);
+        bookRef.child("status").setValue(ACCEPTED);
         bookRef.child("borrower").setValue(selectedRequest.getRequester());
+
+        book.setStatus(ACCEPTED);
+        selectedRequest.setBook(book);
+        selectedRequest.writeToDb();
 
         String message = user.getUsername() + " has accepted your request for " + book.getTitle();
         Notification notify = new Notification(message, user.getUsername(), selectedRequest.getRequester(), book.getIsbn(), user.getUsername());
@@ -350,11 +412,25 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
             selectedRequest.writeToDb();
             finish();
         }
+        else {
+            IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (scanningResult != null && scanningResult.getContents() != null) {
+                if (ACCEPTED.equals(book.getStatus())) {
+                    prepareLoan(scanningResult.getContents());
+                } else if (BORROWED.equals(book.getStatus())) {
+                    prepareReturn(scanningResult.getContents());
+                }
+            } else {
+                // TODO cancel exchange
+                Toast toast = Toast.makeText(getApplicationContext(), "no scan data", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
     }
 
     public void viewLocation() {
         DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("requests").child("requester")
-                .child(user.getUsername()).child(book.getOwner() + book.getIsbn());
+                .child(book.getBorrower()).child(book.getOwner() + book.getIsbn());
 
         requestRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -371,5 +447,91 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
 
             }
         });
+    }
+
+    private void prepareLoan(String scannedIsbn) {
+        if (!scannedIsbn.equals(book.getIsbn())) {
+            Toast.makeText(this, "Scanned ISBN did not match book ISBN", Toast.LENGTH_SHORT).show();
+        } else {
+            DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference().child("requests").child("owner")
+                    .child(book.getOwner() + book.getIsbn()).child(book.getBorrower());
+            if (user.getUsername().equals(book.getOwner())) {
+                requestRef.child("ownerReady").setValue(true);
+                exchangeButton.setText("Waiting for borrower");
+                exchangeButton.setClickable(false);
+            } else {
+                requestRef.child("borrowerReady").setValue(true);
+                exchangeButton.setText("Waiting for owner");
+                exchangeButton.setClickable(false);
+            }
+
+            requestRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Request request = dataSnapshot.getValue(Request.class);
+
+                    if (request != null && request.isOwnerReady() && request.isBorrowerReady()) {
+                        // Create loan and delete request
+                        book.setStatus(Book.BORROWED);
+                        book.writeToDb();
+
+                        Loan loan = new Loan();
+                        loan.setBook(book);
+                        loan.setBorrower(book.getBorrower());
+                        loan.setOwner(book.getOwner());
+                        loan.writeToDb();
+
+                        request.delete();
+
+                        Toast.makeText(BookDetailsActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+
+                        finish();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d(TAG, "Cancelled exchange ready query");
+                }
+            });
+        }
+    }
+
+    private void prepareReturn(String scannedIsbn) {
+        if (!scannedIsbn.equals(book.getIsbn())) {
+            Toast.makeText(this, "Scanned ISBN did not match book ISBN", Toast.LENGTH_SHORT).show();
+        } else {
+            DatabaseReference loanRef = FirebaseDatabase.getInstance().getReference().child("loans").child("owner")
+                    .child(book.getOwner()).child(book.getIsbn());
+
+            if (user.getUsername().equals(book.getBorrower())) {
+                exchangeButton.setClickable(false);
+                exchangeButton.setText("Waiting for owner");
+                loanRef.child("borrowerReady").setValue(true);
+            } else {
+                loanRef.child("ownerReady").setValue(true);
+                exchangeButton.setText("Waiting for borrower");
+                exchangeButton.setClickable(false);
+            }
+
+            loanRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Loan loan = dataSnapshot.getValue(Loan.class);
+
+                    if (loan != null && loan.isOwnerReady() && loan.isBorrowerReady()) {
+                        book.setStatus(Book.AVAILABLE);
+                        book.setBorrower("");
+                        book.writeToDb();
+                        loan.delete();
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d(TAG, "Loan ready query cancelled");
+                }
+            });
+        }
     }
 }
