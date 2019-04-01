@@ -106,6 +106,10 @@ public class BorrowingFragment extends Fragment implements AdapterView.OnItemSel
         super.onCreate(savedInstanceState);
         // Get arguments here
 
+        if (savedInstanceState != null) {
+            filter = savedInstanceState.getString("FILTER");
+        }
+
         User user = User.getInstance();
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -143,24 +147,40 @@ public class BorrowingFragment extends Fragment implements AdapterView.OnItemSel
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("FILTER", filter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         interactionListener = null;
+        loanQuery.removeEventListener(loanListener);
+        requestQuery.removeEventListener(requestListener);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         filter = parent.getItemAtPosition(position).toString();
         if (filter.equals("Borrowing")) {
-            loanQuery.addListenerForSingleValueEvent(loanListener);
+            loanQuery.addValueEventListener(loanListener);
+            requestQuery.removeEventListener(requestListener);
         } else {
-            requestQuery.addListenerForSingleValueEvent(requestListener);
+            requestQuery.addValueEventListener(requestListener);
+            loanQuery.removeEventListener(loanListener);
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        loanQuery.addValueEventListener(loanListener);
     }
 
     /**
