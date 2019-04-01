@@ -4,9 +4,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.controllers.MyBookRecyclerViewAdapter;
 import ca.team21.pagepal.controllers.NotificationRecyclerViewAdapter;
 import ca.team21.pagepal.controllers.SearchRecyclerViewAdapter;
 import ca.team21.pagepal.models.Book;
@@ -34,18 +39,12 @@ import ca.team21.pagepal.models.User;
  * create an instance of this fragment.
  */
 public class NotificationsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private NotificationRecyclerViewAdapter adapter;
     private OnNotificationsInteractionListener mListener;
     private final User user = User.getInstance();
+    private int mColumnCount = 1;
 
     private ArrayList<Notification> notifications = new ArrayList<>();
     private Query notificationsQuery;
@@ -67,6 +66,7 @@ public class NotificationsFragment extends Fragment {
     };
 
 
+
     public NotificationsFragment() {
         // Required empty public constructor
     }
@@ -75,8 +75,6 @@ public class NotificationsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment NotificationsFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -95,6 +93,7 @@ public class NotificationsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         notificationsQuery = FirebaseDatabase.getInstance().getReference().child("notifications")
                 .child(user.getUsername());
         notificationsQuery.addValueEventListener(notificationListener);
@@ -104,15 +103,29 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notifications, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_notifications, container, false);
+        View listView = view.findViewById(R.id.list);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed() {
-        if (mListener != null) {
-            mListener.onNotificationsInteraction();
+        if (listView instanceof RecyclerView) {
+            Context context = view.getContext();
+            RecyclerView recyclerView = (RecyclerView) listView;
+            if (mColumnCount <= 1) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            } else {
+                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            }
+            adapter = new NotificationRecyclerViewAdapter(notifications, mListener);
+            recyclerView.setAdapter(adapter);
         }
-    }
+        return view;
+
+
+        }
+
+
+
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -125,11 +138,21 @@ public class NotificationsFragment extends Fragment {
         }
     }
 
+
+
+
+
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
+    public void onButtonPressed() {
+        if (mListener != null) {
+            mListener.onNotificationsInteraction();
+        }
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -144,5 +167,6 @@ public class NotificationsFragment extends Fragment {
     public interface OnNotificationsInteractionListener {
         // TODO: Update argument type and name
         void onNotificationsInteraction();
+        void viewBookInteraction(Book book);
     }
 }

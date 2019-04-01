@@ -19,7 +19,7 @@ exports.sendNotification = functions.database.ref('/notifications/{uid}/{notific
             const token = snap.child("messagingToken").val();
                 const payload = {
                     data: {
-                        title: "New PagePal Notification",
+                        title: "PagePal",
                         body: notificationBody,
                         isbn: isbn,
                         owner: owner

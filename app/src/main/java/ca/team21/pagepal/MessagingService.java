@@ -1,28 +1,17 @@
 package ca.team21.pagepal;
 
-
-
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -32,12 +21,11 @@ import com.google.firebase.messaging.RemoteMessage;
 import ca.team21.pagepal.models.Book;
 import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.views.BookDetailsActivity;
-//import com.google.firebase.quickstart.fcm.R;
-
-//import androidx.work.OneTimeWorkRequest;
-//import androidx.work.WorkManager;
 
 
+/**
+ * Responds to messages sent using firebase functions
+ */
 public class MessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MessagingService";
@@ -48,15 +36,13 @@ public class MessagingService extends FirebaseMessagingService {
 
     /**
      * Called when message is received.
-     *
+     * Gets information about the book related to the notification, and then creates notification
      * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
      */
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-
-        if (remoteMessage.getNotification() != null) {
-
+        if (remoteMessage.getData() != null) {
             String isbn = remoteMessage.getData().get("isbn");
             final String title = remoteMessage.getData().get("title");
             final String message = remoteMessage.getData().get("body");
@@ -80,15 +66,14 @@ public class MessagingService extends FirebaseMessagingService {
                     });
 
 
-
         }
 
     }
 
+
     /**
-     * Called if InstanceID token is updated. This may occur if the security of
-     * the previous token had been compromised. Note that this is called when the InstanceID token
-     * is initially generated so this is where you would retrieve the token.
+     *  Retrieves new token if token is updated, and writes it in firebase
+     * @param token string message token
      */
     @Override
     public void onNewToken(String token) {
@@ -99,11 +84,7 @@ public class MessagingService extends FirebaseMessagingService {
 
 
     /**
-     * Persist token to third-party servers.
-     * <p>
-     * Modify this method to associate the user's FCM InstanceID token with any server-side account
-     * maintained by your application.
-     *
+     * Stores token in firebase under users
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
@@ -130,6 +111,14 @@ public class MessagingService extends FirebaseMessagingService {
                     }
                 });
     }
+
+    /**
+     * Creates push notification
+     * @param title string title of notifications (always set to be PagePal)
+     * @param message message of notification
+     * @param book specific book mentioned in notification
+     * @param user the user
+     */
     private void sendMessageNotification(String title, String message, Book book, User user) {
         Intent newIntent = new Intent(getApplicationContext(), BookDetailsActivity.class);
         newIntent.putExtra(BOOK_EXTRA, book);
@@ -140,6 +129,7 @@ public class MessagingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
+                .setSmallIcon(android.R.drawable.btn_star)
                 .addAction(android.R.drawable.btn_star, "See Book", pendingIntent)
                 .build();
 
