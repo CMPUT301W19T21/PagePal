@@ -126,6 +126,7 @@ public class User extends BaseObservable implements Parcelable {
                     user.setEmail(newUser.getEmail());
                     user.setMessagingToken(newUser.getMessagingToken());
                     user.setHistoryBookList(newUser.getHistoryBookList());
+                    user.notifyPropertyChanged(BR._all);
                     //TODO add setters as things are implemented.
                 }
 
@@ -144,6 +145,7 @@ public class User extends BaseObservable implements Parcelable {
      *
      * @return The uid.
      */
+    @Bindable
     public String getUid() {
         return this.uid != null ? this.uid : "";
     }
@@ -154,6 +156,7 @@ public class User extends BaseObservable implements Parcelable {
      */
     public void setUid(String uid) {
         this.uid = uid;
+        notifyPropertyChanged(BR.uid);
     }
 
     /**

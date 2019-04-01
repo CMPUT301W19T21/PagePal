@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import ca.team21.pagepal.views.SearchedResultsFragment;
-import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.models.Book;
 
 import static android.view.View.VISIBLE;
@@ -106,7 +104,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<SearchRecycl
             super(view);
             mView = view;
             mTitleView = (TextView) view.findViewById(R.id.title);
-            mAuthorView = (TextView) view.findViewById(R.id.author);
+            mAuthorView = (TextView) view.findViewById(R.id.BookHisAuthor);
             mStatusView = (TextView) view.findViewById(R.id.status);
             ownerView = view.findViewById(R.id.user);
             editButton = view.findViewById(R.id.edit_button);

@@ -60,8 +60,8 @@ public class BookHistoryRecyclerViewAdapter extends RecyclerView.Adapter<BookHis
     }
 
     public BookHistoryRecyclerViewAdapter(User owner){
-
         this.mHistory = owner.getHistoryBookList();
+        this.owner = owner;
     }
 
 

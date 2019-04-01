@@ -52,11 +52,11 @@ public class HistoryItem implements Parcelable {
         return hashCode();
     }
 
-    public void setAuthor(String BookHisAuthor) {this.BookHisAuthor = BookHisAuthor;}
+    public void setBookHisAuthor(String BookHisAuthor) {this.BookHisAuthor = BookHisAuthor;}
 
-    public void setTitle(String BookHisTitle) { this.BookHisTitle = BookHisTitle; }
+    public void setBookHisTitle(String BookHisTitle) { this.BookHisTitle = BookHisTitle; }
 
-    public void setGenre(String BookHisGenre) {this.BookHisGenre = BookHisGenre;}
+    public void setBookHisGenre(String BookHisGenre) {this.BookHisGenre = BookHisGenre;}
 
     public void setBookHisPhoto(String BookHisPhoto) {
         this.BookHisPhoto = BookHisPhoto;

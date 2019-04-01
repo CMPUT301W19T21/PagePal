@@ -36,7 +36,7 @@ public class BookHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_history);
         Intent intent = new Intent();
-        user = intent.getParcelableExtra(USER_EXTRA);
+        user = User.getInstance();
 
         HistoryList = user.getHistoryBookList();
 
