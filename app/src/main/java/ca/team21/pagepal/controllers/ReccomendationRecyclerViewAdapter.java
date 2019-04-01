@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,7 +36,6 @@ public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<Recc
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
-
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_recommendation,viewGroup, false);
 
         return new ViewHolder(view);

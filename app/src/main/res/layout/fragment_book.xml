@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/author"
+        android:id="@+id/BookHisAuthor"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Book Author"
@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/author"
-        app:layout_constraintTop_toBottomOf="@+id/author" />
+        app:layout_constraintStart_toStartOf="@+id/BookHisAuthor"
+        app:layout_constraintTop_toBottomOf="@+id/BookHisAuthor" />
 
 </android.support.constraint.ConstraintLayout>
