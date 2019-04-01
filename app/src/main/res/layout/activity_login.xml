@@ -14,12 +14,6 @@
 
     <!-- Login progress -->
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="330dp"
-        android:layout_height="253dp"
-        app:srcCompat="@drawable/pagepallogo" />
-
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -62,7 +56,10 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
+
                     android:backgroundTint="#ffff"
+                    android:textColor="#ffff"
+
 
                     android:singleLine="true" />
 

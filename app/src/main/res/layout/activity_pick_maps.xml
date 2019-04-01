@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/background"
     tools:context=".views.PickMapsActivity" >
 
     <fragment
@@ -41,6 +42,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
+        android:textColor="@android:color/white"
         android:layout_marginEnd="30dp"
         android:text="Select a book swap location!"
         android:textAlignment="center"
