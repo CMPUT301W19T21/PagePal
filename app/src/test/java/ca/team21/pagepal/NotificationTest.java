@@ -3,6 +3,7 @@ package ca.team21.pagepal;
 import org.junit.Test;
 
 import ca.team21.pagepal.models.Notification;
+import ca.team21.pagepal.models.User;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,7 +12,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class NotificationTest {
 
-    private Notification notification = new Notification("You have been notified");
+    private Notification notification = new Notification("You have been notified", "Noah", "Tanner", "9000712345", "Tanner");
 
     /**
      * Tests setting the notification message
