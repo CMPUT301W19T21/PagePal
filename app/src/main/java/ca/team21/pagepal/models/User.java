@@ -34,6 +34,7 @@ public class User extends BaseObservable implements Parcelable {
     private String uid;
     private String username;
     private String email;
+    private String messagingToken;
     private ArrayList<Book> ownedBookList = new ArrayList<>();
     private ArrayList<HistoryItem> HistoryBookList = new ArrayList<>();
     /*
@@ -53,10 +54,11 @@ public class User extends BaseObservable implements Parcelable {
      * @param username  The username to set.
      * @param email The email to set.
      */
-    public User(String uid, String username, String email) {
+    public User(String uid, String username, String email, String messagingToken) {
         this.uid = uid;
         this.username = username;
         this.email = email;
+        this.messagingToken = messagingToken;
         this.ownedBookList = new ArrayList<>();
         this.HistoryBookList = new ArrayList<>();
     }
@@ -68,6 +70,8 @@ public class User extends BaseObservable implements Parcelable {
     protected User(Parcel in) {
         username = in.readString();
         email = in.readString();
+        messagingToken = in.readString();
+
         in.readTypedList(ownedBookList, Book.CREATOR);
         if (ownedBookList == null) {
             ownedBookList = new ArrayList<>();
@@ -120,6 +124,7 @@ public class User extends BaseObservable implements Parcelable {
                     user.setUsername(newUser.getUsername());
                     user.setUid(newUser.getUid());
                     user.setEmail(newUser.getEmail());
+                    user.setMessagingToken(newUser.getMessagingToken());
                     user.setHistoryBookList(newUser.getHistoryBookList());
                     //TODO add setters as things are implemented.
                 }
@@ -186,6 +191,23 @@ public class User extends BaseObservable implements Parcelable {
     public void setEmail(String email) {
         this.email = email;
         notifyPropertyChanged(BR.email);
+    }
+  
+      /** Get the user's messagingToken
+     *
+     * @return The messagingToken
+     */
+    @Bindable
+    public String getMessagingToken() {
+        return this.messagingToken != null ? this.messagingToken : "";
+    }
+
+    /**
+     * Set the messagingToken
+     * @param messagingToken The String to set.
+     */
+    public void setMessagingToken(String messagingToken) {
+        this.messagingToken = messagingToken;
     }
 
     /**
@@ -339,6 +361,7 @@ public class User extends BaseObservable implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(username);
         dest.writeString(email);
+        dest.writeString(messagingToken);
         dest.writeTypedList(ownedBookList);
         dest.writeTypedList(HistoryBookList);
         //location.writeToParcel(dest, flags);
@@ -355,3 +378,4 @@ public class User extends BaseObservable implements Parcelable {
         return db.child(this.username).setValue(this);
     }
 }
+

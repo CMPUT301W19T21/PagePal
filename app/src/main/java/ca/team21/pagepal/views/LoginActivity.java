@@ -17,8 +17,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.models.User;
 
 
 /**
@@ -130,6 +139,49 @@ public class LoginActivity extends AppCompatActivity
                             if (task.isSuccessful()) {
                                 // Sign in success
                                 Log.d(TAG, "signInWithEmail:success");
+
+                                //Get and set new notification token here
+                                FirebaseInstanceId.getInstance().getInstanceId()
+                                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Log.w(TAG, "getInstanceId:failure", task.getException());
+                                                    return;
+                                                } else {
+                                                    Log.d(TAG, "getInstanceId:success");
+                                                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                                                    final String token = task.getResult().getToken();
+
+                                                    final Query query = db.child("users").orderByChild("uid").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                    query.addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            String key = "";
+                                                            for (DataSnapshot item : dataSnapshot.getChildren()) {
+                                                                key = item.getKey();
+                                                                break;
+                                                            }
+                                                            User user = dataSnapshot.child(key).getValue(User.class);
+                                                            String userName = user.getUsername();
+
+                                                            FirebaseDatabase.getInstance().getReference()
+                                                                    .child("users")
+                                                                    .child(userName)
+                                                                    .child("messagingToken").setValue(token);
+                                                        }
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+
+                                                }
+                                            }
+                                        });
+
+
+
                                 onAuthSuccess();
                             } else {
                                 // If sign in fails, display a message.

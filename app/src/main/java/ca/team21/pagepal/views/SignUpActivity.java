@@ -29,6 +29,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -192,7 +194,7 @@ public class SignUpActivity extends AppCompatActivity
             usernameView.setError("This field is required");
             focusView = usernameView;
             cancel = true;
-        // If Username is taken
+            // If Username is taken
         } else if (usernameView.getError() == "Username taken") {
             focusView = usernameView;
             cancel = true;
@@ -226,24 +228,42 @@ public class SignUpActivity extends AppCompatActivity
                     });
             // Wait for user to be authenticated
             // TODO create a loading screen so it doesn't look like the app is frozen.
-            while( authUser == null) {
+            while (authUser == null) {
                 authUser = mAuth.getCurrentUser();
             }
-            user = new User(authUser.getUid(), name, authUser.getEmail());
-            user.writeToDb().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "User created at " + user.getUsername());
-                    } else {
-                        Log.w(TAG, task.getException());
-                    }
-                }
-            });
+
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "getInstanceId:failure", task.getException());
+                                return;
+                            } else {
+                                Log.d(TAG, "getInstanceId:success");
+
+                                String messagingToken = task.getResult().getToken();
+                                user = new User(authUser.getUid(), name, authUser.getEmail(), messagingToken);
+                                user.writeToDb().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "User created at " + user.getUsername());
+                                        } else {
+                                            Log.w(TAG, task.getException());
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
             return true;
+
         }
         return false;
+
     }
+
 
     /**
      * Validates the entered email.
