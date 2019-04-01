@@ -5,16 +5,16 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import ca.team21.pagepal.models.Book;
-import ca.team21.pagepal.models.BookHistoryList;
+import ca.team21.pagepal.models.HistoryItem;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for the book history list
  */
-public class BookHistoryListTest {
+public class HistoryItemTest {
 
-    private BookHistoryList bookHistoryList;
+    private HistoryItem historyItem;
     private Book book1;
     private Book book2;
     private ArrayList<Book> testList;
@@ -24,20 +24,20 @@ public class BookHistoryListTest {
      */
     @Test
     public void addBookTest() {
-        bookHistoryList = new BookHistoryList();
+        historyItem = new HistoryItem();
         book1 = new Book();
         book2 = new Book();
         testList = new ArrayList<>();
 
-        assertEquals(testList, bookHistoryList.getHistoryList());
+        assertEquals(testList, historyItem.getHistoryList());
 
-        bookHistoryList.addBook(book1);
+        historyItem.addBook(book1);
         testList.add(book1);
-        assertEquals(testList, bookHistoryList.getHistoryList());
+        assertEquals(testList, historyItem.getHistoryList());
 
-        bookHistoryList.addBook(book2);
+        historyItem.addBook(book2);
         testList.add(book2);
-        assertEquals(testList, bookHistoryList.getHistoryList());
+        assertEquals(testList, historyItem.getHistoryList());
 
     }
 
@@ -45,18 +45,18 @@ public class BookHistoryListTest {
      * Tests removing a book
      */
     @Test void removeBookTest() {
-        bookHistoryList = new BookHistoryList();
+        historyItem = new HistoryItem();
         book1 = new Book();
         book2 = new Book();
         testList = new ArrayList<>();
 
-        bookHistoryList.addBook(book1);
-        bookHistoryList.addBook(book2);
-        bookHistoryList.removeBook(book1);
+        historyItem.addBook(book1);
+        historyItem.addBook(book2);
+        historyItem.removeBook(book1);
 
         testList.add(book1);
 
-        assertEquals(testList, bookHistoryList.getHistoryList());
+        assertEquals(testList, historyItem.getHistoryList());
 
     }
 }

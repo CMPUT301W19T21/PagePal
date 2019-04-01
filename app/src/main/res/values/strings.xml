@@ -34,8 +34,23 @@
     <string name="location">Location</string>
     <string name="save_label">Save</string>
     <string name="cancel_label">Cancel</string>
+    <string name="ReadingHistory">Reading History</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string-array name = "Genre">
+        <item>Choose Genre</item>
+        <item>Fantasy</item>
+        <item>Western</item>
+        <item>Romance</item>
+        <item>Thriller / Horror</item>
+        <item>Mystery</item>
+        <item>Detective Story</item>
+        <item>Musical / Play</item>
+        <item>Comics </item>
+        <item>Children Books</item>
+        <item>Action</item>
+        <item>Other</item>
+
+    </string-array>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="borrowing">Borrowing</string>
     <string name="search_prompt">Find A New Read.</string>
