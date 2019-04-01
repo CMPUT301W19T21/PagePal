@@ -14,7 +14,6 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,6 +26,7 @@
         <activity android:name=".views.EditUserActivity" />
         <activity
             android:name=".views.LoginActivity"
+            android:theme="@style/authBackground"
             android:label="@string/page_pal">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +37,7 @@
         <activity
             android:name=".views.SignUpActivity"
             android:label="@string/title_activity_sign_up"
+            android:theme="@style/authBackground"
             android:parentActivityName=".views.LoginActivity" />
         <activity
             android:name=".views.MainActivity"
