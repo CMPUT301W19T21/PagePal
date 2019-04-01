@@ -5,7 +5,6 @@ import android.databinding.Observable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -129,10 +128,22 @@ public class ProfileFragment extends Fragment {
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onButtonPressed(mUser);
+                    mListener.onEditUser(mUser);
                 }
             });
+
+            Button historyButton = view.findViewById(R.id.history_button);
+            historyButton.setVisibility(VISIBLE);
+            historyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    mListener.onViewHistoryPressed(mUser);
+                }
+
+            });
+
         }
+
 
         usernameView = view.findViewById(R.id.username);
         emailView = view.findViewById(R.id.email);
@@ -155,11 +166,7 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    public void onButtonPressed(User user) {
-        if (mListener != null) {
-            mListener.onProfileInteraction(user);
-        }
-    }
+
 
     @Override
     public void onStart() {
@@ -183,6 +190,7 @@ public class ProfileFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnProfileInteractionListener {
-        void onProfileInteraction(User user);
+        void onEditUser(User user);
+        void onViewHistoryPressed(User user);
     }
 }

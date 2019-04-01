@@ -156,7 +156,6 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     @Override

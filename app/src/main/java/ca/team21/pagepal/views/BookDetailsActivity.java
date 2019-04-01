@@ -65,6 +65,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
     TextView statusView;
     TextView descriptionView;
     TextView ownerView;
+    TextView genre_view;
     ImageView imageView;
     TextView requesterLabel;
     Button requestButton;
@@ -118,6 +119,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         isbnView = findViewById(R.id.isbn_view);
         statusView = findViewById(R.id.status_view);
         descriptionView = findViewById(R.id.description_view);
+        genre_view = findViewById(R.id.genre_view);
         ownerView = findViewById(R.id.owner_view);
         requestButton = findViewById(R.id.request_button);
         acceptButton = findViewById(R.id.accept_button);
@@ -148,6 +150,7 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
         isbnView.setText(isbnLabel);
         statusView.setText(book.getStatus().toUpperCase());
         descriptionView.setText(book.getDescription());
+        genre_view.setText(book.getGenre());
 
         setPicture();
 

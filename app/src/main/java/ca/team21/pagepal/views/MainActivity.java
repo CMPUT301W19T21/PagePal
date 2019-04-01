@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private static final int VIEW_MY_BOOK = 7;
     public static final String USER_EXTRA = "ca.team21.pagepal.user";
     public static final String BOOK_EXTRA = "ca.team21.pagepal.models.Book";
+    private static final int VIEW_HISTORY = 6;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private FirebaseUser authUser;
@@ -234,9 +235,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onHomeInteraction() {
-    }
 
     /**
      * Responds to clicking the Add Book button
@@ -291,10 +289,18 @@ public class MainActivity extends AppCompatActivity
      * @param user The profile to view
      */
     @Override
-    public void onProfileInteraction(User user) {
+    public void onEditUser(User user) {
         Intent intent = new Intent(this, EditUserActivity.class);
         intent.putExtra(USER_EXTRA, user);
         startActivityForResult(intent, EDIT_USER);
+    }
+
+    @Override
+    public void onViewHistoryPressed(User user){
+        Intent intent = new Intent(this, BookHistoryActivity.class);
+        intent.putExtra(USER_EXTRA, user);
+        startActivityForResult(intent, VIEW_HISTORY);
+
     }
 
 

@@ -10,7 +10,7 @@
 
         <ImageView
             android:gravity="center"
-            android:id="@+id/book_image_view"
+            android:id="@+id/BookHisPhoto"
             android:layout_width="match_parent"
             android:layout_height="90dp"
             android:scaleType="center"
@@ -55,6 +55,6 @@
         android:layout_height="45dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="20dp"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </LinearLayout>

@@ -15,10 +15,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import ca.team21.pagepal.BR;
+
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Represents a user with a unique username.
@@ -29,13 +35,14 @@ public class User extends BaseObservable implements Parcelable {
     private String username;
     private String email;
     private ArrayList<Book> ownedBookList = new ArrayList<>();
+    private ArrayList<HistoryItem> HistoryBookList = new ArrayList<>();
     /*
     private Location location = new Location(LocationManager.NETWORK_PROVIDER);
     private RequestList requestList = new RequestList();
     private BookList ownedList = new BookList();
     private BookList borrowedList = new BookList();
     private NotificationList notificationList = new NotificationList();
-    private BookHistoryList bookHistoryList = new BookHistoryList();
+    private HistoryItem bookHistoryList = new HistoryItem();
     */
     private static final User user = new User();
 
@@ -51,6 +58,7 @@ public class User extends BaseObservable implements Parcelable {
         this.username = username;
         this.email = email;
         this.ownedBookList = new ArrayList<>();
+        this.HistoryBookList = new ArrayList<>();
     }
 
     /**
@@ -65,6 +73,11 @@ public class User extends BaseObservable implements Parcelable {
             ownedBookList = new ArrayList<>();
         }
         //location = in.readParcelable(Location.class.getClassLoader());
+
+        in.readTypedList(HistoryBookList, HistoryItem.CREATOR);
+        if (HistoryBookList == null){
+            HistoryBookList = new ArrayList<>();
+        }
     }
 
     /**
@@ -107,6 +120,7 @@ public class User extends BaseObservable implements Parcelable {
                     user.setUsername(newUser.getUsername());
                     user.setUid(newUser.getUid());
                     user.setEmail(newUser.getEmail());
+                    user.setHistoryBookList(newUser.getHistoryBookList());
                     //TODO add setters as things are implemented.
                 }
 
@@ -178,6 +192,7 @@ public class User extends BaseObservable implements Parcelable {
      * Get the user's owned books
      * @return THe user's books
      */
+
     @Bindable
     public ArrayList<Book> getOwnedBookList() {return ownedBookList;}
 
@@ -196,6 +211,8 @@ public class User extends BaseObservable implements Parcelable {
             notifyPropertyChanged(BR.ownedBookList);
         }
     }
+
+
 
 
     /*
@@ -253,8 +270,58 @@ public class User extends BaseObservable implements Parcelable {
         return notificationList;
     }
 
-    public BookHistoryList getBookHistoryList() {
-        return bookHistoryList;
+    */
+
+
+
+    @Bindable
+    public ArrayList<HistoryItem> getHistoryBookList() {return HistoryBookList;}
+
+    public void setHistoryBookList(ArrayList<HistoryItem> historyBookList) {
+        HistoryBookList = historyBookList;
+        notifyPropertyChanged(BR.historyBookList);
+    }
+
+    public void addBookHistory(HistoryItem Item) {
+        if (HistoryBookList == null) {
+            HistoryBookList = new ArrayList<>();
+        }
+
+        // if book is not already in list
+        if (!HistoryBookList.contains(Item)){
+            HistoryBookList.add(Item);
+            notifyPropertyChanged(BR.historyBookList);
+        }
+
+    }
+    public void removeitem(HistoryItem Item){
+        HistoryBookList.remove(Item);
+        notifyPropertyChanged(BR.historyBookList);
+
+
+    }
+
+    public ArrayList<String> getDictionary(){
+        Map<String, Integer> dictionary = new HashMap<String,Integer>();
+        for (HistoryItem item:HistoryBookList) {
+            int count = dictionary.containsKey(item.getBookHisGenre()) ? dictionary.get(item.getBookHisGenre()) : 0;
+            dictionary.put(item.getBookHisGenre(), count + 1);
+
+        }
+
+        LinkedHashMap<String, Integer> sorted = dictionary.entrySet().stream().sorted(comparingByValue()).collect(toMap(e -> e.getKey(), e -> e.getValue(), (e1, e2) -> e2, LinkedHashMap::new));
+        ArrayList<String> list = new ArrayList<String>();
+        for (String key : sorted.keySet()){
+            list.add(key);
+        }
+
+
+        return list;
+    }
+
+    /*
+    public void getGenre(){
+        return
     }
     */
 
@@ -273,6 +340,7 @@ public class User extends BaseObservable implements Parcelable {
         dest.writeString(username);
         dest.writeString(email);
         dest.writeTypedList(ownedBookList);
+        dest.writeTypedList(HistoryBookList);
         //location.writeToParcel(dest, flags);
     }
 

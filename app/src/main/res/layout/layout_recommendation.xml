@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content" android:layout_height="160dp"
     xmlns:app = "http://schemas.android.com/apk/res-auto"
 
-    >
-
-    <android.support.v7.widget.CardView
-        android:layout_width="120dp"
+    android:layout_width="120dp"
         android:layout_height="160dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
@@ -20,62 +16,68 @@
         app:cardMaxElevation="2dp"
         app:layout_constraintStart_toStartOf="parent">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/relativeLayout">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <ImageView
-                    android:id="@+id/book_image_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="130dp"
-                    android:scaleType="center" />
+            <ImageView
+                android:id="@+id/ReccPhoto"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/my_books_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_margin="6dp"
-                    android:autoSizeMaxTextSize="15sp"
-                    android:autoSizeMinTextSize="8sp"
-                    android:autoSizeTextType="uniform"
-                    android:text="Title"
-                    android:textColor="#fff"
+            <TextView
+                android:id="@+id/ReccTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:autoSizeMaxTextSize="15sp"
+                android:autoSizeMinTextSize="8sp"
 
-                    />
+                android:autoSizeTextType="uniform"
+                android:text="Title"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/author"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginLeft="65dp"
-                    android:layout_marginRight="6dp"
-                    android:layout_marginBottom="6dp"
-                    android:autoSizeMaxTextSize="15sp"
-                    android:autoSizeMinTextSize="8sp"
-                    android:autoSizeTextType="uniform"
-                    android:text="Author"
-                    android:textColor="#fff"
+            <TextView
+                android:id="@+id/ReccAuthor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:autoSizeMaxTextSize="15sp"
+                android:autoSizeMinTextSize="8sp"
 
-                    />
-
-                <View
-                    android:id="@+id/view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                android:autoSizeTextType="uniform"
+                android:text="Author"
+                android:textAlignment="center"
+                android:textColor="#fff"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
 
-            </FrameLayout>
-
-
-        </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
 
 
     </android.support.v7.widget.CardView>
-
-</RelativeLayout>
