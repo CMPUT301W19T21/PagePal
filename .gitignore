@@ -47,7 +47,7 @@ obj/
 .externalNativeBuild
 
 # javadoc
-doc/
+#doc/
 
 Files with sensitive info
 google-services.json
