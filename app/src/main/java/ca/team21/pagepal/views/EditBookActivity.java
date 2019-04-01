@@ -11,9 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +41,7 @@ import static ca.team21.pagepal.views.MainActivity.BOOK_EXTRA;
 /**
  * Activity to edit and add books
  */
-public class EditBookActivity extends AppCompatActivity implements View.OnClickListener{
+public class EditBookActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private String TAG = "EditBookActivity";
 
@@ -75,6 +78,10 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         titleEdit = findViewById(R.id.title_edit);
         authorEdit = findViewById(R.id.author_edit);
         descriptionEdit = findViewById(R.id.description_edit);
+        Spinner spinner = findViewById(R.id.genre_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Genre, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
         uploadImageButton = findViewById(R.id.upload_image_button);
         deleteImageButton = findViewById(R.id.delete_image_button);
         doneButton = findViewById(R.id.done_button);
@@ -100,6 +107,7 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
         deleteImageButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
+        spinner.setOnItemSelectedListener(this);
 
         if (savedInstanceState != null) {
             book = savedInstanceState.getParcelable("BOOK");
@@ -115,6 +123,9 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             titleEdit.setText(book.getTitle());
             authorEdit.setText(book.getAuthor());
             descriptionEdit.setText(book.getDescription());
+            String searchedItem = book.getGenre();
+            int itemPosition = adapter.getPosition(searchedItem);
+            spinner.setSelection(itemPosition);
             setDisplayPhoto(book.getPhoto());
 
         } else {
@@ -130,6 +141,21 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
             coverPhoto.setImageBitmap(bitmap);
         }
+    }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+
+        if (parent.getItemAtPosition(position).equals("Choose Genre")) {
+            //do nothing
+        } else {
+            String genreEdit = parent.getItemAtPosition(position).toString();
+            book.setGenre(genreEdit);
+            //Toast.makeText(parent.getContext(), genreEdit, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 
     @Override

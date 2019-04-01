@@ -95,7 +95,7 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
             } else {
                 holder.usernameView.setVisibility(View.INVISIBLE);
             }
-            
+
         }
 
         if (holder.usernameView.getVisibility() == VISIBLE) {

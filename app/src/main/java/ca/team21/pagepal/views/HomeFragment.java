@@ -3,13 +3,37 @@ package ca.team21.pagepal.views;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.controllers.BorrowingRecyclerViewAdapter;
+import ca.team21.pagepal.controllers.ReccomendationRecyclerViewAdapter;
+import ca.team21.pagepal.models.Book;
+import ca.team21.pagepal.models.HistoryItem;
+import ca.team21.pagepal.models.User;
 
 
 /**
@@ -29,8 +53,17 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ArrayList<Book> ReccomendationList;
+    private String current_user;
+
+    private RecyclerView.Adapter adapter;
 
     private OnHomeInteractionListener mListener;
+
+    private int FirstCounter = 0;
+    private int SecondCounter = 0;
+    private int ThirdCounter = 0;
+    private int FourthCounter = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -64,7 +97,97 @@ public class HomeFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        ReccomendationList = new ArrayList<Book>();
+
+        generateList();
+
     }
+
+
+    public void generateList() {
+        User user = User.getInstance();
+        ArrayList<String> GenreDict = user.getDictionary();
+        Query query = FirebaseDatabase.getInstance().getReference("books");
+        current_user = user.getUsername();
+        query.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ReccomendationList.clear();
+               for(DataSnapshot user:dataSnapshot.getChildren()){
+                   for(DataSnapshot item: user.getChildren()){
+                       Book book = item.getValue(Book.class);
+                       if(!(book.getOwner().equals(current_user))) {
+                           if (book.getStatus().equals("Available")) {
+
+                               if (book.getGenre().equals("Fantasy")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               } else if (book.getGenre().equals("Comics")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               } else if (book.getGenre().equals("Other")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               } else if (book.getGenre().equals("Action")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               }
+                           }
+                       }
+                   }
+                adapter.notifyDataSetChanged();
+               }
+            }
+
+
+
+
+                        /*
+                        if(!book.getGenre().equals("Other")) {
+                            if(book.getGenre().equals(GenreDict.indexOf(0))) {
+
+                                if (FirstCounter < 5) {
+                                    ReccomendationList.add(book);
+                                }
+                            }
+
+                            else if(book.getGenre().equals(GenreDict.indexOf(1))){
+                                if (SecondCounter < 3){
+                                    ReccomendationList.add(book);
+                                }
+                            }
+
+                            else if(book.getGenre().equals(GenreDict.indexOf(2))){
+                                if (ThirdCounter < 2){
+                                    ReccomendationList.add(book);
+                                }
+                            }
+                            else if(book.getGenre().equals(GenreDict.indexOf(3))){
+                                if (FourthCounter < 1){
+                                    ReccomendationList.add(book);
+                                }
+                            }
+
+                        }
+                        ReccomendationList.add(book);
+                        */
+
+
+
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+
+           }
+       });
+
+    }
+
 
     /**
      * TODO: Update comments
@@ -84,14 +207,17 @@ public class HomeFragment extends Fragment {
         SearchView searchView = (SearchView) rootView.findViewById(R.id.findBooks);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setIconifiedByDefault(false);
+
+
+        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(rootView.getContext(),LinearLayoutManager.HORIZONTAL,false);
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new ReccomendationRecyclerViewAdapter(ReccomendationList, mListener);
+        recyclerView.setAdapter(adapter);
         return rootView;    }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed() {
-        if (mListener != null) {
-            mListener.onHomeInteraction();
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -122,6 +248,6 @@ public class HomeFragment extends Fragment {
      */
     public interface OnHomeInteractionListener {
         // TODO: Update argument type and name
-        void onHomeInteraction();
+        void viewBookInteraction(Book book);
     }
 }
