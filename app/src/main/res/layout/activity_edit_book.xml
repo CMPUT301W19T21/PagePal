@@ -53,6 +53,7 @@
             android:ems="10"
             android:hint="@string/edit_title"
             android:inputType="text"
+            android:textColor="#ffff"
             android:backgroundTint="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -100,6 +101,9 @@
             android:dropDownWidth="wrap_content"
             android:spinnerMode="dropdown"
             app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="#ffff"
+            android:textColor="#ffff"
+            android:background="@drawable/white_round"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description_edit"
             />
