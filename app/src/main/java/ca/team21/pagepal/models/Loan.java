@@ -15,6 +15,8 @@ public class Loan {
     private Book book;
     private String owner;
     private String borrower;
+    private boolean ownerReady;
+    private boolean borrowerReady;
 
     public Loan() {
         /*
@@ -26,6 +28,8 @@ public class Loan {
         this.book = book;
         this.owner = owner;
         this.borrower = borrower;
+        this.ownerReady = false;
+        this.borrowerReady = false;
     }
 
     /**
@@ -74,6 +78,22 @@ public class Loan {
      */
     public String getBorrower() {
         return borrower;
+    }
+
+    public boolean isOwnerReady() {
+        return ownerReady;
+    }
+
+    public void setOwnerReady(boolean ownerReady) {
+        this.ownerReady = ownerReady;
+    }
+
+    public boolean isBorrowerReady() {
+        return borrowerReady;
+    }
+
+    public void setBorrowerReady(boolean borrowerReady) {
+        this.borrowerReady = borrowerReady;
     }
 
     /**

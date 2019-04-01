@@ -16,6 +16,8 @@ public class Request {
     private String owner;
     private String requester;
     private Book book;
+    boolean ownerReady;
+    boolean borrowerReady;
 
     // didn't use Location class because of errors when reading from Firebase due to Location not having an empty constructor
     private Double latitude;
@@ -29,6 +31,8 @@ public class Request {
         this.book = book;
         this.latitude = 0.0;
         this.longitude = 0.0;
+        this.ownerReady = false;
+        this.borrowerReady = false;
     }
 
     public Request(String owner, String requester, Book book, Double latitude, Double longitude) {
@@ -37,6 +41,8 @@ public class Request {
         this.book = book;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.ownerReady = false;
+        this.ownerReady = false;
     }
 
     /**
@@ -101,6 +107,22 @@ public class Request {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isOwnerReady() {
+        return ownerReady;
+    }
+
+    public void setOwnerReady(boolean ownerReady) {
+        this.ownerReady = ownerReady;
+    }
+
+    public boolean isBorrowerReady() {
+        return borrowerReady;
+    }
+
+    public void setBorrowerReady(boolean borrowerReady) {
+        this.borrowerReady = borrowerReady;
     }
 
     /**
