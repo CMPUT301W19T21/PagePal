@@ -25,7 +25,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.database.ValueEventListener;
 
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.User;

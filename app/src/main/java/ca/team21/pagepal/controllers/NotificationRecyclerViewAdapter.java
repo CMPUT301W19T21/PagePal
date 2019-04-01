@@ -4,35 +4,28 @@ package ca.team21.pagepal.controllers;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import ca.team21.pagepal.models.Book;
 import ca.team21.pagepal.models.Notification;
-import ca.team21.pagepal.models.User;
 import ca.team21.pagepal.views.NotificationsFragment;
 import ca.team21.pagepal.R;
 
-import static android.view.View.VISIBLE;
 
 public class NotificationRecyclerViewAdapter extends RecyclerView.Adapter<NotificationRecyclerViewAdapter.NotificationViewHolder> {
     private ArrayList<Notification> notifications;
     private NotificationsFragment.OnNotificationsInteractionListener listener;
-    private final User user = User.getInstance();
 
     public static class NotificationViewHolder extends RecyclerView.ViewHolder {
         public View notificationView;

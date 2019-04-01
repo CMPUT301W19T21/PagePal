@@ -10,8 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -21,11 +19,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import ca.team21.pagepal.R;
-import ca.team21.pagepal.controllers.MyBookRecyclerViewAdapter;
 import ca.team21.pagepal.controllers.NotificationRecyclerViewAdapter;
-import ca.team21.pagepal.controllers.SearchRecyclerViewAdapter;
 import ca.team21.pagepal.models.Book;
-import ca.team21.pagepal.models.Loan;
 import ca.team21.pagepal.models.Notification;
 import ca.team21.pagepal.models.User;
 
