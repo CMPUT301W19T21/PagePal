@@ -30,7 +30,7 @@ public class BorrowingRecyclerViewAdapter extends RecyclerView.Adapter<Borrowing
             super(itemView);
             bookView = itemView;
             titleView = itemView.findViewById(R.id.title);
-            authorView = itemView.findViewById(R.id.author);
+            authorView = itemView.findViewById(R.id.BookHisAuthor);
             ownerView = itemView.findViewById(R.id.user);
             statusView = itemView.findViewById(R.id.status);
         }

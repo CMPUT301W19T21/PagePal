@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,7 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 
 import ca.team21.pagepal.R;
+import ca.team21.pagepal.models.HistoryItem;
 import ca.team21.pagepal.models.Loan;
 import ca.team21.pagepal.models.Notification;
 import ca.team21.pagepal.models.Request;
@@ -462,6 +464,12 @@ public class BookDetailsActivity extends AppCompatActivity implements View.OnCli
                 exchangeButton.setText("Waiting for borrower");
                 exchangeButton.setClickable(false);
             } else {
+                if (user.getUsername().equals(book.getBorrower())) {
+                    HistoryItem newBook = new HistoryItem(book.getAuthor(), book.getTitle(), book.getGenre(), book.getPhoto());
+                    user.addBookHistory(newBook);
+                    FirebaseDatabase.getInstance().getReference("users/" + user.getUsername())
+                            .child("historyBookList").setValue(user.getHistoryBookList());
+                }
                 requestRef.child("borrowerReady").setValue(true);
                 exchangeButton.setText("Waiting for owner");
                 exchangeButton.setClickable(false);

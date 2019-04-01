@@ -5,8 +5,8 @@
     android:id="@+id/borrowingLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context=".views.BorrowingFragment">
-
     <TextView
         android:id="@+id/borrowing_title"
         android:layout_width="wrap_content"

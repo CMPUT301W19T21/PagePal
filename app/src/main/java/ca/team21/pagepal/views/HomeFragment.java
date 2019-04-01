@@ -2,6 +2,7 @@ package ca.team21.pagepal.views;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.databinding.Observable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,9 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import ca.team21.pagepal.BR;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.controllers.BorrowingRecyclerViewAdapter;
 import ca.team21.pagepal.controllers.ReccomendationRecyclerViewAdapter;
@@ -60,10 +63,7 @@ public class HomeFragment extends Fragment {
 
     private OnHomeInteractionListener mListener;
 
-    private int FirstCounter = 0;
-    private int SecondCounter = 0;
-    private int ThirdCounter = 0;
-    private int FourthCounter = 0;
+    private User user;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -96,96 +96,67 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        user = User.getInstance();
 
         ReccomendationList = new ArrayList<Book>();
 
-        generateList();
-
+        if (user.getUid().equals("")) {
+            user.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+                @Override
+                public void onPropertyChanged(Observable sender, int propertyId) {
+                    if (propertyId == BR._all) {
+                        generateList();
+                    }
+                }
+            });
+        } else {
+            generateList();
+        }
     }
 
 
     public void generateList() {
-        User user = User.getInstance();
-        ArrayList<String> GenreDict = user.getDictionary();
-        Query query = FirebaseDatabase.getInstance().getReference("books");
         current_user = user.getUsername();
-        query.addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ReccomendationList.clear();
-               for(DataSnapshot user:dataSnapshot.getChildren()){
-                   for(DataSnapshot item: user.getChildren()){
-                       Book book = item.getValue(Book.class);
-                       if(!(book.getOwner().equals(current_user))) {
-                           if (book.getStatus().equals("Available")) {
-
-                               if (book.getGenre().equals("Fantasy")) {
-                                   if (!ReccomendationList.contains(book)) {
-                                       ReccomendationList.add(book);
-                                   }
-                               } else if (book.getGenre().equals("Comics")) {
-                                   if (!ReccomendationList.contains(book)) {
-                                       ReccomendationList.add(book);
-                                   }
-                               } else if (book.getGenre().equals("Other")) {
-                                   if (!ReccomendationList.contains(book)) {
-                                       ReccomendationList.add(book);
-                                   }
-                               } else if (book.getGenre().equals("Action")) {
-                                   if (!ReccomendationList.contains(book)) {
-                                       ReccomendationList.add(book);
-                                   }
-                               }
-                           }
-                       }
-                   }
-                adapter.notifyDataSetChanged();
-               }
-            }
-
-
-
-
-                        /*
-                        if(!book.getGenre().equals("Other")) {
-                            if(book.getGenre().equals(GenreDict.indexOf(0))) {
-
-                                if (FirstCounter < 5) {
-                                    ReccomendationList.add(book);
+        final ArrayList<HistoryItem> userHistory = user.getHistoryBookList();
+        final ArrayList<String> GenreDict = user.getDictionary();
+            Query query = FirebaseDatabase.getInstance().getReference("books");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot allBooks : dataSnapshot.getChildren()) {
+                                for (DataSnapshot item : allBooks.getChildren()) {
+                                    Book book = item.getValue(Book.class);
+                                    HistoryItem historyItem = new HistoryItem(book.getAuthor(), book.getTitle(), book.getGenre(), book.getPhoto());
+                                    if (!(book.getOwner().equals(current_user))
+                                            && !userHistory.contains(historyItem)
+                                            && (book.getStatus().equals(Book.AVAILABLE) || book.getStatus().equals(Book.REQUESTED))) {
+                                        for (final String value : GenreDict.subList(0, GenreDict.size() < 3 ? GenreDict.size() : 2)) {
+                                            ReccomendationList.add(book);
+                                        }
+                                    }
                                 }
                             }
+                            if (ReccomendationList.size() < 5) {
+                                Random random = new Random();
+                                ArrayList<Book> books = new ArrayList<>();
+                                for (DataSnapshot allBooks : dataSnapshot.getChildren()) {
+                                    for (DataSnapshot item : allBooks.getChildren()) {
+                                        books.add(item.getValue(Book.class));
+                                    }
+                                }
+                                while(ReccomendationList.size() < 5) {
+                                    Book fillBook = books.get(random.nextInt(books.size()));
+                                    if(!ReccomendationList.contains(fillBook)) { ReccomendationList.add(fillBook); }
+                                }
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
 
-                            else if(book.getGenre().equals(GenreDict.indexOf(1))){
-                                if (SecondCounter < 3){
-                                    ReccomendationList.add(book);
-                                }
-                            }
-
-                            else if(book.getGenre().equals(GenreDict.indexOf(2))){
-                                if (ThirdCounter < 2){
-                                    ReccomendationList.add(book);
-                                }
-                            }
-                            else if(book.getGenre().equals(GenreDict.indexOf(3))){
-                                if (FourthCounter < 1){
-                                    ReccomendationList.add(book);
-                                }
-                            }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
-                        ReccomendationList.add(book);
-                        */
-
-
-
-
-           @Override
-           public void onCancelled(@NonNull DatabaseError databaseError) {
-
-           }
-       });
-
+                    });
     }
 
 
