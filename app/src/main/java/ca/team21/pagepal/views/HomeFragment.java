@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,6 +32,7 @@ import ca.team21.pagepal.R;
 import ca.team21.pagepal.controllers.BorrowingRecyclerViewAdapter;
 import ca.team21.pagepal.controllers.ReccomendationRecyclerViewAdapter;
 import ca.team21.pagepal.models.Book;
+import ca.team21.pagepal.models.HistoryItem;
 import ca.team21.pagepal.models.User;
 
 
@@ -52,10 +54,16 @@ public class HomeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private ArrayList<Book> ReccomendationList;
+    private String current_user;
 
     private RecyclerView.Adapter adapter;
 
     private OnHomeInteractionListener mListener;
+
+    private int FirstCounter = 0;
+    private int SecondCounter = 0;
+    private int ThirdCounter = 0;
+    private int FourthCounter = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -90,41 +98,87 @@ public class HomeFragment extends Fragment {
         }
 
         ReccomendationList = new ArrayList<Book>();
+
         generateList();
 
     }
 
 
     public void generateList() {
-       User user = User.getInstance();
-       ArrayList<String> GenreDict = user.getDictionary();
-       Query query = FirebaseDatabase.getInstance().getReference("books");
-       query.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        User user = User.getInstance();
+        ArrayList<String> GenreDict = user.getDictionary();
+        Query query = FirebaseDatabase.getInstance().getReference("books");
+        current_user = user.getUsername();
+        query.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ReccomendationList.clear();
                for(DataSnapshot user:dataSnapshot.getChildren()){
-
-
                    for(DataSnapshot item: user.getChildren()){
                        Book book = item.getValue(Book.class);
-                       if(book.getGenre().equals("Fantasy")){
-                           ReccomendationList.add(book);
-                       }
-                       else if(book.getGenre().equals("Comics")){
-                           ReccomendationList.add(book);
-                       }
-                       else if(book.getGenre().equals("Other")){
-                           ReccomendationList.add(book);
-                       }
-                       else if(book.getGenre().equals("Action")){
-                           ReccomendationList.add(book);
-                       }
+                       if(!(book.getOwner().equals(current_user))) {
+                           if (book.getStatus().equals("Available")) {
 
+                               if (book.getGenre().equals("Fantasy")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               } else if (book.getGenre().equals("Comics")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               } else if (book.getGenre().equals("Other")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               } else if (book.getGenre().equals("Action")) {
+                                   if (!ReccomendationList.contains(book)) {
+                                       ReccomendationList.add(book);
+                                   }
+                               }
+                           }
+                       }
                    }
+                adapter.notifyDataSetChanged();
                }
-               adapter.notifyDataSetChanged();
+            }
 
-           }
+
+
+
+                        /*
+                        if(!book.getGenre().equals("Other")) {
+                            if(book.getGenre().equals(GenreDict.indexOf(0))) {
+
+                                if (FirstCounter < 5) {
+                                    ReccomendationList.add(book);
+                                }
+                            }
+
+                            else if(book.getGenre().equals(GenreDict.indexOf(1))){
+                                if (SecondCounter < 3){
+                                    ReccomendationList.add(book);
+                                }
+                            }
+
+                            else if(book.getGenre().equals(GenreDict.indexOf(2))){
+                                if (ThirdCounter < 2){
+                                    ReccomendationList.add(book);
+                                }
+                            }
+                            else if(book.getGenre().equals(GenreDict.indexOf(3))){
+                                if (FourthCounter < 1){
+                                    ReccomendationList.add(book);
+                                }
+                            }
+
+                        }
+                        ReccomendationList.add(book);
+                        */
+
+
+
 
            @Override
            public void onCancelled(@NonNull DatabaseError databaseError) {

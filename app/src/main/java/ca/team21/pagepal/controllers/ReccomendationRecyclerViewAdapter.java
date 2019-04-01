@@ -35,7 +35,9 @@ public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<Recc
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int position) {
+
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_recommendation,viewGroup, false);
+
         return new ViewHolder(view);
     }
 
@@ -55,6 +57,16 @@ public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<Recc
             holder.title.setText(book_item.getTitle());
             holder.author.setVisibility(View.VISIBLE);
             holder.title.setVisibility(View.VISIBLE);
+            holder.icon.setVisibility(View.VISIBLE);
+
+            /*
+            book_item.getPhoto().replace("", );
+            byte[] stringToBit = Base64.decode(book_item.getPhoto(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(stringToBit, 0, stringToBit.length);
+            holder.icon.setImageBitmap(bitmap)
+            holder.icon.setVisibility(View.VISIBLE);
+            */
+
         }
         holder.book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +86,7 @@ public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<Recc
         TextView title;
         TextView author;
         View book;
+        ImageView icon;
 
         public ViewHolder(View itemView){
             super(itemView);
@@ -81,6 +94,7 @@ public class ReccomendationRecyclerViewAdapter extends RecyclerView.Adapter<Recc
             image = itemView.findViewById(R.id.ReccPhoto);
             title = itemView.findViewById(R.id.ReccTitle);
             author = itemView.findViewById(R.id.ReccAuthor);
+            icon = itemView.findViewById(R.id.ReccIcon);
 
         }
 
