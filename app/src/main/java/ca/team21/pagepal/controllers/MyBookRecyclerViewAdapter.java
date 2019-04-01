@@ -57,7 +57,9 @@ public class MyBookRecyclerViewAdapter extends RecyclerView.Adapter<MyBookRecycl
 
         if (holder.mItem.getOwner().equals(user.getUsername())) {
             holder.editButton.setVisibility(VISIBLE);
-            holder.deleteButton.setVisibility(VISIBLE);
+            if (! holder.mItem.getStatus().equals(BORROWED)) {
+                holder.deleteButton.setVisibility(VISIBLE);
+            }
             holder.editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
