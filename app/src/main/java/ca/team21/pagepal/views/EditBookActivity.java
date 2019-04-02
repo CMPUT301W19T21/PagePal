@@ -1,12 +1,14 @@
 package ca.team21.pagepal.views;
 
 import android.content.Intent;
+import android.databinding.Observable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -19,8 +21,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -30,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import ca.team21.pagepal.BR;
 import ca.team21.pagepal.R;
 import ca.team21.pagepal.models.Book;
 import ca.team21.pagepal.models.User;
@@ -118,6 +124,29 @@ public class EditBookActivity extends AppCompatActivity implements View.OnClickL
             setDisplayPhoto(savedInstanceState.getString("PHOTO"));
         } else if (sentIntent.hasExtra(BOOK_EXTRA)) {
             book = sentIntent.getParcelableExtra(BOOK_EXTRA);
+
+            FirebaseDatabase.getInstance().getReference("books/" + book.getOwner() + "/" + book.getIsbn())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Book temp = dataSnapshot.getValue(Book.class);
+                            book.setPhoto(temp.getPhoto());
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+            book.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+                @Override
+                public void onPropertyChanged(Observable sender, int propertyId) {
+                    if (propertyId == BR.photo) {
+                        setDisplayPhoto(book.getPhoto());
+                    }
+                }
+            });
 
             isbnView.setText(book.getIsbn());
             titleEdit.setText(book.getTitle());
