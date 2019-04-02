@@ -178,7 +178,8 @@ public class MainActivity extends AppCompatActivity
 
                                     if (!((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
                                             (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase()))) {
+                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                            (book.getGenre().toUpperCase().contains(keyWord.toUpperCase())))) {
                                         matches = false;
                                         break;
                                     }
