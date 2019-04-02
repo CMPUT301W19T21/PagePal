@@ -172,15 +172,19 @@ public class MainActivity extends AppCompatActivity
                             String status = data.child("status").getValue(String.class);
                             // Filter by Status
                             if (status != null && ( status.equals("Available") || status.equals("Requested"))) {
-
+                                boolean matches = true;
                                 Book book = data.getValue(Book.class);
                                 for (String keyWord : keyWords) {
 
-                                    if ((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
+                                    if (!((book.getAuthor().toUpperCase()).contains(keyWord.toUpperCase()) ||
                                             (book.getTitle().toUpperCase()).contains(keyWord.toUpperCase()) ||
-                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase())) {
-                                        bookList.add(book);
+                                            (book.getDescription().toUpperCase()).contains(keyWord.toUpperCase()))) {
+                                        matches = false;
+                                        break;
                                     }
+                                }
+                                if (matches && !bookList.contains(book)) {
+                                    bookList.add(book);
                                 }
                             }
                         }
