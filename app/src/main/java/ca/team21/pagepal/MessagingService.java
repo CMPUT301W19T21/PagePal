@@ -130,7 +130,7 @@ public class MessagingService extends FirebaseMessagingService {
         Intent newIntent = new Intent(getApplicationContext(), BookDetailsActivity.class);
         newIntent.putExtra(BOOK_EXTRA, book);
         newIntent.putExtra(USER_EXTRA, user);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, newIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 1, newIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         // Set up notifications
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "channelId")
@@ -138,11 +138,9 @@ public class MessagingService extends FirebaseMessagingService {
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(android.R.drawable.btn_star)
-                .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.i("THIS IMPORTANT THING", "MAd");
 
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel("channelId", "PagePal", importance);
